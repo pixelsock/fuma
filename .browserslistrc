@@ -1,0 +1,11 @@
+# Browsers that we support
+
+defaults
+> 0.5%
+last 2 versions
+not dead
+ie >= 11
+chrome >= 60
+firefox >= 60
+safari >= 10
+edge >= 15

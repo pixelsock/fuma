@@ -1,0 +1,372 @@
+
+> fuma@0.0.0 dev
+> next dev --turbo
+
+[MDX] updated map file in 6.007082999999966ms
+[MDX] started dev server
+ ⚠ Port 3000 is in use, using available port 3002 instead.
+   ▲ Next.js 15.3.2 (Turbopack)
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.86.250:3002
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1085ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1854ms
+ GET / 200 in 2113ms
+ ○ Compiling /docs/[[...slug]] ...
+ ✓ Compiled /docs/[[...slug]] in 1425ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:03:21 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+ GET /docs 200 in 2801ms
+ GET /docs 200 in 121ms
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 1808ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1858ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:03:37 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+ GET /docs 200 in 116ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 131ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:03:41 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+ ○ Compiling /docs/[slug] ...
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ✓ Compiled /docs/[slug] in 728ms
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ✓ Compiled /_error in 232ms
+ GET /docs/test 500 in 1111ms
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./node_modules/fumadocs-mdx/dist/chunk-7SSA5RCV.js:2:1
+Module not found: Can't resolve 'fs'
+[0m [90m 1 |[39m [90m// src/runtime/index.ts[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m fs [36mfrom[39m [32m"fs"[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m [36mvar[39m _runtime [33m=[39m {[0m
+[0m [90m 4 |[39m   doc(files) {[0m
+[0m [90m 5 |[39m     [36mreturn[39m files[33m.[39mmap((file) [33m=>[39m {[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET /docs/test 500 in 51ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 500 in 84ms
+ GET /docs 200 in 126ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 500 in 149ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:03:46 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+ GET /docs 200 in 110ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 500 in 93ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:03:48 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+ GET /docs 200 in 196ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 500 in 203ms
+Successfully authenticated with Directus
+Error generating article params from Directus: {
+  errors: [
+    {
+      message: `Invalid query. You can't filter for an empty string in "_neq". Use "_empty" or "_nempty" instead.`,
+      extensions: [Object]
+    }
+  ],
+  response: Response {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Headers {
+      'content-security-policy': "script-src 'self' https://unpkg.com data:;worker-src 'self' blob:;child-src 'self' blob:;img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com;media-src 'self';connect-src 'self' https://* wss://*;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'",
+      'x-powered-by': 'Directus',
+      vary: 'Origin',
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Content-Range',
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '267',
+      etag: 'W/"10b-Ay2jK6WnRAL4g9eUNDHpRqWUNlg"',
+      date: 'Fri, 27 Jun 2025 17:04:18 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'http://localhost:8055/items/articles?fields=id%2Cslug%2Cstatus&filter=%7B%22slug%22%3A%7B%22_nnull%22%3Atrue%2C%22_neq%22%3A%22%22%7D%2C%22status%22%3A%7B%22_in%22%3A%5B%22publish%22%2C%22published%22%5D%7D%7D'
+  }
+}
+[?25h
+[MDX] closing dev server

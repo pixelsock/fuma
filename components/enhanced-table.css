@@ -1,0 +1,107 @@
+/* Enhanced Table Styles */
+.enhanced-table-wrapper {
+  position: relative;
+  margin-bottom: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.enhanced-table-wrapper.fixed {
+  margin: 0;
+  border-radius: 0;
+}
+
+.enhanced-table-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  gap: 0.75rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+/* Preserve original table styles */
+.table-container table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+/* UDO-specific table styles */
+.table-container table td,
+.table-container table th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid #e5e7eb;
+}
+
+.table-container table th {
+  font-weight: 600;
+  background-color: #f9fafb;
+}
+
+/* Handle tables with empty first/last columns (UDO pattern) */
+.table-container table td:empty,
+.table-container table th:empty {
+  width: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .table-controls > div {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+/* Fullscreen adjustments */
+.enhanced-table-wrapper.fixed .enhanced-table-container {
+  height: 100vh;
+  max-width: 100vw;
+}
+
+.enhanced-table-wrapper.fixed .table-container {
+  height: calc(100vh - 4rem);
+}
+
+/* Loading state */
+.table-container.loading {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+/* No results message */
+.table-container .no-results {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
