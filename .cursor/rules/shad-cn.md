@@ -1,0 +1,21 @@
+---
+description: 
+globs:
+alwaysApply: true
+---
+
+Usage Rule
+When asked to create or modify components, use the MCP server.
+
+Planning Rule
+When asked to plan using anything related to design or components or anything related to shadcn:
+
+Use the MCP server during planning
+Apply components wherever components are applicable
+Use whole blocks where possible (e.g., login page, calendar)
+
+Implementation Rule
+When implementing:
+
+First call the demo tool to see how it is used
+Then implement it so that it is implemented correctly 

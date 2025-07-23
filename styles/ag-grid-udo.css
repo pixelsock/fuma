@@ -1,0 +1,168 @@
+/* Charlotte UDO AG-Grid Theme Overrides */
+
+/* Blue header style */
+.ag-header-blue {
+  background-color: #1E4E79 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Light blue header style */
+.ag-header-light-blue {
+  background-color: #DEEAF6 !important;
+  color: #1F2937 !important;
+  font-weight: 600 !important;
+}
+
+/* Green header style */
+.ag-header-green {
+  background-color: #2E7D32 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Purple header style */
+.ag-header-purple {
+  background-color: #7B1FA2 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Light green header style */
+.ag-header-light-green {
+  background-color: #66BB6A !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Medium green header style */
+.ag-header-medium-green {
+  background-color: #81C784 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Light purple header style */
+.ag-header-light-purple {
+  background-color: #BA68C8 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Very light purple header style */
+.ag-header-very-light-purple {
+  background-color: #CE93D8 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Default column group style */
+.ag-header-group-default {
+  font-weight: 600 !important;
+  border-bottom: 2px solid hsl(var(--color-fd-border)) !important;
+}
+
+/* Expandable column group indicators */
+.ag-header-group-cell.ag-header-group-expandable {
+  cursor: pointer;
+}
+
+.ag-header-group-cell.ag-header-group-expandable:hover {
+  background-color: hsl(var(--color-fd-muted) / 0.1) !important;
+}
+
+/* Column group expand/collapse icons */
+.ag-header-group-cell .ag-header-expand-icon {
+  margin-right: 4px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.ag-header-group-cell .ag-header-expand-icon:hover {
+  opacity: 1;
+}
+
+/* AG-Grid Quartz theme customization using CSS variables */
+.udo-content [data-ag-theme="quartz"] {
+  --ag-header-height: 40px;
+  --ag-row-height: 40px;
+  --ag-header-background-color: hsl(var(--color-fd-muted));
+  --ag-header-foreground-color: hsl(var(--color-fd-foreground));
+  --ag-border-color: hsl(var(--color-fd-border));
+  --ag-row-hover-color: hsl(var(--color-fd-muted) / 0.5);
+  --ag-odd-row-background-color: hsl(var(--color-fd-muted) / 0.3);
+}
+
+/* Ensure column resize handles are visible */
+[data-ag-theme="quartz"] .ag-header-cell-resize {
+  width: 4px;
+  background-color: transparent;
+  cursor: col-resize;
+}
+
+[data-ag-theme="quartz"] .ag-header-cell-resize:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Cell padding to match original tables */
+[data-ag-theme="quartz"] .ag-cell {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Header cell padding */
+[data-ag-theme="quartz"] .ag-header-cell-label {
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Colspan cell styling */
+[data-ag-theme="quartz"] .ag-cell-colspan {
+  border-left: none !important;
+}
+
+/* Improve visual continuity for spanned cells */
+[data-ag-theme="quartz"] .ag-cell:empty {
+  border-left: none;
+  background-color: inherit;
+}
+
+/* Better alignment for center-aligned cells */
+[data-ag-theme="quartz"] .ag-cell[style*="text-align: center"] {
+  text-align: center !important;
+}
+
+/* Better styling for summary rows */
+[data-ag-theme="quartz"] .ag-row .ag-cell[style*="font-weight: bold"] {
+  font-weight: bold !important;
+}
+
+/* Remove unnecessary AG-Grid UI elements for cleaner look */
+.udo-content [data-ag-theme="quartz"] .ag-header-cell-menu-button {
+  display: none;
+}
+
+/* Ensure text colors are preserved */
+[data-ag-theme="quartz"] .ag-cell {
+  /* Cell styles will be applied inline by the component */
+}
+
+.ag-header-cell-label, .ag-header-group-cell-label {
+  justify-content: center;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .udo-content [data-ag-theme="quartz"] {
+    --ag-header-height: 35px;
+    --ag-row-height: 35px;
+    font-size: 0.75rem;
+  }
+  
+  [data-ag-theme="quartz"] .ag-cell,
+  [data-ag-theme="quartz"] .ag-header-cell-label {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}

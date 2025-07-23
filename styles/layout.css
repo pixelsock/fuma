@@ -1,0 +1,174 @@
+/* Charlotte UDO Layout Styles */
+
+/* Essential utility classes from original frontend */
+.hide {
+  display: none !important;
+}
+
+/* Container utilities */
+.container-medium {
+  width: 100%;
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container-small {
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container-large {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Legacy color utilities for backward compatibility */
+.text-color-teal {
+  color: var(--color-fd-primary);
+}
+
+.background-color-teal {
+  background-color: var(--color-fd-primary);
+}
+
+.text-color-white {
+  color: var(--color-fd-primary-foreground);
+}
+
+.background-color-white {
+  background-color: var(--color-fd-background);
+}
+
+.text-color-black {
+  color: var(--color-fd-foreground);
+}
+
+.background-color-black {
+  background-color: var(--color-fd-foreground);
+}
+
+/* Button styles matching the original design */
+.button {
+  border: 1px solid var(--color-fd-foreground);
+  background-color: var(--color-fd-foreground);
+  color: var(--color-fd-background);
+  text-align: center;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: 0.25rem;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.button:hover {
+  background-color: color-mix(
+    in oklab,
+    var(--color-fd-foreground) 85%,
+    transparent
+  );
+  border-color: color-mix(
+    in oklab,
+    var(--color-fd-foreground) 85%,
+    transparent
+  );
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 2px;
+}
+
+.button.is-secondary {
+  color: var(--color-fd-foreground);
+  background-color: transparent;
+  border-color: var(--color-fd-border);
+}
+
+.button.is-secondary:hover {
+  background-color: var(--color-fd-accent);
+  border-color: var(--color-fd-accent-foreground);
+  color: var(--color-fd-accent-foreground);
+}
+
+.button.is-alternate {
+  background-color: var(--color-fd-background);
+  box-shadow: 4px 4px 0 0 var(--color-fd-primary);
+  color: var(--color-fd-foreground);
+  border: 3px solid var(--color-fd-foreground);
+  transition: all 0.3s;
+}
+
+.button.is-alternate:hover {
+  background-color: var(--color-fd-accent);
+  box-shadow: 2px 2px 0 0 var(--color-fd-primary);
+  transform: translate(2px, 2px);
+}
+
+/* Rich text content styles */
+.text-rich-text {
+  line-height: 1.6;
+  color: var(--color-fd-foreground);
+}
+
+/* Preserve whitespace and indentation in MDX content */
+.indent-block-1,
+[data-indent="1"] {
+  margin-left: 2rem !important;
+  margin-bottom: 1rem;
+}
+
+.indent-block-2,
+[data-indent="2"] {
+  margin-left: 4rem !important;
+  margin-bottom: 1rem;
+}
+
+.indent-block-3,
+[data-indent="3"] {
+  margin-left: 6rem !important;
+  margin-bottom: 1rem;
+}
+
+.indent-block-4,
+[data-indent="4"] {
+  margin-left: 8rem !important;
+  margin-bottom: 1rem;
+}
+
+.indent-block-5,
+[data-indent="5"] {
+  margin-left: 10rem !important;
+  margin-bottom: 1rem;
+}
+
+.indent-block-6,
+[data-indent="6"] {
+  margin-left: 12rem !important;
+  margin-bottom: 1rem;
+}
+
+/* TOC Scroll Offset for Fixed Header */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset for anchor links to account for fixed header + tabs */
+:target {
+  scroll-margin-top: 140px;
+}
+
+/* Headings should have scroll margin for TOC navigation */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 140px;
+}

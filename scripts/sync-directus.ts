@@ -71,7 +71,7 @@ async function syncDirectusContent() {
     const articles = await directusClient.request<Article[]>(
       readItems('articles', {
         filter: { 
-          status: { _in: ['publish', 'published'] }
+          status: { _in: ['publish', 'published', 'draft'] }  // Include draft for now
         },
         fields: ['id', 'name', 'slug', 'status', 'content', 'category'],
       })

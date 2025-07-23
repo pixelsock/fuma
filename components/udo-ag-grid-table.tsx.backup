@@ -1,0 +1,537 @@
+'use client';
+
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import { 
+  AllCommunityModule, 
+  ModuleRegistry, 
+  ColDef, 
+  themeQuartz,
+  GridOptions,
+  CellClassParams,
+  CellStyleParams
+} from 'ag-grid-community';
+import { Maximize2, X } from 'lucide-react';
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+// Custom theme for UDO tables - Charlotte colors
+const charlotteUDOTheme = themeQuartz.withParams({
+  accentColor: "#EC993D", // Charlotte orange accent
+  browserColorScheme: "light",
+  columnBorder: false, // Disable column borders (we handle manually)
+  dragHandleColor: "#EC993D",
+  headerBackgroundColor: "#1E4E79", // Charlotte blue
+  headerColumnBorder: false, // Disable header column borders (we handle manually)
+  headerFontSize: 14,
+  headerFontWeight: 700,
+  headerTextColor: "#FFFFFF",
+  pinnedColumnBorder: false, // Disable pinned column borders (we handle manually)
+  wrapperBorder: false, // Remove border radius from wrapper
+  cellTextColor: "#2D3748",
+  oddRowBackgroundColor: "#F7FAFC",
+  rowBorder: false, // Disable row borders (we handle manually)
+  borderColor: "#2D3748", // Dark border color
+  cellBorder: false, // Disable cell borders (we handle manually)
+  wrapperBorderRadius: 0 // Remove border radius from table wrapper
+});
+
+interface TableData {
+  headers: string[];
+  rows: any[][];
+  title?: string;
+  caption?: string;
+  colSpans?: { [key: string]: number };
+  rowSpans?: { [key: string]: number };
+  cellStyles?: { [key: string]: any };
+}
+
+interface CellSpanParams {
+  data: any;
+  node: any;
+  colDef: ColDef;
+  column: any;
+  api: any;
+  columnApi: any;
+  context: any;
+  rowIndex: number;
+}
+
+interface UDOAgGridTableProps {
+  tableData: TableData;
+  className?: string;
+  variant?: 'default' | 'zoning' | 'requirements' | 'standards';
+  searchable?: boolean;
+  height?: number | 'auto';
+  footnoteContent?: string;
+}
+
+// Custom cell renderer for HTML content
+const HtmlCellRenderer = ({ value }: { value: any }) => {
+  if (!value) return null;
+  
+  // Check if value contains HTML
+  if (typeof value === 'string' && value.includes('<')) {
+    return (
+      <div 
+        className="whitespace-normal leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: value }}
+      />
+    );
+  }
+  
+  return <div className="whitespace-normal leading-relaxed">{value}</div>;
+};
+
+export function UDOAgGridTable({ 
+  tableData,
+  className = '',
+  variant = 'default',
+  searchable = true,
+  height = 'auto',
+  footnoteContent
+}: UDOAgGridTableProps) {
+  const gridRef = useRef<AgGridReact>(null);
+  const [quickFilter, setQuickFilter] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Calculate total columns for width distribution
+  const totalColumns = tableData.headers.length;
+
+  
+  // Create column definitions from headers
+  const columnDefs: ColDef[] = useMemo(() => {
+    return tableData.headers.map((header, index) => {
+      // Calculate widths based on content type and header text
+      let width: number | undefined;
+      let minWidth: number;
+      
+      // Estimate width based on header content
+      const headerLength = header ? header.length : 0;
+      
+      // First column handling (empty header usually means row labels)
+      if (index === 0 && (!header || header.length <= 2)) {
+        // Row label column - narrow width but allow resizing
+        width = 60;
+        minWidth = 50;
+        // Remove maxWidth to allow unlimited resizing
+      } else if (index === 0) {
+        // First column with content - description column
+        minWidth = Math.max(150, headerLength * 6);
+        // Remove maxWidth to allow unlimited resizing
+      } else if (index === 1 && totalColumns > 4) {
+        // Second column in wide tables - usually descriptions
+        minWidth = Math.max(180, headerLength * 6);
+        // Remove maxWidth to allow unlimited resizing
+      } else if (header.match(/^N\d+-[A-Z]$/)) {
+        // Zone code columns (like N1-A, N2-B) - consistent width but resizable
+        width = 120;
+        minWidth = 80;
+        // Remove maxWidth to allow unlimited resizing
+      } else if (header.match(/^[A-Z]\d+$/)) {
+        // Pattern like A1, B2 - narrow columns but resizable
+        width = 80;
+        minWidth = 60;
+        // Remove maxWidth to allow unlimited resizing
+      } else if (headerLength <= 5) {
+        // Very short headers - narrow columns but resizable
+        minWidth = 70;
+        // Remove maxWidth to allow unlimited resizing
+      } else if (headerLength <= 15) {
+        // Medium headers - moderate width but resizable
+        minWidth = Math.max(80, headerLength * 5);
+        // Remove maxWidth to allow unlimited resizing
+      } else {
+        // Long headers - wider columns but resizable
+        minWidth = Math.max(100, headerLength * 4);
+        // Remove maxWidth to allow unlimited resizing
+      }
+      
+      const colDef: ColDef = {
+        field: `col${index}`,
+        headerName: header,
+        sortable: true,
+        filter: false, // Disable filtering
+        resizable: true, // Enable column resizing
+        lockPosition: true, // Prevent column moving
+        suppressMovable: true, // Prevent drag and drop
+        wrapText: true,
+        autoHeight: true,
+        cellRenderer: HtmlCellRenderer,
+        // Pin first column if it's a header column
+        pinned: index === 0 && (isHeaderColumn(tableData.rows, index) || !header) ? 'left' : undefined,
+        // Use width if defined
+        ...(width && { width }),
+        minWidth,
+        // maxWidth removed to allow unlimited column resizing
+        // Column spanning
+        colSpan: (params: CellSpanParams) => {
+          if (tableData.colSpans) {
+            const cellKey = `${params.data._rowIndex}-${index}`;
+            return tableData.colSpans[cellKey] || 1;
+          }
+          return 1;
+        },
+        // Row spanning
+        rowSpan: (params: CellSpanParams) => {
+          if (tableData.rowSpans) {
+            const cellKey = `${params.data._rowIndex}-${index}`;
+            return tableData.rowSpans[cellKey] || 1;
+          }
+          return 1;
+        },
+        cellClass: (params: CellClassParams) => {
+          const classes = ['ag-cell-wrap-text', 'whitespace-normal'];
+          
+          // Add custom classes from cellStyles
+          if (tableData.cellStyles) {
+            const cellKey = `${params.data._rowIndex}-${index}`;
+            const cellStyle = tableData.cellStyles[cellKey];
+            if (cellStyle?.className) {
+              classes.push(cellStyle.className);
+            }
+            
+            // Add alignment classes
+            if (cellStyle?.textAlign) {
+              classes.push(`text-${cellStyle.textAlign}`);
+            }
+            
+            // Add font weight classes
+            if (cellStyle?.fontWeight === 'bold') {
+              classes.push('font-bold');
+            } else if (cellStyle?.fontWeight === '600') {
+              classes.push('font-semibold');
+            } else if (cellStyle?.fontWeight === '500') {
+              classes.push('font-medium');
+            }
+          }
+          
+          // Add variant-specific classes
+          const variantClass = getCellClass(variant, index);
+          if (variantClass) classes.push(variantClass);
+          
+          return classes.join(' ');
+        },
+        cellStyle: (params: CellStyleParams) => getCellStyleNoInline(params, tableData.cellStyles, index),
+        headerClass: 'ag-header-cell-text text-center',
+      };
+      
+      return colDef;
+    });
+  }, [tableData, variant, totalColumns]);
+  
+  // Transform rows data for AG Grid
+  const rowData = useMemo(() => {
+    return tableData.rows.map((row, rowIndex) => {
+      const rowObj: any = { _rowIndex: rowIndex };
+      row.forEach((cell, colIndex) => {
+        rowObj[`col${colIndex}`] = cell;
+      });
+      return rowObj;
+    });
+  }, [tableData.rows]);
+  
+  const defaultColDef = useMemo(() => ({
+    sortable: true,
+    filter: false,
+    resizable: true,
+    lockPosition: true,
+    suppressMovable: true,
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+  }), []);
+  
+  const gridOptions: GridOptions = {
+    domLayout: height === 'auto' ? 'autoHeight' : 'normal',
+    animateRows: true,
+    suppressColumnVirtualisation: true,
+    suppressRowTransform: true, // Required for row spanning
+    suppressCellFocus: true, // Disable cell selection for column spanning
+    headerHeight: 48,
+    rowHeight: undefined, // Let autoHeight work
+    getRowStyle: (params) => {
+      if (params.node.rowIndex !== null && params.node.rowIndex % 2 === 0) {
+        return { backgroundColor: '#F8FAFC' };
+      }
+      return undefined;
+    },
+  };
+  
+  const onGridReady = () => {
+    // Auto-size columns after grid is ready
+    setTimeout(() => {
+      const api = gridRef.current?.api;
+      if (api) {
+        // First auto-size all columns to their content
+        api.autoSizeAllColumns();
+        
+        // Then ensure the grid takes up at least 100% width
+        const allColumns = api.getColumns();
+        if (allColumns) {
+          const totalWidth = allColumns.reduce((sum, col) => sum + (col.getActualWidth() || 0), 0);
+          const gridWidth = gridRef.current?.eGridDiv?.offsetWidth || 0;
+          
+          // If the total column width is less than the grid width, expand columns proportionally
+          if (totalWidth < gridWidth && totalWidth > 0) {
+            const remainingWidth = gridWidth - totalWidth;
+            
+            // Prioritize expanding flexible columns, but also allow fixed columns to expand slightly
+            const flexibleColumns = allColumns.filter(col => !col.getColDef().width);
+            const fixedColumns = allColumns.filter(col => col.getColDef().width);
+            
+            if (flexibleColumns.length > 0) {
+              // Distribute 80% of remaining width among flexible columns
+              const flexibleWidthToDistribute = remainingWidth * 0.8;
+              const extraWidthPerFlexible = flexibleWidthToDistribute / flexibleColumns.length;
+              
+              flexibleColumns.forEach(col => {
+                const currentWidth = col.getActualWidth() || 100;
+                const newWidth = currentWidth + extraWidthPerFlexible;
+                // Remove maxWidth constraint to allow unlimited resizing
+                api.setColumnWidth(col, newWidth, true);
+              });
+              
+              // Distribute remaining 20% among fixed columns if they can expand
+              if (fixedColumns.length > 0) {
+                const fixedWidthToDistribute = remainingWidth * 0.2;
+                const extraWidthPerFixed = fixedWidthToDistribute / fixedColumns.length;
+                
+                fixedColumns.forEach(col => {
+                  const currentWidth = col.getActualWidth() || 100;
+                  const newWidth = currentWidth + extraWidthPerFixed;
+                  // Remove maxWidth constraint to allow unlimited resizing
+                  api.setColumnWidth(col, newWidth, true);
+                });
+              }
+            } else {
+              // No flexible columns, distribute among all columns proportionally
+              const extraWidthPerColumn = remainingWidth / allColumns.length;
+              allColumns.forEach(col => {
+                const currentWidth = col.getActualWidth() || 100;
+                const newWidth = currentWidth + extraWidthPerColumn;
+                // Remove maxWidth constraint to allow unlimited resizing
+                api.setColumnWidth(col, newWidth, true);
+              });
+            }
+          }
+        }
+        
+      }
+    }, 150); // Increased timeout for better stability
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+  
+  return (
+    <>
+      {/* Fullscreen Modal */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-auto">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">{tableData.title}</h2>
+              <button
+                onClick={toggleFullscreen}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                aria-label="Close fullscreen"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {/* Table in fullscreen */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-600 overflow-hidden">
+              {searchable && (
+                <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                  <input
+                    type="text"
+                    placeholder="Search table..."
+                    value={quickFilter}
+                    onChange={(e) => setQuickFilter(e.target.value)}
+                    className="max-w-sm px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#EC993D] focus:border-transparent"
+                  />
+                </div>
+              )}
+              
+              <div style={{ height: 'calc(100vh - 200px)' }}>
+                <AgGridReact
+                  rowData={rowData}
+                  columnDefs={columnDefs}
+                  defaultColDef={defaultColDef}
+                  gridOptions={gridOptions}
+                  quickFilterText={quickFilter}
+                  theme={charlotteUDOTheme}
+                />
+              </div>
+            </div>
+            
+            {/* Footnote in fullscreen */}
+            {footnoteContent && (
+              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div 
+                  className="text-sm text-gray-600 dark:text-gray-400"
+                  dangerouslySetInnerHTML={{ __html: footnoteContent }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Regular view */}
+      <div className={`my-8 ${className}`}>
+        {/* Seamless container wrapper with subtle border and shadow */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-600 overflow-hidden">
+          {/* Title Bar - Minimal Design */}
+          {tableData.title && (
+            <div className="bg-[#1E4E79] text-white px-4 py-2 flex justify-between items-center" style={{ backgroundColor: '#1E4E79', color: 'white' }}>
+              <h3 className="text-sm font-medium text-white" style={{ color: 'white' }}>
+                {tableData.title}
+              </h3>
+              <button
+                onClick={toggleFullscreen}
+                className="p-1 hover:bg-white/20 rounded transition-colors text-white"
+                aria-label="Expand to fullscreen"
+                style={{ color: 'white' }}
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          
+          {/* Controls Bar */}
+          {searchable && (
+            <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+              <input
+                type="text"
+                placeholder="Search table..."
+                value={quickFilter}
+                onChange={(e) => setQuickFilter(e.target.value)}
+                className="max-w-sm px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#EC993D] focus:border-transparent"
+              />
+            </div>
+          )}
+        
+        {/* AG Grid Container */}
+        <div 
+          style={{ 
+            width: '100%',
+            minWidth: '100%',
+            height: height === 'auto' ? undefined : height 
+          }}
+        >
+          <AgGridReact
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            gridOptions={gridOptions}
+            onGridReady={onGridReady}
+            quickFilterText={quickFilter}
+            theme={charlotteUDOTheme}
+          />
+        </div>
+      </div>
+      
+      {tableData.caption && (
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 italic px-2">
+          {tableData.caption}
+        </p>
+      )}
+    </div>
+    </>
+  );
+}
+
+// Helper functions
+function isHeaderColumn(rows: any[][], colIndex: number): boolean {
+  // Check if first column contains mostly unique values (likely row headers)
+  if (colIndex !== 0) return false;
+  
+  const values = rows.map(row => row[0]).filter(Boolean);
+  const uniqueValues = new Set(values);
+  return uniqueValues.size > rows.length * 0.8;
+}
+
+function getMinWidth(header: string, index: number): number {
+  // Empty or single letter headers (row labels)
+  if (!header || header.length <= 1) return 50;
+  if (header.length <= 2) return 60;
+  // Zone codes like N1-A
+  if (header.match(/^N\d+-[A-Z]$/)) return 80;
+  // Pattern like A1, B2
+  if (header.match(/^[A-Z]\d+$/)) return 80;
+  // First column with content
+  if (index === 0 && header) return 180;
+  // Second column often has descriptions
+  if (index === 1) return 250;
+  return 120;
+}
+
+function getCellClass(variant: string, colIndex: number): string {
+  const classes = ['ag-cell-wrap-text'];
+  
+  if (colIndex === 0) {
+    classes.push('font-medium');
+  }
+  
+  switch (variant) {
+    case 'zoning':
+      classes.push('bg-blue-50/50');
+      break;
+    case 'requirements':
+      classes.push('bg-gray-50/50');
+      break;
+    case 'standards':
+      classes.push('bg-green-50/50');
+      break;
+  }
+  
+  return classes.join(' ');
+}
+
+function getCellStyleNoInline(params: CellStyleParams, cellStyles?: any, colIndex?: number): any {
+  const baseStyle: any = {
+    whiteSpace: 'normal',
+    lineHeight: '1.6',
+    padding: '12px 16px',
+    verticalAlign: 'middle',
+    display: 'flex',
+    alignItems: 'center',
+    borderRight: '1px solid #2D3748',
+    borderBottom: '1px solid #2D3748',
+    borderLeft: '1px solid #2D3748',
+    borderTop: 'none',
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
+    minHeight: '48px',
+  };
+  
+  // Only apply background colors from CSS classes via data attributes
+  if (cellStyles && params.data?._rowIndex !== undefined && colIndex !== undefined) {
+    const cellKey = `${params.data._rowIndex}-${colIndex}`;
+    const customStyle = cellStyles[cellKey];
+    
+    if (customStyle?.backgroundColor) {
+      baseStyle.backgroundColor = customStyle.backgroundColor;
+    }
+    if (customStyle?.color) {
+      baseStyle.color = customStyle.color;
+    }
+  }
+  
+  // Style first column as header with default background only if no custom background is set
+  if (colIndex === 0 && !baseStyle.backgroundColor) {
+    baseStyle.backgroundColor = '#F7FAFC';
+  }
+  
+  return baseStyle;
+}
+
+// Keep the old function for backward compatibility
+function getCellStyle(params: CellStyleParams, cellStyles?: any, colIndex?: number): any {
+  return getCellStyleNoInline(params, cellStyles, colIndex);
+}

@@ -1,0 +1,80 @@
+/* Table performance optimizations to prevent flashing */
+
+/* Reserve space for tables to prevent layout shift */
+.udo-content .table-wrapper {
+  min-height: 200px;
+  position: relative;
+  transition: opacity 0.3s ease-out;
+}
+
+/* Hide tables initially only if they don't have AG-Grid */
+.udo-content .table-wrapper:not(:has(.ag-root-wrapper)) {
+  opacity: 0;
+}
+
+/* Show tables when AG-Grid container is present */
+.udo-content .table-wrapper:has(.ag-root-wrapper) {
+  opacity: 1;
+}
+
+/* Loading skeleton for tables without AG-Grid */
+.udo-content .table-wrapper:not(:has(.ag-root-wrapper))::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(90deg, transparent 35%, rgba(0, 0, 0, 0.04) 50%, transparent 65%),
+    linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+  background-size: 400% 100%, 100% 100%;
+  animation: tableShimmer 1.5s infinite;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Loading content structure */
+.udo-content .table-wrapper:not(:has(.ag-root-wrapper))::after {
+  content: '';
+  position: absolute;
+  inset: 1rem;
+  background-image: 
+    linear-gradient(90deg, #e5e7eb 40%, transparent 60%),
+    linear-gradient(90deg, #e5e7eb 60%, transparent 40%),
+    linear-gradient(90deg, #e5e7eb 50%, transparent 50%),
+    linear-gradient(#f3f4f6 40px, transparent 0),
+    linear-gradient(#e5e7eb 1px, transparent 0);
+  background-size: 
+    150px 20px,
+    100px 20px,
+    120px 20px,
+    100% 100%,
+    100% 100%;
+  background-position:
+    1rem 1rem,
+    12rem 1rem,
+    24rem 1rem,
+    0 0,
+    0 40px;
+  background-repeat: no-repeat;
+  z-index: 2;
+}
+
+@keyframes tableShimmer {
+  0% {
+    background-position: -400% 50%, 0 0;
+  }
+  100% {
+    background-position: 400% 50%, 0 0;
+  }
+}
+
+/* Hide original table while AG-Grid loads */
+.udo-content .table-wrapper > table {
+  display: none;
+}
+
+/* Ensure AG-Grid tables are visible */
+.udo-content .ag-root-wrapper {
+  opacity: 1 !important;
+}

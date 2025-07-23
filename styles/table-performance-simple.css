@@ -1,0 +1,42 @@
+/* Simple table performance optimizations */
+
+/* Table container structure */
+.table-container {
+  position: relative;
+  min-height: 200px;
+}
+
+/* Table wrapper - hidden by default until ready */
+.table-wrapper {
+  width: 100%;
+  /* Initial state is handled by inline styles */
+}
+
+/* Smooth transitions for table appearance */
+.udo-content .ag-root-wrapper {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Table loading wrapper styles */
+.table-loading-wrapper {
+  min-height: 200px;
+  transition: all 0.3s ease-out;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure AG Grid container is properly hidden initially */
+.table-wrapper .ag-grid-container {
+  width: 100%;
+}

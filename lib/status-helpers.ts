@@ -16,7 +16,7 @@
 export function isPublishedStatus(status: string | null | undefined): boolean {
   if (!status) return false;
   const normalizedStatus = status.toLowerCase();
-  return ['publish', 'published'].includes(normalizedStatus);
+  return ['publish', 'published', 'draft'].includes(normalizedStatus);
 }
 
 /**

@@ -1,21 +1,14 @@
 
-import { createMDX } from 'fumadocs-mdx/next';
-
-const withMDX = createMDX({
-  buildSearchIndex: false,
-  remarkImageOptions: false, // Disable image size fetching
-});
-
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  transpilePackages: ['fumadocs-ui', 'fumadocs-core', 'fumadocs-mdx'],
+  transpilePackages: ['fumadocs-ui', 'fumadocs-core'],
   images: {
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '8055',
+        port: '8056',
         pathname: '/assets/**',
       },
       {
@@ -28,13 +21,28 @@ const config = {
   env: {
     DIRECTUS_URL: process.env.DIRECTUS_URL,
     DIRECTUS_TOKEN: process.env.DIRECTUS_TOKEN,
+    DIRECTUS_EMAIL: process.env.DIRECTUS_EMAIL,
+    DIRECTUS_PASSWORD: process.env.DIRECTUS_PASSWORD,
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.resolve.fallback = { fs: false };
+      config.resolve.fallback = { 
+        fs: false,
+        'node:fs': false
+      };
+      
+      // Exclude image-size from client bundle
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'image-size': false
+      };
+      
+      // Add external for image-size
+      config.externals = config.externals || {};
+      config.externals['image-size'] = 'commonjs image-size';
     }
     return config;
   },
 };
 
-export default withMDX(config);
+export default config;

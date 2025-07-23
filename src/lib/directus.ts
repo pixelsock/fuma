@@ -1,6 +1,13 @@
 import { createDirectus, rest, authentication } from '@directus/sdk';
 
-export const directus = createDirectus(process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org')
+// Use environment variable with a single fallback
+// This prevents hydration mismatches between server and client
+const directusUrl = process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
+
+console.log('[src/lib/directus.ts] Directus URL:', directusUrl);
+console.log('[src/lib/directus.ts] Environment:', typeof window === 'undefined' ? 'server' : 'client');
+
+export const directus = createDirectus(directusUrl)
   .with(rest())
   .with(authentication());
 

@@ -25,7 +25,7 @@ export default function DocsPage({ article, html, toc, source }: DocsPageProps) 
   const title = article.name ?? article.title ?? 'Untitled';
   
   return (
-    <DocsLayout tree={originalSource.pageTree} {...baseOptions}>
+    <DocsLayout tree={originalSource.pageTree as any} {...baseOptions}>
       <DocsPageComponent toc={toc} full={false}>
         <DocsTitle>{title}</DocsTitle>
         {article.description && (
@@ -42,7 +42,7 @@ export default function DocsPage({ article, html, toc, source }: DocsPageProps) 
                 <details className="mt-2">
                   <summary>Raw Markdown</summary>
                   <pre className="mt-2 text-xs overflow-auto">
-                    {article.markdownContent}
+                    {article.htmlContent}
                   </pre>
                 </details>
               )}
@@ -100,13 +100,13 @@ export const getStaticProps: GetStaticProps<DocsPageProps> = async ({ params }) 
     }
 
     // Serialize the MDX content for client-side rendering
-    const html = await serialize(article.mdxContent, {
+    const html = await serialize(article.htmlContent, {
       parseFrontmatter: true
     });
 
     // Generate table of contents from the MDX content
     // This is a simplified TOC generator - you might want to enhance this
-    const toc = generateTOCFromMDX(article.mdxContent);
+    const toc = generateTOCFromMDX(article.htmlContent);
 
     return {
       props: {

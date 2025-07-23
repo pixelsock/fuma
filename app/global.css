@@ -1,255 +1,272 @@
+/* Fumadocs UI Theme Imports */
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
+@import '../app/themes/charlotte-theme.css';
 @import 'fumadocs-ui/css/preset.css';
 
-:root {
-  --black: black;
-  --midnight-blue: #0c1c35;
-  --light-grey: #e8e8e8;
-  --white: white;
-  --teal: #0b7f8c;
-  --sandy-brown: #ec993d;
-  --dim-grey: #707070;
-  --slate-blue: #264cd6;
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 221.2 83.2% 53.3%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96%;
-  --accent-foreground: 222.2 84% 4.9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
-  --radius: 0.5rem;
+/* UDO Table Styles */
+@import '../styles/udo-tables.css';
+
+/* AG-Grid UDO Theme */
+@import '../styles/ag-grid-udo.css';
+
+/* Table Performance Optimizations */
+@import '../styles/table-performance-simple.css';
+
+/* Layout and Component Styles */
+@import '../styles/layout.css';
+
+/* Search Dialog Styles */
+[data-search-dialog] input:focus,
+[data-search-dialog] input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 94.1%;
+/* Definition tooltip styles */
+@import '../styles/definition-tooltip.css';
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Performance optimizations - prevent layout shift */
+.table-placeholder {
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Essential utility classes from original frontend */
-.hide {
+.table-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.03) 25%,
+    rgba(0, 0, 0, 0.06) 50%,
+    rgba(0, 0, 0, 0.03) 75%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Smooth transitions for content loading */
+.udo-content > * {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Prevent flash of unstyled content */
+.ag-theme-udo {
+  opacity: 0;
+  animation: agGridFadeIn 0.2s ease-out forwards;
+  animation-delay: 0.1s;
+}
+
+@keyframes agGridFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Definition link hover optimization */
+a.definition-link {
+  transition: background-color 0.15s ease;
+  will-change: background-color;
+}
+
+/* Optimize scrolling performance */
+.udo-content {
+  contain: layout style;
+}
+
+/* Prevent definition tooltip flash */
+.definition-tooltip {
+  will-change: transform, opacity;
+}
+
+/* Table loading improvements */
+.table-loading-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-skeleton {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+/* Ensure AG Grid tables are hidden until ready */
+.table-container {
+  position: relative;
+  min-height: 200px;
+}
+
+/* Prevent AG Grid from showing before it's ready */
+.table-wrapper[style*="opacity: 0"] .ag-theme-quartz,
+.table-wrapper[style*="visibility: hidden"] .ag-theme-quartz {
   display: none !important;
 }
 
-.container-medium {
-  width: 100%;
-  max-width: 64rem;
-  margin-left: auto;
-  margin-right: auto;
+/* Smooth table transitions */
+.table-container > div {
+  transition: opacity 0.3s ease-out;
 }
 
-.container-small {
-  width: 100%;
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
+/* Legacy color variables for backward compatibility */
+:root {
+  --black: hsl(0 0% 0%);
+  --midnight-blue: hsl(220 91% 15%);
+  --light-grey: hsl(0 0% 95%);
+  --white: hsl(0 0% 100%);
+  --teal: hsl(var(--charlotte-teal));
+  --sandy-brown: hsl(28 87% 67%);
+  --dim-grey: hsl(0 0% 41%);
+  --slate-blue: hsl(248 39% 39%);
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
-.container-large {
-  width: 100%;
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
+.dark {
+  --black: hsl(0 0% 100%);
+  --white: hsl(0 0% 0%);
+  --light-grey: hsl(0 0% 15%);
+  --dim-grey: hsl(0 0% 70%);
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
-.text-color-teal {
-  color: var(--teal);
+/* Heading link styles */
+.udo-content h2 {
+  @apply flex items-center;
 }
 
-.background-color-teal {
-  background-color: var(--teal);
+/* Ensure the heading copy button is vertically aligned */
+.udo-content h2 .heading-copy-button {
+  @apply align-middle;
 }
 
-.text-color-white {
-  color: var(--white);
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
-.background-color-white {
-  background-color: var(--white);
-}
-
-.text-color-black {
-  color: var(--black);
-}
-
-.background-color-black {
-  background-color: var(--black);
-}
-
-/* Button styles matching the original design */
-.button {
-  border: 1px solid var(--black);
-  background-color: var(--black);
-  color: var(--white);
-  text-align: center;
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.button:hover {
-  opacity: 0.9;
-}
-
-.button.is-secondary {
-  color: var(--black);
-  background-color: transparent;
-}
-
-.button.is-alternate {
-  background-color: var(--white);
-  box-shadow: 4px 4px 0 0 var(--teal);
-  color: var(--black);
-  border-width: 3px;
-  transition: all 0.3s;
-}
-
-.button.is-alternate:hover {
-  background-color: var(--light-grey);
-  box-shadow: 2px 2px 0 0 var(--teal);
-}
-
-/* Rich text content styles */
-.text-rich-text {
-  line-height: 1.6;
-}
-
-.text-rich-text h1,
-.text-rich-text h2,
-.text-rich-text h3,
-.text-rich-text h4,
-.text-rich-text h5,
-.text-rich-text h6 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.text-rich-text p {
-  margin-bottom: 1rem;
-}
-
-.text-rich-text ul,
-.text-rich-text ol {
-  margin-bottom: 1rem;
-  padding-left: 2rem;
-}
-
-.text-rich-text li {
-  margin-bottom: 0.5rem;
-}
-
-/* Focus states for accessibility */
-*[tabindex]:focus-visible,
-input[type="file"]:focus-visible {
-  outline: 0.125rem solid #4d65ff;
-  outline-offset: 0.125rem;
-}
-
-/* Preserve whitespace and indentation in MDX content */
-.prose {
-  white-space: pre-wrap;
-}
-
-/* Block-level indentation classes */
-.indent-block-1,
-[data-indent="1"] {
-  margin-left: 2rem !important;
-  margin-bottom: 1rem;
-}
-
-.indent-block-2,
-[data-indent="2"] {
-  margin-left: 4rem !important;
-  margin-bottom: 1rem;
-}
-
-.indent-block-3,
-[data-indent="3"] {
-  margin-left: 6rem !important;
-  margin-bottom: 1rem;
-}
-
-.indent-block-4,
-[data-indent="4"] {
-  margin-left: 8rem !important;
-  margin-bottom: 1rem;
-}
-
-.indent-block-5,
-[data-indent="5"] {
-  margin-left: 10rem !important;
-  margin-bottom: 1rem;
-}
-
-.indent-block-6,
-[data-indent="6"] {
-  margin-left: 12rem !important;
-  margin-bottom: 1rem;
-}
-
-/* Remove this rule - it was overriding inline styles */
-
-/* Ensure bold text remains bold in prose content */
-.prose strong {
-  font-weight: 700 !important;
-}
-
-/* Table styles */
-.table-enhanced {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.875rem;
-}
-
-.table-enhanced th,
-.table-enhanced td {
-  border: 1px solid #d1d5db;
-  padding: 0.75rem;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.table-enhanced th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  color: #374151;
-}
-
-.table-enhanced tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
-.table-enhanced tr:hover {
-  background-color: #f3f4f6;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

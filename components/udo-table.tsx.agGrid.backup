@@ -1,0 +1,301 @@
+'use client';
+
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import { AllCommunityModule, ModuleRegistry, ColDef, themeQuartz } from 'ag-grid-community';
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+// Custom theme for UDO tables
+const udoTheme = themeQuartz
+    .withParams({
+        accentColor: "#2196F3",
+        browserColorScheme: "light",
+        columnBorder: true,
+        dragHandleColor: "#EC993D",
+        headerBackgroundColor: "#1E4E79",
+        headerColumnBorder: true,
+        headerFontSize: 14,
+        headerFontWeight: 600,
+        headerTextColor: "#FFFFFF",
+        pinnedColumnBorder: true,
+        wrapperBorder: true
+    });
+
+interface UDOTableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+  children: React.ReactNode;
+  variant?: 'default' | 'zoning' | 'requirements' | 'standards';
+  enhanced?: boolean;
+}
+
+export function UDOTable({ 
+  children, 
+  variant = 'default',
+  className,
+  enhanced = false,
+  ...props 
+}: UDOTableProps) {
+  const variantStyles = {
+    default: 'border-collapse w-full',
+    zoning: 'border-collapse w-full bg-blue-50',
+    requirements: 'border-collapse w-full bg-gray-50',
+    standards: 'border-collapse w-full bg-green-50',
+  };
+
+  // If enhanced prop is true, try to use AG Grid
+  if (enhanced) {
+    const tableData = parseTableData(children);
+    if (tableData && tableData.columns.length > 0 && tableData.data.length > 0) {
+      return <EnhancedAgGrid data={tableData} variant={variant} className={className} />;
+    }
+  }
+
+  return (
+    <div className="overflow-x-auto my-6">
+      <table 
+        className={`${variantStyles[variant]} ${className || ''} text-sm`}
+        {...props}
+      >
+        {children}
+      </table>
+    </div>
+  );
+}
+
+// Enhanced AG Grid component
+function EnhancedAgGrid({ 
+  data, 
+  variant = 'default',
+  className = '' 
+}: { 
+  data: any; 
+  variant?: 'default' | 'zoning' | 'requirements' | 'standards';
+  className?: string;
+}) {
+  const gridRef = useRef<AgGridReact>(null);
+  const [rowData, setRowData] = useState<any[]>([]);
+  const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
+
+  useEffect(() => {
+    // Convert data to AG Grid format
+    const colDefs: ColDef[] = data.columns.map((col: any, index: number) => ({
+      field: col.selector || `col${index}`,
+      headerName: col.name,
+      sortable: true,
+      filter: true,
+      resizable: true,
+      minWidth: 100,
+      // Pin the first column (usually row headers)
+      pinned: index === 0 ? 'left' : undefined,
+      cellClass: index === 0 ? 'font-medium bg-muted/30' : '',
+    }));
+
+    setColumnDefs(colDefs);
+    setRowData(data.data);
+  }, [data]);
+
+  const onGridReady = () => {
+    // Auto-size columns to fit content
+    gridRef.current?.api?.autoSizeAllColumns();
+  };
+
+  return (
+    <div className={`my-6 ${className}`}>
+      <div style={{ height: 400, width: '100%' }}>
+        <AgGridReact
+          ref={gridRef}
+          rowData={rowData}
+          columnDefs={columnDefs}
+          onGridReady={onGridReady}
+          domLayout="normal"
+          animateRows={true}
+          theme={udoTheme}
+          defaultColDef={{
+            sortable: true,
+            filter: true,
+            resizable: true,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// Helper function to parse table data from React children
+function parseTableData(children: React.ReactNode): any {
+  if (!children || !React.isValidElement(children)) return null;
+  
+  try {
+    // Look for thead and tbody in children
+    const childrenArray = React.Children.toArray(children);
+    let thead = null;
+    let tbody = null;
+    
+    // Search through all children for thead and tbody
+    const searchForElements = (elements: any[]): void => {
+      elements.forEach((element: any) => {
+        if (React.isValidElement(element)) {
+          const props = element.props as any;
+          if (element.type === 'thead' || props?.className?.includes('thead')) {
+            thead = element;
+          } else if (element.type === 'tbody' || props?.className?.includes('tbody')) {
+            tbody = element;
+          } else if (props?.children) {
+            searchForElements(React.Children.toArray(props.children));
+          }
+        }
+      });
+    };
+    
+    searchForElements(childrenArray);
+    
+    if (!thead || !tbody) return null;
+    
+    // Extract columns from thead
+    const theadProps = (thead as React.ReactElement).props as any;
+    const headerRows = React.Children.toArray(theadProps.children);
+    const headerRow = headerRows[0];
+    if (!headerRow || !React.isValidElement(headerRow)) return null;
+    
+    const headerProps = (headerRow as React.ReactElement).props as any;
+    const headers = React.Children.toArray(headerProps.children);
+    const columns = headers.map((header: any, index: number) => ({
+      name: extractTextContent(header),
+      selector: `col${index}`,
+      sortable: true,
+      wrap: true,
+    }));
+    
+    // Extract data from tbody
+    const tbodyProps = (tbody as React.ReactElement).props as any;
+    const rows = React.Children.toArray(tbodyProps.children);
+    const data = rows.map((row: any) => {
+      if (!React.isValidElement(row)) return null;
+      
+      const rowProps = (row as React.ReactElement).props as any;
+      const cells = React.Children.toArray(rowProps.children);
+      const rowData: any = {};
+      
+      cells.forEach((cell: any, index: number) => {
+        rowData[`col${index}`] = extractTextContent(cell);
+      });
+      
+      return rowData;
+    }).filter(Boolean);
+    
+    return { columns, data };
+  } catch (error) {
+    console.warn('Error parsing table data:', error);
+    return null;
+  }
+}
+
+// Helper function to extract text content
+function extractTextContent(element: any): string {
+  if (typeof element === 'string') return element;
+  if (typeof element === 'number') return String(element);
+  if (!element) return '';
+  
+  if (React.isValidElement(element)) {
+    const props = element.props as any;
+    if (props.children) {
+      return extractTextContent(props.children);
+    }
+    return '';
+  }
+  
+  if (Array.isArray(element)) {
+    return element.map(extractTextContent).join(' ');
+  }
+  
+  return String(element);
+}
+
+interface TableHeadProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+  children: React.ReactNode;
+}
+
+export function TableHead({ children, className, ...props }: TableHeadProps) {
+  return (
+    <thead 
+      className={`bg-gray-100 border-b-2 border-gray-300 ${className || ''}`}
+      {...props}
+    >
+      {children}
+    </thead>
+  );
+}
+
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  children: React.ReactNode;
+}
+
+export function TableRow({ children, className, ...props }: TableRowProps) {
+  return (
+    <tr 
+      className={`border-b border-gray-200 hover:bg-gray-50 ${className || ''}`}
+      {...props}
+    >
+      {children}
+    </tr>
+  );
+}
+
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  children: React.ReactNode;
+  header?: boolean;
+}
+
+export function TableCell({ 
+  children, 
+  header = false, 
+  className,
+  ...props 
+}: TableCellProps) {
+  const Tag = header ? 'th' : 'td';
+  const baseStyles = header 
+    ? 'px-4 py-3 text-left font-semibold text-gray-700'
+    : 'px-4 py-3 text-gray-600';
+
+  return (
+    <Tag 
+      className={`${baseStyles} ${className || ''}`}
+      {...props}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+// Convenience component for a complete table
+export function ZoningTable({ 
+  headers, 
+  rows 
+}: { 
+  headers: string[]; 
+  rows: (string | React.ReactNode)[][];
+}) {
+  return (
+    <UDOTable variant="zoning">
+      <TableHead>
+        <TableRow>
+          {headers.map((header, i) => (
+            <TableCell key={i} header>
+              {header}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <tbody>
+        {rows.map((row, i) => (
+          <TableRow key={i}>
+            {row.map((cell, j) => (
+              <TableCell key={j}>{cell}</TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </tbody>
+    </UDOTable>
+  );
+}

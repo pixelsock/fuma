@@ -1,0 +1,318 @@
+/* Charlotte UDO Comfortable Theme - Fumadocs Built-in Theme System */
+
+:root {
+  /* Comfortable layout variables */
+  --fd-layout-width: 1600px;
+  --fd-nav-height: 72px;
+  --fd-radius: 0.625rem;
+  
+  /* Comfortable spacing */
+  --fd-content-padding: 2rem;
+  --fd-sidebar-width: 320px;
+  --fd-spacing-xs: 0.5rem;
+  --fd-spacing-sm: 0.75rem;
+  --fd-spacing-md: 1rem;
+  --fd-spacing-lg: 1.5rem;
+  --fd-spacing-xl: 2rem;
+  --fd-spacing-2xl: 2.5rem;
+  --fd-spacing-3xl: 3rem;
+  
+  /* Comfortable typography */
+  --fd-font-size-xs: 0.875rem;
+  --fd-font-size-sm: 0.9375rem;
+  --fd-font-size-base: 1rem;
+  --fd-font-size-lg: 1.125rem;
+  --fd-font-size-xl: 1.25rem;
+  --fd-font-size-2xl: 1.5rem;
+  --fd-font-size-3xl: 1.875rem;
+  --fd-font-size-4xl: 2.25rem;
+  --fd-font-size-5xl: 3rem;
+  
+  /* Comfortable line heights */
+  --fd-line-height-tight: 1.375;
+  --fd-line-height-normal: 1.6;
+  --fd-line-height-relaxed: 1.75;
+}
+
+/* Comfortable navigation */
+.fd-nav {
+  height: var(--fd-nav-height);
+  padding: var(--fd-spacing-md) var(--fd-spacing-xl);
+}
+
+.fd-nav-item {
+  padding: var(--fd-spacing-sm) var(--fd-spacing-md);
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-normal);
+}
+
+/* Comfortable sidebar */
+.fd-sidebar {
+  width: var(--fd-sidebar-width);
+  padding: var(--fd-spacing-lg);
+}
+
+.fd-sidebar-item {
+  padding: var(--fd-spacing-sm) var(--fd-spacing-md);
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-normal);
+  margin-bottom: var(--fd-spacing-sm);
+}
+
+.fd-sidebar-group {
+  margin-bottom: var(--fd-spacing-xl);
+}
+
+.fd-sidebar-title {
+  font-size: var(--fd-font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--fd-spacing-sm);
+}
+
+/* Comfortable content */
+.fd-content {
+  padding: var(--fd-content-padding);
+}
+
+.fd-content h1 {
+  font-size: var(--fd-font-size-4xl);
+  line-height: var(--fd-line-height-tight);
+  margin-bottom: var(--fd-spacing-2xl);
+}
+
+.fd-content h2 {
+  font-size: var(--fd-font-size-3xl);
+  line-height: var(--fd-line-height-tight);
+  margin-top: var(--fd-spacing-3xl);
+  margin-bottom: var(--fd-spacing-xl);
+}
+
+.fd-content h3 {
+  font-size: var(--fd-font-size-2xl);
+  line-height: var(--fd-line-height-tight);
+  margin-top: var(--fd-spacing-2xl);
+  margin-bottom: var(--fd-spacing-lg);
+}
+
+.fd-content h4 {
+  font-size: var(--fd-font-size-xl);
+  line-height: var(--fd-line-height-tight);
+  margin-top: var(--fd-spacing-xl);
+  margin-bottom: var(--fd-spacing-md);
+}
+
+.fd-content p {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+  margin-bottom: var(--fd-spacing-lg);
+}
+
+.fd-content ul,
+.fd-content ol {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+  margin-bottom: var(--fd-spacing-lg);
+  padding-left: var(--fd-spacing-xl);
+}
+
+.fd-content li {
+  margin-bottom: var(--fd-spacing-sm);
+}
+
+.fd-content blockquote {
+  padding: var(--fd-spacing-lg);
+  margin: var(--fd-spacing-xl) 0;
+  border-left: 4px solid hsl(var(--fd-primary));
+  background-color: hsl(var(--fd-muted) / 0.3);
+  font-style: italic;
+  line-height: var(--fd-line-height-relaxed);
+}
+
+/* Comfortable code blocks */
+.fd-code {
+  padding: var(--fd-spacing-md);
+  font-size: var(--fd-font-size-sm);
+  line-height: var(--fd-line-height-normal);
+  border-radius: var(--fd-radius);
+}
+
+pre.fd-code {
+  padding: var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+  margin: var(--fd-spacing-xl) 0;
+}
+
+/* Comfortable buttons */
+.fd-button {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  border-radius: var(--fd-radius);
+  font-weight: 500;
+}
+
+.fd-button-sm {
+  padding: var(--fd-spacing-sm) var(--fd-spacing-md);
+  font-size: var(--fd-font-size-sm);
+}
+
+.fd-button-lg {
+  padding: var(--fd-spacing-lg) var(--fd-spacing-xl);
+  font-size: var(--fd-font-size-lg);
+}
+
+/* Comfortable cards */
+.fd-card {
+  padding: var(--fd-spacing-xl);
+  border-radius: var(--fd-radius);
+  margin-bottom: var(--fd-spacing-xl);
+}
+
+.fd-card-title {
+  font-size: var(--fd-font-size-xl);
+  font-weight: 600;
+  margin-bottom: var(--fd-spacing-lg);
+  line-height: var(--fd-line-height-tight);
+}
+
+.fd-card-content {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+}
+
+/* Comfortable forms */
+.fd-input {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  border-radius: var(--fd-radius);
+  line-height: var(--fd-line-height-normal);
+}
+
+.fd-label {
+  font-size: var(--fd-font-size-base);
+  font-weight: 500;
+  margin-bottom: var(--fd-spacing-sm);
+}
+
+/* Comfortable search */
+.fd-search {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  border-radius: var(--fd-radius);
+}
+
+.fd-search-results {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+}
+
+/* Comfortable table of contents */
+.fd-toc {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+}
+
+.fd-toc-item {
+  padding: var(--fd-spacing-sm) 0;
+  margin-bottom: var(--fd-spacing-sm);
+}
+
+/* Comfortable tables */
+.fd-table {
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-normal);
+}
+
+.fd-table th,
+.fd-table td {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+}
+
+.fd-table th {
+  font-weight: 600;
+  background-color: hsl(var(--fd-muted) / 0.5);
+}
+
+/* Comfortable breakpoints */
+@media (max-width: 1280px) {
+  :root {
+    --fd-layout-width: 100%;
+    --fd-sidebar-width: 300px;
+    --fd-content-padding: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --fd-sidebar-width: 280px;
+    --fd-content-padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --fd-nav-height: 64px;
+    --fd-content-padding: 1rem;
+  }
+  
+  .fd-content h1 {
+    font-size: var(--fd-font-size-3xl);
+  }
+  
+  .fd-content h2 {
+    font-size: var(--fd-font-size-2xl);
+  }
+  
+  .fd-content h3 {
+    font-size: var(--fd-font-size-xl);
+  }
+}
+
+/* Comfortable Charlotte UDO elements */
+.charlotte-info,
+.charlotte-warning,
+.charlotte-success {
+  padding: var(--fd-spacing-lg);
+  margin: var(--fd-spacing-xl) 0;
+  font-size: var(--fd-font-size-base);
+  line-height: var(--fd-line-height-relaxed);
+  border-radius: var(--fd-radius);
+}
+
+.charlotte-button {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  border-radius: var(--fd-radius);
+  font-weight: 500;
+}
+
+.charlotte-button-secondary {
+  padding: var(--fd-spacing-md) var(--fd-spacing-lg);
+  font-size: var(--fd-font-size-base);
+  border-radius: var(--fd-radius);
+  border-width: 2px;
+  font-weight: 500;
+}
+
+/* Comfortable focus states */
+*:focus-visible {
+  outline: 3px solid hsl(var(--fd-primary) / 0.5);
+  outline-offset: 2px;
+}
+
+/* Comfortable animations */
+.fd-button,
+.fd-card,
+.fd-link {
+  transition: all 0.3s ease;
+}
+
+.fd-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px hsl(var(--fd-primary) / 0.3);
+}
+
+.fd-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px hsl(var(--fd-primary) / 0.15);
+}

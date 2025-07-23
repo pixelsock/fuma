@@ -1,0 +1,463 @@
+'use client';
+
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
+import { Search, Maximize2, X, ChevronUp, ChevronDown } from 'lucide-react';
+
+// Utility function for class names
+function cn(...classes: (string | undefined | null | false)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
+interface TableData {
+  headers: string[];
+  rows: any[][];
+  title?: string;
+  caption?: string;
+  colSpans?: { [key: string]: number };
+  rowSpans?: { [key: string]: number };
+  cellStyles?: { [key: string]: any };
+}
+
+interface UDOCustomTableProps {
+  tableData: TableData;
+  className?: string;
+  variant?: 'default' | 'zoning' | 'requirements' | 'standards';
+  searchable?: boolean;
+  height?: number | 'auto';
+  footnoteContent?: string;
+}
+
+// Custom cell renderer for HTML content
+const HtmlCellRenderer = ({ value }: { value: any }) => {
+  if (!value) return null;
+  
+  // Check if value contains HTML
+  if (typeof value === 'string' && value.includes('<')) {
+    return (
+      <div 
+        className="whitespace-normal leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: value }}
+      />
+    );
+  }
+  
+  return <div className="whitespace-normal leading-relaxed">{value}</div>;
+};
+
+export function UDOCustomTable({ 
+  tableData,
+  className = '',
+  variant = 'default',
+  searchable = true,
+  height = 'auto',
+  footnoteContent
+}: UDOCustomTableProps) {
+  const [quickFilter, setQuickFilter] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [columnWidths, setColumnWidths] = useState<Record<number, number>>({});
+  const [isResizing, setIsResizing] = useState<number | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    column: number | null;
+    direction: 'asc' | 'desc';
+  }>({ column: null, direction: 'asc' });
+  
+  const tableRef = useRef<HTMLDivElement>(null);
+  const resizeStartX = useRef<number>(0);
+  const resizeStartWidth = useRef<number>(0);
+
+  // Filter rows based on search
+  const filteredRows = useMemo(() => {
+    if (!quickFilter) return tableData.rows;
+    
+    return tableData.rows.filter(row =>
+      row.some(cell => {
+        if (!cell) return false;
+        const cellText = typeof cell === 'string' ? cell : String(cell);
+        return cellText.toLowerCase().includes(quickFilter.toLowerCase());
+      })
+    );
+  }, [tableData.rows, quickFilter]);
+
+  // Sort rows
+  const sortedRows = useMemo(() => {
+    if (sortConfig.column === null) return filteredRows;
+    
+    return [...filteredRows].sort((a, b) => {
+      const aValue = a[sortConfig.column!] || '';
+      const bValue = b[sortConfig.column!] || '';
+      
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+      
+      if (aStr < bStr) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aStr > bStr) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [filteredRows, sortConfig]);
+
+  // Handle column resizing
+  const handleColumnResize = useCallback((columnIndex: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(columnIndex);
+    resizeStartX.current = e.clientX;
+    resizeStartWidth.current = columnWidths[columnIndex] || 150;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const diff = e.clientX - resizeStartX.current;
+      const newWidth = Math.max(80, resizeStartWidth.current + diff);
+      setColumnWidths(prev => ({ ...prev, [columnIndex]: newWidth }));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(null);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [columnWidths]);
+
+  // Handle sorting
+  const handleSort = (columnIndex: number) => {
+    setSortConfig(current => ({
+      column: columnIndex,
+      direction: current.column === columnIndex && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  // Toggle fullscreen
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  // Get cell styles
+  const getCellStyles = (rowIndex: number, colIndex: number) => {
+    if (!tableData.cellStyles) return {};
+    
+    const cellKey = `${rowIndex}-${colIndex}`;
+    const customStyle = tableData.cellStyles[cellKey];
+    
+    if (!customStyle) return {};
+    
+    const styles: React.CSSProperties = {};
+    
+    if (customStyle.backgroundColor) {
+      styles.backgroundColor = customStyle.backgroundColor;
+    }
+    if (customStyle.color) {
+      styles.color = customStyle.color;
+    }
+    if (customStyle.textAlign) {
+      styles.textAlign = customStyle.textAlign;
+    }
+    if (customStyle.fontWeight) {
+      styles.fontWeight = customStyle.fontWeight;
+    }
+    
+    return styles;
+  };
+
+  // Get cell span properties
+  const getCellSpan = (rowIndex: number, colIndex: number) => {
+    const cellKey = `${rowIndex}-${colIndex}`;
+    const colSpan = tableData.colSpans?.[cellKey] || 1;
+    const rowSpan = tableData.rowSpans?.[cellKey] || 1;
+    
+    return { colSpan, rowSpan };
+  };
+
+  // Check if cell is covered by a span
+  const isCellCovered = (rowIndex: number, colIndex: number) => {
+    // Check if this cell is covered by a previous cell's colspan or rowspan
+    for (let r = Math.max(0, rowIndex - 10); r <= rowIndex; r++) {
+      for (let c = Math.max(0, colIndex - 10); c <= colIndex; c++) {
+        if (r === rowIndex && c === colIndex) continue;
+        
+        const cellKey = `${r}-${c}`;
+        const colSpan = tableData.colSpans?.[cellKey] || 1;
+        const rowSpan = tableData.rowSpans?.[cellKey] || 1;
+        
+        if (r + rowSpan > rowIndex && c + colSpan > colIndex) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  return (
+    <>
+      {/* Fullscreen Modal */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-auto">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">{tableData.title}</h2>
+              <button
+                onClick={toggleFullscreen}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                aria-label="Close fullscreen"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {/* Table in fullscreen */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-600 overflow-hidden">
+              {searchable && (
+                <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                  <div className="relative max-w-sm">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search table..."
+                      value={quickFilter}
+                      onChange={(e) => setQuickFilter(e.target.value)}
+                      className="pl-10 w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#EC993D] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div style={{ height: 'calc(100vh - 200px)', overflow: 'auto' }}>
+                <table className="w-full border-collapse">
+                  <thead className="sticky top-0 bg-[#1E4E79] text-white z-10">
+                    <tr>
+                      {tableData.headers.map((header, index) => (
+                        <th
+                          key={index}
+                          className="relative px-4 py-3 text-center font-semibold border border-[#2D3748] cursor-pointer hover:bg-[#1E4E79]/80"
+                          style={{ 
+                            width: columnWidths[index] || 'auto',
+                            minWidth: 80
+                          }}
+                          onClick={() => handleSort(index)}
+                        >
+                          <div className="flex items-center justify-center gap-1">
+                            <span>{header}</span>
+                            <div className="flex flex-col">
+                              <ChevronUp
+                                className={cn(
+                                  "h-3 w-3",
+                                  sortConfig.column === index && sortConfig.direction === 'asc'
+                                    ? "text-[#EC993D]"
+                                    : "text-white/40"
+                                )}
+                              />
+                              <ChevronDown
+                                className={cn(
+                                  "h-3 w-3 -mt-1",
+                                  sortConfig.column === index && sortConfig.direction === 'desc'
+                                    ? "text-[#EC993D]"
+                                    : "text-white/40"
+                                )}
+                              />
+                            </div>
+                          </div>
+                          
+                          {/* Column resizer */}
+                          <div
+                            className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#EC993D] transition-colors"
+                            onMouseDown={(e) => handleColumnResize(index, e)}
+                          />
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                    {sortedRows.map((row, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        className={cn(
+                          "border-b border-[#2D3748]",
+                          rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        )}
+                      >
+                        {row.map((cell, colIndex) => {
+                          if (isCellCovered(rowIndex, colIndex)) {
+                            return null;
+                          }
+                          
+                          const { colSpan, rowSpan } = getCellSpan(rowIndex, colIndex);
+                          const cellStyles = getCellStyles(rowIndex, colIndex);
+                          
+                          return (
+                            <td
+                              key={colIndex}
+                              className="px-4 py-3 border border-[#2D3748] align-middle"
+                              style={{
+                                ...cellStyles,
+                                width: columnWidths[colIndex] || 'auto',
+                                minWidth: 80
+                              }}
+                              colSpan={colSpan > 1 ? colSpan : undefined}
+                              rowSpan={rowSpan > 1 ? rowSpan : undefined}
+                            >
+                              <HtmlCellRenderer value={cell} />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            {/* Footnote in fullscreen */}
+            {footnoteContent && (
+              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div 
+                  className="text-sm text-gray-600 dark:text-gray-400"
+                  dangerouslySetInnerHTML={{ __html: footnoteContent }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Regular view */}
+      <div className={`my-8 ${className}`}>
+        {/* Seamless container wrapper with subtle border and shadow */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-600 overflow-hidden">
+          {/* Title Bar */}
+          {tableData.title && (
+            <div className="bg-[#1E4E79] text-white px-4 py-2 flex justify-between items-center">
+              <h3 className="text-sm font-medium text-white">
+                {tableData.title}
+              </h3>
+              <button
+                onClick={toggleFullscreen}
+                className="p-1 hover:bg-white/20 rounded transition-colors text-white"
+                aria-label="Expand to fullscreen"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          
+          {/* Search Bar */}
+          {searchable && (
+            <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+              <div className="relative max-w-sm">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search table..."
+                  value={quickFilter}
+                  onChange={(e) => setQuickFilter(e.target.value)}
+                  className="pl-10 w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#EC993D] focus:border-transparent"
+                />
+              </div>
+            </div>
+          )}
+        
+          {/* Table Container with scrolling */}
+          <div 
+            className="overflow-auto"
+            style={{ 
+              maxHeight: height === 'auto' ? '600px' : height,
+              width: '100%'
+            }}
+          >
+            <table className="w-full border-collapse min-w-full">
+              <thead className="sticky top-0 bg-[#1E4E79] text-white z-10">
+                <tr>
+                  {tableData.headers.map((header, index) => (
+                    <th
+                      key={index}
+                      className="relative px-4 py-3 text-center font-semibold border border-[#2D3748] cursor-pointer hover:bg-[#1E4E79]/80"
+                      style={{ 
+                        width: columnWidths[index] || 'auto',
+                        minWidth: 80
+                      }}
+                      onClick={() => handleSort(index)}
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        <span>{header}</span>
+                        <div className="flex flex-col">
+                          <ChevronUp
+                            className={cn(
+                              "h-3 w-3",
+                              sortConfig.column === index && sortConfig.direction === 'asc'
+                                ? "text-[#EC993D]"
+                                : "text-white/40"
+                            )}
+                          />
+                          <ChevronDown
+                            className={cn(
+                              "h-3 w-3 -mt-1",
+                              sortConfig.column === index && sortConfig.direction === 'desc'
+                                ? "text-[#EC993D]"
+                                : "text-white/40"
+                            )}
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Column resizer */}
+                      <div
+                        className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#EC993D] transition-colors"
+                        onMouseDown={(e) => handleColumnResize(index, e)}
+                      />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              
+              <tbody>
+                {sortedRows.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className={cn(
+                      "border-b border-[#2D3748]",
+                      rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    )}
+                  >
+                    {row.map((cell, colIndex) => {
+                      if (isCellCovered(rowIndex, colIndex)) {
+                        return null;
+                      }
+                      
+                      const { colSpan, rowSpan } = getCellSpan(rowIndex, colIndex);
+                      const cellStyles = getCellStyles(rowIndex, colIndex);
+                      
+                      return (
+                        <td
+                          key={colIndex}
+                          className="px-4 py-3 border border-[#2D3748] align-middle"
+                          style={{
+                            ...cellStyles,
+                            width: columnWidths[colIndex] || 'auto',
+                            minWidth: 80
+                          }}
+                          colSpan={colSpan > 1 ? colSpan : undefined}
+                          rowSpan={rowSpan > 1 ? rowSpan : undefined}
+                        >
+                          <HtmlCellRenderer value={cell} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        {tableData.caption && (
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 italic px-2">
+            {tableData.caption}
+          </p>
+        )}
+      </div>
+    </>
+  );
+}

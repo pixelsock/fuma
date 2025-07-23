@@ -34,10 +34,17 @@ interface DirectusSchema {
   articles: Article[];
 }
 
+// Use environment variables with a single fallback
+// NEXT_PUBLIC_DIRECTUS_URL for client-side, DIRECTUS_URL for server-side
+const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
+
+console.log('[src/lib/data.ts] Directus URL:', directusUrl);
+console.log('[src/lib/data.ts] NEXT_PUBLIC_DIRECTUS_URL:', process.env.NEXT_PUBLIC_DIRECTUS_URL);
+console.log('[src/lib/data.ts] DIRECTUS_URL:', process.env.DIRECTUS_URL);
+console.log('[src/lib/data.ts] Environment:', typeof window === 'undefined' ? 'server' : 'client');
+
 // Create the Directus client
-const directus = createDirectus<DirectusSchema>(
-  process.env.NEXT_PUBLIC_DIRECTUS_URL || process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org'
-).with(rest());
+const directus = createDirectus<DirectusSchema>(directusUrl).with(rest());
 
 /**
  * Get all categories from Directus
