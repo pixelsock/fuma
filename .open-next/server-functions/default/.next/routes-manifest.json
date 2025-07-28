@@ -2,15 +2,15 @@
   "version": 3,
   "pages404": true,
   "caseSensitive": false,
-  "basePath": "/app",
+  "basePath": "/articles",
   "redirects": [
     {
-      "source": "/app/",
-      "destination": "/app",
+      "source": "/articles/",
+      "destination": "/articles",
       "basePath": false,
       "internal": true,
       "statusCode": 308,
-      "regex": "^/app/$"
+      "regex": "^/articles/$"
     },
     {
       "source": "/:path+/",

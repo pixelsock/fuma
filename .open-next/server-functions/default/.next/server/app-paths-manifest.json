@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/articles/[slug]/pdf/route": "app/api/articles/[slug]/pdf/route.js",
   "/api/debug-env/route": "app/api/debug-env/route.js",
+  "/api/articles/[slug]/pdf/route": "app/api/articles/[slug]/pdf/route.js",
   "/api/search-articles/route": "app/api/search-articles/route.js",
   "/api/search/route": "app/api/search/route.js",
   "/api/test-article/route": "app/api/test-article/route.js",
@@ -10,10 +10,10 @@
   "/(home)/page": "app/(home)/page.js",
   "/articles-listing/page": "app/articles-listing/page.js",
   "/articles-enhanced/page": "app/articles-enhanced/page.js",
-  "/text-amendments/page": "app/text-amendments/page.js",
-  "/versions/page": "app/versions/page.js",
-  "/what-is-udo/page": "app/what-is-udo/page.js",
   "/overlay-districts/page": "app/overlay-districts/page.js",
   "/zoning-at-a-glance/page": "app/zoning-at-a-glance/page.js",
+  "/text-amendments/page": "app/text-amendments/page.js",
+  "/what-is-udo/page": "app/what-is-udo/page.js",
+  "/versions/page": "app/versions/page.js",
   "/articles/[[...slug]]/page": "app/articles/[[...slug]]/page.js"
 }

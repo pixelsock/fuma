@@ -16,7 +16,7 @@
     },
     "distDir": ".next",
     "cleanDistDir": true,
-    "assetPrefix": "/app",
+    "assetPrefix": "/articles",
     "cacheMaxMemorySize": 52428800,
     "configOrigin": "next.config.mjs",
     "useFileSystemPublicRoutes": true,
@@ -50,7 +50,7 @@
         256,
         384
       ],
-      "path": "/app/_next/image",
+      "path": "/articles/_next/image",
       "loader": "default",
       "loaderFile": "",
       "domains": [],
@@ -85,9 +85,9 @@
       "pagesBufferLength": 5
     },
     "amp": {
-      "canonicalBase": "/app"
+      "canonicalBase": "/articles"
     },
-    "basePath": "/app",
+    "basePath": "/articles",
     "sassOptions": {},
     "trailingSlash": false,
     "i18n": null,

@@ -1,5 +1,12 @@
 {
   "cloud": {
-    "framework": "nextjs"
+    "framework": "nextjs",
+    "nodeVersion": "18",
+    "buildCommand": "npm run build",
+    "buildDir": ".next",
+    "mountPath": "/articles",
+    "environmentVariables": {
+      "DEPLOYMENT_ENV": "production"
+    }
   }
 }

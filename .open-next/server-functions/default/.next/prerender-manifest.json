@@ -1,7 +1,7 @@
 {
   "version": 4,
   "routes": {
-    "/versions": {
+    "/": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -14,8 +14,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/versions",
-      "dataRoute": "/versions.rsc",
+      "srcRoute": "/",
+      "dataRoute": "/index.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -49,7 +49,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/advisory-committee": {
+    "/versions": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -62,32 +62,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/advisory-committee",
-      "dataRoute": "/advisory-committee.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/zoning-at-a-glance": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/zoning-at-a-glance",
-      "dataRoute": "/zoning-at-a-glance.rsc",
+      "srcRoute": "/versions",
+      "dataRoute": "/versions.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -145,7 +121,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/": {
+    "/advisory-committee": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -158,8 +134,32 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/",
-      "dataRoute": "/index.rsc",
+      "srcRoute": "/advisory-committee",
+      "dataRoute": "/advisory-committee.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/zoning-at-a-glance": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/zoning-at-a-glance",
+      "dataRoute": "/zoning-at-a-glance.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -197,8 +197,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "e47905a86e25d28001fe1f454a23e370",
-    "previewModeSigningKey": "8df6e0606e07aac74627946a0aa273429ac4232b10f3fb04832dafe21f5f14a9",
-    "previewModeEncryptionKey": "c211cd17d4cc96055cc1b542a7f79a8e9ea2c5246242a7dcc1cb1cf6d65560f9"
+    "previewModeId": "7ae975dec56f727d7adf09ea431eeeac",
+    "previewModeSigningKey": "c405449f67d0e910db65fc5197b44790faca35f7fa76f149a37e7b697e146bb2",
+    "previewModeEncryptionKey": "87ec919a5749ccf905fe82973a2250de027616dd7c621ba52d4d4465a621be0d"
   }
 }

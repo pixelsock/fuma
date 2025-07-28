@@ -48,8 +48,8 @@ function initRuntime() {
   };
   Object.assign(globalThis, {
     Request: CustomRequest,
-    __BUILD_TIMESTAMP_MS__: 1753733305538,
-    __NEXT_BASE_PATH__: "/app"
+    __BUILD_TIMESTAMP_MS__: 1753734427846,
+    __NEXT_BASE_PATH__: "/articles"
   });
 }
 function populateProcessEnv(url, env) {

@@ -37,10 +37,16 @@ export async function getArticles(): Promise<ProcessedArticle[]> {
   try {
     console.log('[directus-source.ts] getArticles called');
     
+    // Check if we're in a build environment without proper access
+    if (process.env.NODE_ENV === 'production' && !process.env.PRODUCTION_DIRECTUS_TOKEN && !process.env.PRODUCTION_DIRECTUS_EMAIL) {
+      console.log('[directus-source.ts] Build environment detected without Directus credentials, returning fallback data');
+      return getFallbackArticles();
+    }
+    
     const authenticated = await ensureAuthenticated();
     if (!authenticated) {
-      console.log('[directus-source.ts] Not authenticated, returning empty array');
-      return [];
+      console.log('[directus-source.ts] Not authenticated, returning fallback data');
+      return getFallbackArticles();
     }
     
     // First, fetch all categories to create a map
@@ -82,7 +88,8 @@ export async function getArticles(): Promise<ProcessedArticle[]> {
     return processedArticles;
   } catch (error) {
     console.error('Error fetching articles from Directus:', error);
-    return [];
+    console.log('[directus-source.ts] Returning fallback data due to error');
+    return getFallbackArticles();
   }
 }
 
@@ -387,9 +394,15 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
  */
 export async function getCategories(): Promise<Category[]> {
   try {
+    // Check if we're in a build environment without proper access
+    if (process.env.NODE_ENV === 'production' && !process.env.PRODUCTION_DIRECTUS_TOKEN && !process.env.PRODUCTION_DIRECTUS_EMAIL) {
+      console.log('[directus-source.ts] Build environment detected without Directus credentials, returning fallback categories');
+      return getFallbackCategories();
+    }
+    
     const authenticated = await ensureAuthenticated();
     if (!authenticated) {
-      return [];
+      return getFallbackCategories();
     }
     
     const categories = await directus.request(
@@ -410,7 +423,7 @@ export async function getCategories(): Promise<Category[]> {
     }));
   } catch (error) {
     console.error('Error fetching categories from Directus:', error);
-    return [];
+    return getFallbackCategories();
   }
 }
 
@@ -519,4 +532,49 @@ export async function generateArticleParams(): Promise<{ slug: string[] }[]> {
     console.error('Error generating article params from Directus:', error);
     return [];
   }
+}
+
+/**
+ * Provides fallback data when Directus is not available during build
+ */
+function getFallbackArticles(): ProcessedArticle[] {
+  console.log('[directus-source.ts] Using fallback articles data');
+  return [
+    {
+      id: 'fallback-1',
+      name: 'Charlotte Unified Development Ordinance - Build Error',
+      title: 'Charlotte Unified Development Ordinance - Build Error',
+      description: 'This is a fallback page displayed when the build cannot connect to the content management system.',
+      htmlContent: `
+        <div style="padding: 2rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background-color: #fef3cd; margin: 1rem 0;">
+          <h2 style="color: #d97706; margin-top: 0;">⚠️ Build Environment Notice</h2>
+          <p>This application requires access to the Charlotte UDO content management system during the build process. The build environment cannot currently access the CMS.</p>
+          <p><strong>For production deployment:</strong> Please ensure the following environment variables are configured in your Webflow Cloud project settings:</p>
+          <ul>
+            <li><code>PRODUCTION_DIRECTUS_URL</code></li>
+            <li><code>PRODUCTION_DIRECTUS_TOKEN</code></li>
+            <li><code>DEPLOYMENT_ENV=production</code></li>
+          </ul>
+          <p>Once properly configured, the application will display the full Charlotte UDO content.</p>
+        </div>
+      `,
+      slug: 'build-error-notice',
+      status: 'published',
+    }
+  ];
+}
+
+/**
+ * Provides fallback categories when Directus is not available
+ */
+function getFallbackCategories(): Category[] {
+  return [
+    {
+      id: 'fallback',
+      name: 'Build Environment',
+      slug: 'build-environment',
+      description: 'Fallback category for build environment',
+      order: 1,
+    }
+  ];
 }
