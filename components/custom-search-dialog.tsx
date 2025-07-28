@@ -117,7 +117,10 @@ export default function CustomSearchDialog(props: SharedProps) {
         searchParams.set('tag', currentArticleTag);
       }
 
-      fetch(`/api/search?${searchParams.toString()}`, {
+      // Get base path from config for API calls
+      const basePath = process.env.NODE_ENV === 'production' ? '/app' : '';
+      
+      fetch(`${basePath}/api/search?${searchParams.toString()}`, {
         signal: controller.signal,
       })
         .then((res) => res.json())

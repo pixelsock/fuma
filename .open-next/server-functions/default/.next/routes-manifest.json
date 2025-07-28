@@ -1,0 +1,122 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "/app",
+  "redirects": [
+    {
+      "source": "/app/",
+      "destination": "/app",
+      "basePath": false,
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^/app/$"
+    },
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/articles/[slug]/pdf",
+      "regex": "^/api/articles/([^/]+?)/pdf(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/pdf(?:/)?$"
+    },
+    {
+      "page": "/articles/[[...slug]]",
+      "regex": "^/articles(?:/(.+?))?(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/articles(?:/(?<nxtPslug>.+?))?(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/advisory-committee",
+      "regex": "^/advisory\\-committee(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/advisory\\-committee(?:/)?$"
+    },
+    {
+      "page": "/articles-enhanced",
+      "regex": "^/articles\\-enhanced(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/articles\\-enhanced(?:/)?$"
+    },
+    {
+      "page": "/articles-listing",
+      "regex": "^/articles\\-listing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/articles\\-listing(?:/)?$"
+    },
+    {
+      "page": "/overlay-districts",
+      "regex": "^/overlay\\-districts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/overlay\\-districts(?:/)?$"
+    },
+    {
+      "page": "/text-amendments",
+      "regex": "^/text\\-amendments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/text\\-amendments(?:/)?$"
+    },
+    {
+      "page": "/versions",
+      "regex": "^/versions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/versions(?:/)?$"
+    },
+    {
+      "page": "/what-is-udo",
+      "regex": "^/what\\-is\\-udo(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/what\\-is\\-udo(?:/)?$"
+    },
+    {
+      "page": "/zoning-at-a-glance",
+      "regex": "^/zoning\\-at\\-a\\-glance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/zoning\\-at\\-a\\-glance(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "RSC",
+    "varyHeader": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch",
+    "prefetchHeader": "Next-Router-Prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "Next-Router-Segment-Prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  },
+  "rewrites": []
+}

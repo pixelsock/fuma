@@ -1,0 +1,19 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/articles/[slug]/pdf/route": "/api/articles/[slug]/pdf",
+  "/api/debug-env/route": "/api/debug-env",
+  "/api/search-articles/route": "/api/search-articles",
+  "/api/search/route": "/api/search",
+  "/api/test-article/route": "/api/test-article",
+  "/api/test-directus-auth/route": "/api/test-directus-auth",
+  "/advisory-committee/page": "/advisory-committee",
+  "/(home)/page": "/",
+  "/articles-listing/page": "/articles-listing",
+  "/articles-enhanced/page": "/articles-enhanced",
+  "/text-amendments/page": "/text-amendments",
+  "/versions/page": "/versions",
+  "/what-is-udo/page": "/what-is-udo",
+  "/overlay-districts/page": "/overlay-districts",
+  "/zoning-at-a-glance/page": "/zoning-at-a-glance",
+  "/articles/[[...slug]]/page": "/articles/[[...slug]]"
+}

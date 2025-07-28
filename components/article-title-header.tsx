@@ -67,7 +67,9 @@ export function ArticleTitleHeader({
         document.body.removeChild(a);
       } else {
         // Fallback to API endpoint
-        const response = await fetch(`/api/articles/${slug}/pdf`);
+        // Get base path from config for API calls
+        const basePath = process.env.NODE_ENV === 'production' ? '/app' : '';
+        const response = await fetch(`${basePath}/api/articles/${slug}/pdf`);
         if (response.ok) {
           const blob = await response.blob();
           const url = window.URL.createObjectURL(blob);
