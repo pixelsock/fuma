@@ -2,14 +2,579 @@
 > fuma@0.0.0 dev
 > next dev -p 3002
 
- ⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3002
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3002)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3002
+   ▲ Next.js 15.3.2
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.86.250:3002
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1340ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4.1s (2119 modules)
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[lib/directus-client.ts] Environment Status: {
+  deploymentEnvironment: 'local',
+  nodeEnv: 'development',
+  explicitEnv: 'local',
+  directusUrl: 'http://localhost:8056',
+  hasToken: true,
+  hasCredentials: true,
+  isLocal: true,
+  isProduction: false
 }
-[?25h
+[lib/directus-client.ts] Directus URL: http://localhost:8056
+[lib/directus-client.ts] Token configured: qiah7d7dE8...
+[lib/directus-client.ts] Environment type: server
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Successfully fetched 40 articles from Directus
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Successfully fetched 40 articles from Directus
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[SharedDocsLayout] Page tree loaded with 13 categories
+[SharedDocsLayout] Config: { showSidebar: false, showSidebarIcon: false }
+Successfully fetched 13 categories from Directus
+[directus-only-source] Page tree initialized with 13 categories
+ GET / 200 in 5081ms
+ ○ Compiling /articles/[[...slug]] ...
+ ✓ Compiled /articles/[[...slug]] in 1763ms (2335 modules)
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[lib/directus-client.ts] Environment Status: {
+  deploymentEnvironment: 'local',
+  nodeEnv: 'development',
+  explicitEnv: 'local',
+  directusUrl: 'http://localhost:8056',
+  hasToken: true,
+  hasCredentials: true,
+  isLocal: true,
+  isProduction: false
+}
+[lib/directus-client.ts] Directus URL: http://localhost:8056
+[lib/directus-client.ts] Token configured: qiah7d7dE8...
+[lib/directus-client.ts] Environment type: server
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[lib/directus-client.ts] Environment Status: {
+  deploymentEnvironment: 'local',
+  nodeEnv: 'development',
+  explicitEnv: 'local',
+  directusUrl: 'http://localhost:8056',
+  hasToken: true,
+  hasCredentials: true,
+  isLocal: true,
+  isProduction: false
+}
+[lib/directus-client.ts] Directus URL: http://localhost:8056
+[lib/directus-client.ts] Token configured: qiah7d7dE8...
+[lib/directus-client.ts] Environment type: server
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-iii-neighborhood-zoning-districts/article-4-neighborhood-1-zoning-districts' → 'article-4-neighborhood-1-zoning-districts'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-4-neighborhood-1-zoning-districts",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-iii-neighborhood-zoning-districts/article-4-neighborhood-1-zoning-districts' → 'article-4-neighborhood-1-zoning-districts'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-4-neighborhood-1-zoning-districts",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Successfully fetched 40 articles from Directus
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[directus-only-source] Page tree initialized with 13 categories
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-4-neighborhood-1-zoning-districts' from Directus
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-4-neighborhood-1-zoning-districts' from Directus
+Processing article: Article 4. Neighborhood 1 Zoning Districts
+Article has htmlContent: true
+Article htmlContent length: 116045
+Generated TOC with 7 items for article
+Processing article: Article 4. Neighborhood 1 Zoning Districts
+Article has htmlContent: true
+Article htmlContent length: 116045
+Generated TOC with 7 items for article
+[directus-source.ts] Successfully fetched 40 articles from Directus
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[SharedDocsLayout] Page tree loaded with 13 categories
+[SharedDocsLayout] Config: { showSidebar: true, showSidebarIcon: true }
+[directus-source.ts] Successfully fetched 40 articles from Directus
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+ GET /articles/part-iii-neighborhood-zoning-districts/article-4-neighborhood-1-zoning-districts 200 in 3383ms
+Successfully fetched 13 categories from Directus
+[directus-only-source] Page tree initialized with 13 categories
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-iii-neighborhood-zoning-districts/article-5-neighborhood-2-zoning-districts' → 'article-5-neighborhood-2-zoning-districts'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-5-neighborhood-2-zoning-districts",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-iii-neighborhood-zoning-districts/article-5-neighborhood-2-zoning-districts' → 'article-5-neighborhood-2-zoning-districts'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-5-neighborhood-2-zoning-districts",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-5-neighborhood-2-zoning-districts' from Directus
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-5-neighborhood-2-zoning-districts' from Directus
+Processing article: Article 5. Neighborhood 2 Zoning Districts
+Article has htmlContent: true
+Article htmlContent length: 133574
+Generated TOC with 22 items for article
+Processing article: Article 5. Neighborhood 2 Zoning Districts
+Article has htmlContent: true
+Article htmlContent length: 133574
+Generated TOC with 22 items for article
+ GET /articles/part-iii-neighborhood-zoning-districts/article-5-neighborhood-2-zoning-districts 200 in 255ms
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[lib/directus-client.ts] Environment Status: {
+  deploymentEnvironment: 'local',
+  nodeEnv: 'development',
+  explicitEnv: 'local',
+  directusUrl: 'http://localhost:8056',
+  hasToken: true,
+  hasCredentials: true,
+  isLocal: true,
+  isProduction: false
+}
+[lib/directus-client.ts] Directus URL: http://localhost:8056
+[lib/directus-client.ts] Token configured: qiah7d7dE8...
+[lib/directus-client.ts] Environment type: server
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-i-ordinance-introduction/article-1-title-purpose-applicability' → 'article-1-title-purpose-applicability'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-1-title-purpose-applicability",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-source.ts] Resolving slug: 'part-i-ordinance-introduction/article-1-title-purpose-applicability' → 'article-1-title-purpose-applicability'
+[directus-source.ts] Making article request with client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
+[directus-source.ts] Trying query with PDF field: {
+  "filter": {
+    "slug": {
+      "_eq": "article-1-title-purpose-applicability",
+      "_nnull": true,
+      "_nempty": true
+    },
+    "status": {
+      "_in": [
+        "publish",
+        "published"
+      ]
+    }
+  },
+  "fields": [
+    "id",
+    "name",
+    "slug",
+    "status",
+    "content",
+    "PDF"
+  ],
+  "limit": 1
+}
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-1-title-purpose-applicability' from Directus
+[directus-source.ts] Successfully got article with PDF field
+Successfully fetched article 'article-1-title-purpose-applicability' from Directus
+Processing article: Article 1. Title, Purpose, & Applicability
+Article has htmlContent: true
+Article htmlContent length: 16294
+Generated TOC with 4 items for article
+Processing article: Article 1. Title, Purpose, & Applicability
+Article has htmlContent: true
+Article htmlContent length: 16294
+Generated TOC with 4 items for article
+ GET /articles/part-i-ordinance-introduction/article-1-title-purpose-applicability 200 in 89ms
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[env-config] Deployment environment: local
+[env-config] NODE_ENV: development
+[env-config] DEPLOYMENT_ENV: local
+[env-config] Using LOCAL configuration: http://localhost:8056
+[lib/directus-client.ts] Environment Status: {
+  deploymentEnvironment: 'local',
+  nodeEnv: 'development',
+  explicitEnv: 'local',
+  directusUrl: 'http://localhost:8056',
+  hasToken: true,
+  hasCredentials: true,
+  isLocal: true,
+  isProduction: false
+}
+[lib/directus-client.ts] Directus URL: http://localhost:8056
+[lib/directus-client.ts] Token configured: qiah7d7dE8...
+[lib/directus-client.ts] Environment type: server
+[directus-source.ts] getArticles called
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+[directus-client.ts] ensureAuthenticated called
+[directus-client.ts] Using static token authentication
+Successfully fetched 13 categories from Directus
+[directus-source.ts] Making request to Directus API...
+[directus-source.ts] Directus client URL: URL {
+  href: 'http://localhost:8056/',
+  origin: 'http://localhost:8056',
+  protocol: 'http:',
+  username: '',
+  password: '',
+  host: 'localhost:8056',
+  hostname: 'localhost',
+  port: '8056',
+  pathname: '/',
+  search: '',
+  searchParams: URLSearchParams {},
+  hash: ''
+}
