@@ -6,7 +6,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5rem 0;
+  margin: 0;
   font-size: 0.875rem;
   table-layout: fixed; /* Important for column resizing */
 }

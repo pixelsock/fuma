@@ -30,7 +30,8 @@ import {
   School,
   Clock,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Archive
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -196,12 +197,28 @@ export default function HomePage() {
 
   const features = [
     {
+      icon: <BookOpen className="w-6 h-6" />,
+      title: "What is the UDO?",
+      description: "Learn about Charlotte's Unified Development Ordinance and how it shapes our city's growth.",
+      href: "/what-is-udo",
+      badge: "Learn",
+      badgeVariant: "default" as const
+    },
+    {
       icon: <Building className="w-6 h-6" />,
       title: "Transitioning to the UDO",
       description: "We have changed over to the UDO. Find all the information you need on this transition here.",
       href: "/articles/transitioning-to-udo",
       badge: "Active",
-      badgeVariant: "default" as const
+      badgeVariant: "secondary" as const
+    },
+    {
+      icon: <Archive className="w-6 h-6" />,
+      title: "UDO Versions",
+      description: "Access current and historical versions of the Charlotte Unified Development Ordinance.",
+      href: "/versions",
+      badge: "Archive",
+      badgeVariant: "outline" as const
     },
     {
       icon: <FileText className="w-6 h-6" />,
@@ -230,7 +247,7 @@ export default function HomePage() {
       icon: <FileSearch className="w-6 h-6" />,
       title: "Search Articles",
       description: "Find specific ordinances, regulations, and guidelines quickly.",
-      href: "/articles",
+      href: "/articles-listing",
       badge: "Quick Access"
     },
     {
@@ -324,7 +341,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground w-full">
       {/* Hero Section - Extended to top */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-16 pt-16">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent-foreground/20" />
@@ -344,7 +361,7 @@ export default function HomePage() {
           }}
         />
         
-        <div className="container mx-auto px-4 z-10 text-center">
+        <div className="container mx-auto px-4 z-9 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -363,7 +380,7 @@ export default function HomePage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" asChild>
-                <Link href="/articles">
+                <Link href="/articles-listing">
                   <BookOpen className="mr-2 w-4 h-4" />
                   Browse Articles
                 </Link>

@@ -598,6 +598,16 @@ export const directusOnlySource = {
   // Add method to get categories with articles
   async getCategoriesWithArticles() {
     return await getCategoriesWithArticles();
+  },
+
+  // Add method to get all articles
+  async getArticles() {
+    return await getArticles();
+  },
+
+  // Add method to get all categories
+  async getCategories() {
+    return await getCategories();
   }
 };
 

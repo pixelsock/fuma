@@ -1,4 +1,11 @@
 import { createDirectus, rest, staticToken, authentication } from '@directus/sdk';
+import { 
+  getDirectusConfig, 
+  getDirectusUrl, 
+  getDirectusToken, 
+  getDirectusCredentials,
+  getEnvironmentStatus 
+} from './env-config';
 
 // Directus types
 export interface DirectusArticle {
@@ -29,15 +36,17 @@ export interface DirectusSchema {
   article_categories: DirectusCategory[];
 }
 
-// Create Directus client with proper authentication
-const directusUrl = process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
-const directusToken = process.env.DIRECTUS_TOKEN;
+// Get configuration using the environment utility
+const directusConfig = getDirectusConfig();
+const directusUrl = directusConfig.url;
+const directusToken = directusConfig.token;
 
+// Log environment status for debugging
+const envStatus = getEnvironmentStatus();
+console.log('[lib/directus-client.ts] Environment Status:', envStatus);
 console.log('[lib/directus-client.ts] Directus URL:', directusUrl);
-console.log('[lib/directus-client.ts] DIRECTUS_URL env:', process.env.DIRECTUS_URL);
-console.log('[lib/directus-client.ts] Token value:', directusToken ? `${directusToken.substring(0, 10)}...` : 'not set');
-console.log('[lib/directus-client.ts] Environment:', typeof window === 'undefined' ? 'server' : 'client');
-console.log('[lib/directus-client.ts] All env vars:', Object.keys(process.env).filter(k => k.includes('DIRECTUS')));
+console.log('[lib/directus-client.ts] Token configured:', directusToken ? `${directusToken.substring(0, 10)}...` : 'not set');
+console.log('[lib/directus-client.ts] Environment type:', typeof window === 'undefined' ? 'server' : 'client');
 
 // Create client with static token if available, otherwise use authentication
 export const directus = createDirectus<DirectusSchema>(directusUrl)
@@ -55,8 +64,8 @@ export async function ensureAuthenticated(): Promise<boolean> {
   }
   
   // If using email/password authentication
-  const directusEmail = process.env.DIRECTUS_EMAIL;
-  const directusPassword = process.env.DIRECTUS_PASSWORD;
+  const credentials = getDirectusCredentials();
+  const { email: directusEmail, password: directusPassword } = credentials;
   
   console.log('[directus-client.ts] Email configured:', !!directusEmail);
   console.log('[directus-client.ts] Password configured:', !!directusPassword);

@@ -216,12 +216,151 @@ a.definition-link {
 
 /* Heading link styles */
 .udo-content h2 {
-  @apply flex items-center;
+  display: flex;
+  align-items: center;
+  background: #deeaf6;
+  padding: 4px 12px;
+  /* border-radius: 5px; */
+  justify-content: space-between;
+  font-size: 1.125rem; /* Smaller font size */
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  white-space: nowrap;
+  overflow: visible; /* Allow tooltip to show */
+  position: relative;
+  scroll-margin-top: 140px; /* Offset for fixed header - match other headings */
 }
 
-/* Ensure the heading copy button is vertically aligned */
+/* Add scroll margin to all heading elements */
+.udo-content h1,
+.udo-content h2,
+.udo-content h3,
+.udo-content h4,
+.udo-content h5,
+.udo-content h6 {
+  scroll-margin-top: 140px; /* Match layout.css value for consistency */
+}
+
+/* Dark mode h2 background */
+.dark .udo-content h2 {
+  background: rgba(0, 130, 141, 0.15); /* Teal with transparency for dark mode */
+}
+
+/* Ensure heading text doesn't wrap and stays together */
+.udo-content h2 > a:first-child {
+  flex: 1;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Ensure the heading copy button wrapper stays on the right */
+.udo-content h2 .relative,
+.udo-content h2 > span:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Style the heading copy button */
 .udo-content h2 .heading-copy-button {
   @apply align-middle;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.udo-content h2:hover .heading-copy-button {
+  opacity: 0.7;
+}
+
+/* Show link icon immediately on load */
+.udo-content h2 .relative {
+  opacity: 1;
+  transition: none;
+}
+
+/* Prevent layout shift while icons load */
+.udo-content h2[id]::after {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.udo-content h2[id]:has(.heading-copy-button)::after {
+  display: none;
+}
+
+/* TOC styles are handled by fumadocs natively */
+
+/* Let fumadocs handle all TOC styling natively */
+
+/* Clerk style TOC active state - more specific selectors */
+/* Desktop TOC */
+nav[data-toc-desktop] a[data-active="true"],
+nav a[data-toc][data-active="true"],
+[data-toc-container] a[data-active="true"] {
+  color: hsl(28 87% 67%) !important; /* sandy-brown */
+  font-weight: 600 !important;
+  position: relative;
+}
+
+/* Add a visual indicator for active TOC items */
+nav[data-toc-desktop] a[data-active="true"]::before,
+nav a[data-toc][data-active="true"]::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background-color: hsl(28 87% 67%);
+  border-radius: 2px;
+}
+
+/* Mobile/Popover TOC active state */
+[role="dialog"] a[data-active="true"],
+[data-state="open"] a[data-active="true"],
+.popover-content a[data-active="true"],
+[data-popover-content] a[data-active="true"] {
+  color: hsl(28 87% 67%) !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure TOC links are visible and have proper styling */
+a[data-toc],
+nav a[href^="#"] {
+  display: block;
+  transition: color 0.2s, font-weight 0.2s;
+  padding: 0.25rem 0;
+}
+
+/* Hover state for TOC links */
+a[data-toc]:hover,
+nav a[href^="#"]:hover {
+  color: hsl(28 87% 67%);
+}
+
+/* Fumadocs UI clerk style TOC active state */
+.clerk a[data-active="true"],
+[data-style="clerk"] a[data-active="true"],
+nav[data-toc] a[aria-current="true"],
+nav[data-toc] a[data-state="active"] {
+  color: hsl(28 87% 67%) !important;
+  font-weight: 600 !important;
+}
+
+/* Additional selectors for Fumadocs UI TOC */
+aside a[data-active="true"],
+div[role="navigation"] a[data-active="true"] {
+  color: hsl(28 87% 67%) !important;
+  font-weight: 600 !important;
 }
 
 @theme inline {

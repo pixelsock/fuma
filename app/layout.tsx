@@ -1,5 +1,6 @@
 import './polyfills';
 import './global.css';
+import '@/styles/sidebar-override.css';
 import { Provider } from './provider';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';

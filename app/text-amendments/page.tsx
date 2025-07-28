@@ -210,7 +210,7 @@ export default function TextAmendmentsPage() {
           }}
         />
         
-        <div className="container mx-auto px-4 z-10 text-center">
+        <div className="container mx-auto px-4 z-9 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

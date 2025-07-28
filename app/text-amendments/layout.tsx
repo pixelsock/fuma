@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/app/layout.config';
+import { SharedDocsLayout } from '@/components/shared-docs-layout';
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return <HomeLayout {...baseOptions}>{children}</HomeLayout>;
+  // Text amendments: Hide sidebar and icon
+  return (
+    <SharedDocsLayout config={{ showSidebar: false, showSidebarIcon: false }}>
+      {children}
+    </SharedDocsLayout>
+  );
 }

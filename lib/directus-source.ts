@@ -1,6 +1,7 @@
 import { readItems } from '@directus/sdk';
 import { isPublishedStatus } from './status-helpers';
 import { directus, ensureAuthenticated, type DirectusArticle } from './directus-client';
+import { getDirectusUrl } from './env-config';
 
 // Re-export the helper function for backward compatibility
 export { isPublishedStatus } from './status-helpers';
@@ -289,7 +290,7 @@ export async function getArticleBySlug(slug: string): Promise<ProcessedArticle |
  */
 async function checkPdfExists(slug: string): Promise<string | null> {
   try {
-    const directusUrl = process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
+    const directusUrl = getDirectusUrl();
     const pdfUrl = `${directusUrl}/assets/pdfs/${slug}.pdf`;
     
     // Make a HEAD request to check if the PDF exists

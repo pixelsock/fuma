@@ -37,8 +37,9 @@ export function ContentWithHeadingLinks({ children }: ContentWithHeadingLinksPro
       
       // Create tooltip with theme orange color
       const tooltip = document.createElement('span');
-      tooltip.className = 'absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white rounded-md opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap shadow-lg';
+      tooltip.className = 'absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white rounded-md opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap shadow-lg z-50';
       tooltip.style.backgroundColor = 'var(--sandy-brown)';
+      tooltip.style.zIndex = '9999';
       tooltip.innerHTML = `
         Copy to clipboard
         <span class="absolute top-full left-1/2 -translate-x-1/2 -mt-px">

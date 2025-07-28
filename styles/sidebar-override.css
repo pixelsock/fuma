@@ -1,0 +1,52 @@
+/* Override styles when sidebar is hidden */
+body.sidebar-hidden {
+  /* Ensure the main content takes full width */
+}
+
+body.sidebar-hidden main {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* Target the parent div with specific classes */
+body.sidebar-hidden .min-h-screen.bg-background.text-foreground {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Target the content wrapper when sidebar is hidden */
+body.sidebar-hidden [class*="content"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Hide only the sidebar navigation aside element */
+body.sidebar-hidden aside#nd-sidebar,
+body.sidebar-hidden aside[data-sidebar],
+body.sidebar-hidden aside.fd-sidebar {
+  display: none !important;
+}
+
+/* Also hide the sidebar button */
+body.sidebar-hidden button[aria-label="Collapse Sidebar"] {
+  display: none !important;
+}
+
+/* Target fumadocs specific layout classes */
+body.sidebar-hidden [class*="fd-layout"] {
+  max-width: 100% !important;
+}
+
+body.sidebar-hidden [class*="fd-container"] {
+  max-width: 100% !important;
+  padding: 0 2rem !important;
+}
+
+/* Ensure the layout adjusts when sidebar is hidden */
+body.sidebar-hidden .fd-sidebar + * {
+  width: 100% !important;
+  max-width: 100% !important;
+}

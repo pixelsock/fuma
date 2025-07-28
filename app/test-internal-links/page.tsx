@@ -14,7 +14,7 @@ export default function TestInternalLinks() {
       
       <h3>Multiple Internal Links</h3>
       <ul>
-        <li>Navigate to <a class="internal-link" href="/articles">Articles section</a></li>
+        <li>Navigate to <a class="internal-link" href="/articles-listing">Articles section</a></li>
         <li>View the <a class="internal-link" href="/search">Search page</a></li>
         <li>Check out <a class="internal-link" href="/theme-showcase">Theme showcase</a></li>
         <li>Learn about <a class="internal-link" href="/api">API documentation</a></li>
