@@ -81,7 +81,7 @@ export function SearchNavigationEnhanced() {
     setLoadingArticles(true);
     try {
       // Get base path from config for API calls
-      const basePath = process.env.NODE_ENV === 'production' ? '/app' : '';
+      const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
       const response = await fetch(`${basePath}/api/search-articles?q=${encodeURIComponent(searchTerm)}&current=${encodeURIComponent(currentSlug)}`);
       if (response.ok) {
         const data = await response.json();

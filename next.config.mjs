@@ -2,8 +2,8 @@
 /** @type {import('next').NextConfig} */
 const config = {
   // Configure the base path and asset prefix for Webflow Cloud deployment
-  basePath: '/app',
-  assetPrefix: '/app',
+  basePath: process.env.NODE_ENV === 'production' ? '/articles' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/articles' : '',
   reactStrictMode: true,
   transpilePackages: ['fumadocs-ui', 'fumadocs-core'],
   images: {

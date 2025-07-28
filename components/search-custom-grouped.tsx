@@ -101,7 +101,7 @@ export function SearchCustomGrouped({ open, onOpenChange }: CustomSearchProps) {
     }
 
     // Get base path from config for API calls
-    const basePath = process.env.NODE_ENV === 'production' ? '/app' : '';
+    const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
     
     fetch(`${basePath}/api/search?${searchParams.toString()}`, {
       signal: controller.signal,

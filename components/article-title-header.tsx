@@ -68,7 +68,7 @@ export function ArticleTitleHeader({
       } else {
         // Fallback to API endpoint
         // Get base path from config for API calls
-        const basePath = process.env.NODE_ENV === 'production' ? '/app' : '';
+        const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
         const response = await fetch(`${basePath}/api/articles/${slug}/pdf`);
         if (response.ok) {
           const blob = await response.blob();
