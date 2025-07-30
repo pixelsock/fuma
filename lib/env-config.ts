@@ -25,6 +25,16 @@ export function getDeploymentEnvironment(): DeploymentEnvironment {
   // Fall back to NODE_ENV detection
   const nodeEnv = process.env.NODE_ENV;
   
+  // In production mode, always use production unless explicitly set to local
+  if (nodeEnv === 'production') {
+    // Only use local if explicitly set and local credentials are available
+    if (explicitEnv === 'local' && process.env.LOCAL_DIRECTUS_URL) {
+      return 'local';
+    }
+    // Default to production for production builds
+    return 'production';
+  }
+  
   // In development mode, prefer local if available
   if (nodeEnv === 'development') {
     // Check if local Directus is configured

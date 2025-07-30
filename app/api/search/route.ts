@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { createSearchAPI } from 'fumadocs-core/search/server';
 import { getArticles } from '@/lib/directus-source';
 // Remove the import for now - we'll define it inline

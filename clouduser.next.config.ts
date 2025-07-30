@@ -1,6 +1,6 @@
+import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const config = {
+const config: NextConfig = {
   // Configure the base path and asset prefix for Webflow Cloud deployment
   basePath: process.env.NODE_ENV === 'production' ? '/articles' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/articles' : '',
@@ -44,9 +44,8 @@ const config = {
       config.externals = config.externals || {};
       config.externals['image-size'] = 'commonjs image-size';
     }
-
     return config;
   },
 };
 
-export default config;
+export default config; 
