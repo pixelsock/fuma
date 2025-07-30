@@ -17,12 +17,21 @@ interface UDOContentRendererV3OptimizedProps {
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
   const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const isProduction = process.env.NODE_ENV === 'production';
   
-  // Replace admin.charlotteudo.org with the current Directus URL
-  return html.replace(
-    /https:\/\/admin\.charlotteudo\.org/g,
-    directusUrl
-  );
+  if (isProduction) {
+    // In production, replace localhost URLs with production URLs
+    return html.replace(
+      /http:\/\/localhost:8056\/assets\//g,
+      'https://admin.charlotteudo.org/assets/'
+    );
+  } else {
+    // In development, replace production URLs with localhost URLs
+    return html.replace(
+      /https:\/\/admin\.charlotteudo\.org\/assets\//g,
+      'http://localhost:8056/assets/'
+    );
+  }
 }
 
 interface ProcessedContent {

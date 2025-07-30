@@ -10,25 +10,22 @@ interface UDOContentWrapperProps {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
-  const directusUrl = process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const isProduction = process.env.NODE_ENV === 'production';
   
-  console.log('[udo-content-wrapper] Rewriting URLs from admin.charlotteudo.org to:', directusUrl);
-  
-  // Count replacements for logging
-  let replacementCount = 0;
-  
-  // Replace all admin.charlotteudo.org URLs with the current Directus URL
-  const rewritten = html.replace(
-    /https:\/\/admin\.charlotteudo\.org/g,
-    (match) => {
-      replacementCount++;
-      return directusUrl;
-    }
-  );
-  
-  console.log(`[udo-content-wrapper] Replaced ${replacementCount} URLs`);
-  
-  return rewritten;
+  if (isProduction) {
+    // In production, replace localhost URLs with production URLs
+    return html.replace(
+      /http:\/\/localhost:8056\/assets\//g,
+      'https://admin.charlotteudo.org/assets/'
+    );
+  } else {
+    // In development, replace production URLs with localhost URLs
+    return html.replace(
+      /https:\/\/admin\.charlotteudo\.org\/assets\//g,
+      'http://localhost:8056/assets/'
+    );
+  }
 }
 
 // Server component that uses AG Grid for tables
