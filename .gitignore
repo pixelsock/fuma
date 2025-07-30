@@ -17,6 +17,11 @@
 /build
 *.tsbuildinfo
 
+# Webflow Cloud build artifacts
+/.open-next/
+/.tmp/
+/clouduser.next.config.mjs
+
 # misc
 .DS_Store
 *.pem
