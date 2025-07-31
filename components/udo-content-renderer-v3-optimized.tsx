@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { HighlightedContent } from '@/lib/search-highlight-react';
 import { UDOAgGridTable } from './udo-ag-grid-table';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
 import { GlobalDefinitionTooltipV2 } from './global-definition-tooltip-v2';
 import { TooltipProvider as DefinitionTooltipProvider } from './definition-tooltip-context';
+import { HighlightedContent } from '@/lib/search-highlight-react';
 import { ContentWithHeadingLinks } from './content-with-heading-links';
 
 interface UDOContentRendererV3OptimizedProps {
@@ -32,6 +32,33 @@ function rewriteAssetUrls(html: string): string {
       'http://localhost:8056/assets/'
     );
   }
+}
+
+// Function to ensure heading IDs match TOC URLs
+function ensureHeadingIds(html: string): string {
+  if (!html) return html;
+  
+  return html.replace(/<(h[1-6])([^>]*)>(.*?)<\/h[1-6]>/gi, (match, tagName, attributes, titleHTML) => {
+    // Check if heading already has an ID
+    const hasId = /\s+id\s*=\s*["\'][^"\']*["\']/.test(attributes);
+    if (hasId) return match;
+    
+    // Extract text content from HTML (remove any tags)
+    const title = titleHTML.replace(/<[^>]*>/g, '').trim();
+    if (!title) return match;
+    
+    // Generate ID using the same logic as TOC generation
+    const id = title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s\-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 50);
+    
+    // Add ID to the heading
+    return `<${tagName}${attributes} id="${id}">${titleHTML}</${tagName}>`;
+  });
 }
 
 interface ProcessedContent {
@@ -122,13 +149,14 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
   const [processedContent, setProcessedContent] = useState<ProcessedContent | null>(null);
-  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   const [tablesMounted, setTablesMounted] = useState<Set<number>>(new Set());
+  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const rewrittenContent = rewriteAssetUrls(htmlContent);
-      const processed = extractTables(rewrittenContent);
+      const contentWithIds = ensureHeadingIds(rewrittenContent);
+      const processed = extractTables(contentWithIds);
       setProcessedContent(processed);
     }
   }, [htmlContent]);
@@ -155,13 +183,14 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
   if (!processedContent) {
     // Server-side render or initial load - show content without table processing
     const rewrittenContent = rewriteAssetUrls(htmlContent);
+    const contentWithIds = ensureHeadingIds(rewrittenContent);
     return (
       <DefinitionTooltipProvider>
         <div className={className || "udo-content"}>
           <ProgressiveDefinitionProcessorV2 
             content={
               <HighlightedContent
-                html={rewrittenContent}
+                html={contentWithIds}
                 searchTerm={searchTerm}
               />
             } 

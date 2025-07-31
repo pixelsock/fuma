@@ -4,7 +4,6 @@ import { DocsPage, DocsBody } from 'fumadocs-ui/page';
 import { UDOContentRendererV3Optimized } from '@/components/udo-content-renderer-v3-optimized';
 import { ArticleTitleHeader } from '@/components/article-title-header';
 import { DebugTOCData } from '@/components/debug-toc-data';
-import { TOCActiveFix } from '@/components/toc-active-fix';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -42,7 +41,6 @@ export default async function Page(props: {
       }}
     >
       <DocsBody>
-        <TOCActiveFix />
         <DebugTOCData toc={directusPage.data.toc || []} />
         <ArticleTitleHeader 
           category={directusPage.data.category?.name}

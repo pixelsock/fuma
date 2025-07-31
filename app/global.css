@@ -300,19 +300,11 @@ a.definition-link {
 
 /* Let fumadocs handle all TOC styling natively */
 
-/* Clerk style TOC active state - more specific selectors */
-/* Desktop TOC */
-nav[data-toc-desktop] a[data-active="true"],
-nav a[data-toc][data-active="true"],
-[data-toc-container] a[data-active="true"] {
-  color: hsl(28 87% 67%) !important; /* sandy-brown */
-  font-weight: 600 !important;
-  position: relative;
-}
-
-/* Add a visual indicator for active TOC items */
+/* TOC Active State Styling */
+/* Desktop TOC active state */
 nav[data-toc-desktop] a[data-active="true"]::before,
-nav a[data-toc][data-active="true"]::before {
+nav a[data-toc][data-active="true"]::before,
+[data-toc] a[data-active="true"]::before {
   content: '';
   position: absolute;
   left: -12px;
@@ -351,16 +343,40 @@ nav a[href^="#"]:hover {
 .clerk a[data-active="true"],
 [data-style="clerk"] a[data-active="true"],
 nav[data-toc] a[aria-current="true"],
-nav[data-toc] a[data-state="active"] {
+nav[data-toc] a[data-state="active"],
+[data-toc] a[data-active="true"] {
   color: hsl(28 87% 67%) !important;
   font-weight: 600 !important;
 }
 
 /* Additional selectors for Fumadocs UI TOC */
 aside a[data-active="true"],
-div[role="navigation"] a[data-active="true"] {
+div[role="navigation"] a[data-active="true"],
+[data-toc] a[data-active="true"] {
   color: hsl(28 87% 67%) !important;
   font-weight: 600 !important;
+}
+
+/* Ensure proper positioning for TOC active indicators */
+[data-toc] a {
+  position: relative;
+}
+
+/* TOC container styling */
+[data-toc] {
+  scroll-behavior: smooth;
+}
+
+/* Ensure TOC links are properly spaced */
+[data-toc] a {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+/* TOC link hover effects */
+[data-toc] a:hover {
+  background-color: hsl(var(--accent) / 0.1);
 }
 
 @theme inline {
