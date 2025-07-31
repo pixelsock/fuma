@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, FileText, X, ChevronDown } from 'lucide-react';
 import type { SharedProps } from 'fumadocs-ui/components/dialog/search';
@@ -54,8 +54,10 @@ export default function CustomSearchDialog(props: SharedProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [filterMode, setFilterMode] = useState<'all' | 'current'>('all');
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const pathname = usePathname();
   const router = useRouter();
+  const resultsContainerRef = useRef<HTMLDivElement>(null);
 
   // Extract current article info
   const pathParts = pathname?.replace('/articles/', '').split('/') || [];
@@ -65,21 +67,20 @@ export default function CustomSearchDialog(props: SharedProps) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ') || '';
 
-  // Open search with Cmd/Ctrl + K
+  // Reset selected index when results change
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        props.onOpenChange(!props.open);
-      }
-      if (e.key === 'Escape') {
-        props.onOpenChange(false);
-      }
-    };
+    setSelectedIndex(-1);
+  }, [results]);
 
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
-  }, [props]);
+  // Scroll to selected item
+  useEffect(() => {
+    if (selectedIndex >= 0 && resultsContainerRef.current) {
+      const selectedElement = resultsContainerRef.current.querySelector(`[data-result-index="${selectedIndex}"]`);
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [selectedIndex]);
 
   // Optimized search effect with smart debouncing
   useEffect(() => {
@@ -117,10 +118,7 @@ export default function CustomSearchDialog(props: SharedProps) {
         searchParams.set('tag', currentArticleTag);
       }
 
-      // Get base path from config for API calls
-      const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
-      
-      fetch(`${basePath}/api/search?${searchParams.toString()}`, {
+      fetch(`/api/search?${searchParams.toString()}`, {
         signal: controller.signal,
       })
         .then((res) => res.json())
@@ -223,6 +221,23 @@ export default function CustomSearchDialog(props: SharedProps) {
     return sortedGroups;
   }, [results]);
 
+  // Get all selectable items (articles and sections)
+  const getAllSelectableItems = useMemo(() => {
+    const items: Array<{ type: 'article' | 'section'; url: string; groupIndex: number; sectionIndex?: number }> = [];
+    
+    groupedResults.forEach((group, groupIndex) => {
+      // Add the main article
+      items.push({ type: 'article', url: group.article.url, groupIndex });
+      
+      // Add all sections
+      group.sections.forEach((section, sectionIndex) => {
+        items.push({ type: 'section', url: section.url, groupIndex, sectionIndex });
+      });
+    });
+    
+    return items;
+  }, [groupedResults]);
+
   const handleSelect = (url: string) => {
     props.onOpenChange(false);
     
@@ -244,6 +259,59 @@ export default function CustomSearchDialog(props: SharedProps) {
     router.push(urlWithSearch);
     setQuery(''); // Clear query after navigation
   };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      // Global shortcuts
+      if (!props.open) {
+        if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          props.onOpenChange(true);
+        }
+        return;
+      }
+
+      // Navigation within dialog
+      if (props.open) {
+        switch (e.key) {
+          case 'Escape':
+            e.preventDefault();
+            props.onOpenChange(false);
+            break;
+            
+          case 'ArrowDown':
+            e.preventDefault();
+            setSelectedIndex(prev => {
+              const totalItems = getAllSelectableItems.length;
+              if (totalItems === 0) return -1;
+              return prev < totalItems - 1 ? prev + 1 : 0;
+            });
+            break;
+            
+          case 'ArrowUp':
+            e.preventDefault();
+            setSelectedIndex(prev => {
+              const totalItems = getAllSelectableItems.length;
+              if (totalItems === 0) return -1;
+              return prev > 0 ? prev - 1 : totalItems - 1;
+            });
+            break;
+            
+          case 'Enter':
+            e.preventDefault();
+            if (selectedIndex >= 0 && selectedIndex < getAllSelectableItems.length) {
+              const selectedItem = getAllSelectableItems[selectedIndex];
+              handleSelect(selectedItem.url);
+            }
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, [props, selectedIndex, getAllSelectableItems, handleSelect]);
 
   if (!props.open) return null;
 
@@ -291,7 +359,7 @@ export default function CustomSearchDialog(props: SharedProps) {
           </div>
 
           {/* Results */}
-          <div className="max-h-[400px] overflow-y-auto">
+          <div className="max-h-[400px] overflow-y-auto" ref={resultsContainerRef}>
             {loading && (
               <div className="py-8 text-center text-sm text-fd-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
@@ -334,10 +402,21 @@ export default function CustomSearchDialog(props: SharedProps) {
               </div>
             )}
 
-            {!loading && groupedResults.map((group, groupIndex) => (
+            {!loading && groupedResults.map((group, groupIndex) => {
+              // Calculate the current item index for this article
+              let currentItemIndex = 0;
+              for (let i = 0; i < groupIndex; i++) {
+                currentItemIndex += 1 + groupedResults[i].sections.length; // 1 for article + sections
+              }
+              const articleIndex = currentItemIndex;
+              
+              return (
               <div key={group.article.url} className="border-b border-fd-border last:border-0">
                 {/* Article Header */}
-                <div className="p-4">
+                <div 
+                  className={`p-4 ${selectedIndex === articleIndex ? 'bg-fd-accent/50' : ''}`}
+                  data-result-index={articleIndex}
+                >
                   <div className="flex items-start gap-3">
                     <div className="mt-1">
                       <div className="p-1.5 bg-fd-primary/10 rounded">
@@ -355,6 +434,7 @@ export default function CustomSearchDialog(props: SharedProps) {
                       </div>
                       <button
                         onClick={() => handleSelect(group.article.url)}
+                        onMouseEnter={() => setSelectedIndex(articleIndex)}
                         className="block mt-1 text-left hover:text-fd-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-offset-2 rounded"
                       >
                         <h3 
@@ -385,11 +465,17 @@ export default function CustomSearchDialog(props: SharedProps) {
                     : section.title;
                   
                   const readTime = `${Math.max(2, sectionIndex + 2)} min read`;
+                  const sectionItemIndex = articleIndex + 1 + sectionIndex;
 
                   return (
-                    <div key={section.id} className="px-4 py-3 ml-12 border-l-2 border-l-fd-primary">
+                    <div 
+                      key={section.id} 
+                      className={`px-4 py-3 ml-12 border-l-2 border-l-fd-primary ${selectedIndex === sectionItemIndex ? 'bg-fd-accent' : ''}`}
+                      data-result-index={sectionItemIndex}
+                    >
                       <button
                         onClick={() => handleSelect(section.url)}
+                        onMouseEnter={() => setSelectedIndex(sectionItemIndex)}
                         className="w-full text-left hover:bg-fd-accent/50 p-2 -m-2 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-inset"
                       >
                         <div className="flex items-center justify-between">
@@ -418,7 +504,8 @@ export default function CustomSearchDialog(props: SharedProps) {
                   );
                 })}
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Footer */}
@@ -440,18 +527,24 @@ export default function CustomSearchDialog(props: SharedProps) {
               </div>
             </div>
             
-            <div className="flex items-center gap-4 text-xs text-fd-muted-foreground">
+            <div className="flex items-center gap-3 text-xs text-fd-muted-foreground">
+              <span className="flex items-center gap-1">
+                <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-fd-border bg-fd-card px-1.5 font-mono text-[10px] font-medium">
+                  ↑↓
+                </kbd>
+                navigate
+              </span>
               <span className="flex items-center gap-1">
                 <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-fd-border bg-fd-card px-1.5 font-mono text-[10px] font-medium">
                   ↵
                 </kbd>
-                to select
+                select
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-fd-border bg-fd-card px-1.5 font-mono text-[10px] font-medium">
                   Esc
                 </kbd>
-                to close
+                close
               </span>
             </div>
           </div>

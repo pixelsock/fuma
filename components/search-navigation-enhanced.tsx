@@ -2,31 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight, X, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-
-interface Article {
-  id: string;
-  name: string;
-  slug: string;
-  count: number;
-  snippet: string;
-}
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 export function SearchNavigationEnhanced() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-  const [otherArticles, setOtherArticles] = useState<Article[]>([]);
-  const [showArticles, setShowArticles] = useState(false);
-  const [loadingArticles, setLoadingArticles] = useState(false);
   
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   
   const searchTerm = searchParams?.get('search') || '';
-
-  // Get current article slug from pathname
-  const currentSlug = pathname?.split('/').pop() || '';
 
   // Monitor for highlights on the page
   useEffect(() => {
@@ -35,7 +21,6 @@ export function SearchNavigationEnhanced() {
     if (!searchTerm) {
       setTotalResults(0);
       setCurrentIndex(0);
-      setOtherArticles([]);
       return;
     }
 
@@ -49,12 +34,18 @@ export function SearchNavigationEnhanced() {
       if (count !== totalResults) {
         setTotalResults(count);
         if (count > 0 && currentIndex === 0) {
-          // Scroll to first result
-          highlights[0].scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+          // Scroll to first result with offset
+          const element = highlights[0] as HTMLElement;
+          const elementRect = element.getBoundingClientRect();
+          const absoluteElementTop = elementRect.top + window.pageYOffset;
+          const offset = 120; // Offset to account for fixed header
+          
+          window.scrollTo({
+            top: absoluteElementTop - offset,
+            behavior: 'smooth'
           });
-          highlights[0].classList.add('ring-2', 'ring-fd-primary');
+          
+          element.classList.add('ring-2', 'ring-fd-primary');
         }
       }
     };
@@ -65,33 +56,11 @@ export function SearchNavigationEnhanced() {
     // Set up periodic checks
     const interval = setInterval(checkHighlights, 500);
 
-    // Fetch other articles with the search term
-    fetchOtherArticles();
-
     return () => {
       clearTimeout(initialTimer);
       clearInterval(interval);
     };
   }, [searchTerm, pathname, totalResults, currentIndex]);
-
-  // Fetch articles containing the search term
-  const fetchOtherArticles = async () => {
-    if (!searchTerm) return;
-    
-    setLoadingArticles(true);
-    try {
-      // Get base path from config for API calls
-      const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
-      const response = await fetch(`${basePath}/api/search-articles?q=${encodeURIComponent(searchTerm)}&current=${encodeURIComponent(currentSlug)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setOtherArticles(data.articles || []);
-      }
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    }
-    setLoadingArticles(false);
-  };
 
   // Navigate to previous result
   const goToPrevious = () => {
@@ -113,20 +82,20 @@ export function SearchNavigationEnhanced() {
       // Remove previous styling
       highlights.forEach(h => h.classList.remove('ring-2', 'ring-fd-primary'));
       
-      // Add new styling and scroll
-      highlights[index].scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+      // Add new styling and scroll with offset
+      const element = highlights[index] as HTMLElement;
+      const elementRect = element.getBoundingClientRect();
+      const absoluteElementTop = elementRect.top + window.pageYOffset;
+      const offset = 120; // Offset to account for fixed header
+      
+      window.scrollTo({
+        top: absoluteElementTop - offset,
+        behavior: 'smooth'
       });
-      highlights[index].classList.add('ring-2', 'ring-fd-primary');
+      
+      element.classList.add('ring-2', 'ring-fd-primary');
       setCurrentIndex(index);
     }
-  };
-
-  // Navigate to another article
-  const navigateToArticle = (slug: string) => {
-    const newUrl = `/articles/${slug}?search=${encodeURIComponent(searchTerm || '')}`;
-    router.push(newUrl);
   };
 
   // Close search navigation
@@ -153,7 +122,7 @@ export function SearchNavigationEnhanced() {
   return (
     <div className="fixed bottom-4 right-4 z-40 bg-fd-card border border-fd-border rounded-lg shadow-lg min-w-[320px] max-w-[400px]">
       {/* Main search navigation */}
-      <div className="p-4 border-b border-fd-border">
+      <div className="p-4">
         <div className="flex items-center gap-2">
           <div className="flex-1">
             <div className="text-sm text-fd-muted-foreground">
@@ -194,62 +163,6 @@ export function SearchNavigationEnhanced() {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Other articles section */}
-      <div className="border-t border-fd-border">
-        <button
-          onClick={() => setShowArticles(!showArticles)}
-          className="w-full px-4 py-3 flex items-center justify-between hover:bg-fd-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-inset"
-        >
-          <span className="text-sm font-medium text-fd-foreground">
-            Other articles ({loadingArticles ? '...' : <span className="text-fd-accent-foreground">{otherArticles.length}</span>})
-          </span>
-          {showArticles ? (
-            <ChevronUp className="h-4 w-4 text-fd-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-fd-muted-foreground" />
-          )}
-        </button>
-        
-        {showArticles && (
-          <div className="max-h-64 overflow-y-auto">
-            {loadingArticles ? (
-              <div className="px-4 py-3 text-sm text-fd-muted-foreground">Loading...</div>
-            ) : otherArticles.length > 0 ? (
-              <div className="py-2">
-                {otherArticles.map((article) => (
-                  <button
-                    key={article.id}
-                    onClick={() => navigateToArticle(article.slug)}
-                    className="w-full px-4 py-2 text-left hover:bg-fd-accent transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring focus-visible:ring-inset"
-                  >
-                    <div className="flex items-start gap-2">
-                      <FileText className="h-4 w-4 text-fd-muted-foreground mt-0.5 flex-shrink-0 group-hover:text-fd-primary" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-fd-foreground group-hover:text-fd-primary truncate">
-                          {article.name}
-                        </div>
-                        <div className="text-xs text-fd-accent-foreground">
-                          {article.count} occurrence{article.count !== 1 ? 's' : ''}
-                        </div>
-                        {article.snippet && (
-                          <div className="text-xs text-fd-muted-foreground mt-1 line-clamp-2">
-                            {article.snippet}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="px-4 py-3 text-sm text-fd-muted-foreground">
-                No other articles found with "{searchTerm}"
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
