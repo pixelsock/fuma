@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { UDOAgGridTable } from './udo-ag-grid-table';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
@@ -60,12 +60,56 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
   const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
+  const [extractedTables, setExtractedTables] = useState<string[]>([]);
+  const [contentWithPlaceholders, setContentWithPlaceholders] = useState<string>('');
+  const [hasProcessedTables, setHasProcessedTables] = useState(false);
   
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // If no tables provided, render simple content without any table processing
-  if (!tables || tables.length === 0) {
+  // Client-side table extraction after hydration
+  useEffect(() => {
+    if (hasProcessedTables) return; // Only process once
+    
+    const extractTablesFromContent = () => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(rewrittenContent, 'text/html');
+      
+      const tables = doc.querySelectorAll('table');
+      const extractedTables: string[] = [];
+      let modifiedContent = rewrittenContent;
+      
+      if (tables.length > 0) {
+        console.log(`Found ${tables.length} tables for client-side processing`);
+        
+        // Process tables in reverse order to maintain indices
+        for (let i = tables.length - 1; i >= 0; i--) {
+          const table = tables[i];
+          const tableHtml = table.outerHTML;
+          extractedTables.unshift(tableHtml);
+          
+          // Replace table with placeholder
+          const placeholder = `<!--TABLE_PLACEHOLDER_${extractedTables.length - 1}-->`;
+          modifiedContent = modifiedContent.replace(tableHtml, placeholder);
+        }
+        
+        setExtractedTables(extractedTables);
+        setContentWithPlaceholders(modifiedContent);
+        setHasProcessedTables(true);
+      } else {
+        // No tables found, use original content
+        setContentWithPlaceholders(rewrittenContent);
+        setHasProcessedTables(true);
+      }
+    };
+    
+    // Small delay to ensure hydration is complete
+    const timer = setTimeout(extractTablesFromContent, 100);
+    return () => clearTimeout(timer);
+  }, [rewrittenContent, hasProcessedTables]);
+  
+  // If no tables found or not yet processed, render simple content
+  if (!hasProcessedTables || extractedTables.length === 0) {
     return (
       <DefinitionTooltipProvider>
         <div className={`udo-content ${className}`}>
@@ -83,27 +127,8 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
     );
   }
   
-  // Only process table placeholders if tables are actually provided
-  const contentParts = rewrittenContent.split(/<!--TABLE_PLACEHOLDER_\d+-->/);
-  
-  // If no placeholders found, render as simple content
-  if (contentParts.length === 1) {
-    return (
-      <DefinitionTooltipProvider>
-        <div className={`udo-content ${className}`}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <HighlightedContent
-                html={rewrittenContent}
-                searchTerm={searchTerm}
-              />
-            } 
-          />
-        </div>
-        <GlobalDefinitionTooltipV2 />
-      </DefinitionTooltipProvider>
-    );
-  }
+  // Process table placeholders
+  const contentParts = contentWithPlaceholders.split(/<!--TABLE_PLACEHOLDER_\d+-->/);
   
   const handleTableReady = (index: number) => {
     // Add a small delay to ensure AG-Grid is fully rendered
@@ -131,7 +156,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
                       searchTerm={searchTerm}
                     />
                   )}
-                  {index < tables.length && tables[index] && (
+                  {index < extractedTables.length && extractedTables[index] && (
                     <div className="table-container my-4" data-table-index={index}>
                       {!tablesReady.has(index) && (
                         <TableLoading tableIndex={index} />
@@ -149,7 +174,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
                         }}
                       >
                         <UDOAgGridTable 
-                          htmlString={tables[index]}
+                          htmlString={extractedTables[index]}
                           tableIndex={index}
                           onReady={() => handleTableReady(index)}
                         />
