@@ -16,23 +16,21 @@ interface UDOContentRendererV3OptimizedProps {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
-  // Check deployment environment instead of just NODE_ENV
-  const deploymentEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
-  const isProduction = deploymentEnv === 'production' || process.env.NODE_ENV === 'production';
+  // Use NEXT_PUBLIC_ env var so it's available on both server and client
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
   
-  if (isProduction) {
-    // In production, replace localhost URLs with production URLs
-    return html.replace(
-      /http:\/\/localhost:8056\/assets\//g,
-      'https://admin.charlotteudo.org/assets/'
-    );
-  } else {
-    // In development, replace production URLs with localhost URLs
-    return html.replace(
-      /https:\/\/admin\.charlotteudo\.org\/assets\//g,
-      'http://localhost:8056/assets/'
-    );
-  }
+  // Replace any existing Directus URLs with the current one
+  const patterns = [
+    /http:\/\/localhost:8056\/assets\//g,
+    /https:\/\/admin\.charlotteudo\.org\/assets\//g,
+  ];
+  
+  let result = html;
+  patterns.forEach(pattern => {
+    result = result.replace(pattern, `${directusUrl}/assets/`);
+  });
+  
+  return result;
 }
 
 // Function to ensure heading IDs match TOC URLs

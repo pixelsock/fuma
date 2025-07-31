@@ -15,33 +15,16 @@ export function HighlightedContent({
   onHighlightsChange?: (count: number) => void;
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [highlightedHtml, setHighlightedHtml] = useState(html);
+  // Initialize with html to match server render
+  const [highlightedHtml, setHighlightedHtml] = useState(() => html);
 
   useEffect(() => {
     console.log('HighlightedContent - searchTerm:', searchTerm);
     console.log('HighlightedContent - html length:', html?.length);
     
     if (!searchTerm || !html) {
-      // Even without search term, ensure headings have IDs
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      
-      const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headings.forEach(heading => {
-        if (!heading.id && heading.textContent) {
-          const id = heading.textContent
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-+|-+$/g, '')
-            .substring(0, 50); // Match the ID generation in directus-only-source.ts
-          heading.id = id;
-        }
-      });
-      
-      setHighlightedHtml(tempDiv.innerHTML);
+      // Don't modify HTML when there's no search term to avoid hydration issues
+      setHighlightedHtml(html);
       onHighlightsChange?.(0);
       return;
     }
