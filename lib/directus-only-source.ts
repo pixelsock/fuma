@@ -322,11 +322,11 @@ export const directusOnlySource = {
         const rawHtmlContent = article.htmlContent || '';
         const htmlContent = addHeadingIds(rawHtmlContent);
         
-        // Extract tables on server-side to avoid client-side processing issues
-        const processedContent = extractTablesFromHTML(htmlContent);
+        // Temporarily disable table extraction to fix hydration issues
+        // const processedContent = extractTablesFromHTML(htmlContent);
         
-        // Generate TOC from the processed HTML content (with table placeholders)
-        const toc = generateTOCFromHTML(processedContent.htmlParts.join(''));
+        // Generate TOC from the HTML content
+        const toc = generateTOCFromHTML(htmlContent);
         
         return {
           file: {
@@ -339,16 +339,16 @@ export const directusOnlySource = {
           data: {
             title: article.name,
             description: article.description,
-            body: processedContent.htmlParts.join(''),
+            body: htmlContent,
             toc: toc,
             structuredData: [],
             _exports: {},
-            content: processedContent.htmlParts.join(''),
+            content: htmlContent,
             full: false,
             pdf: article.pdf, // Include PDF field
             category: article.category, // Add category information
-            // Pass table data separately for client-side AG-Grid rendering
-            tables: processedContent.tables,
+            // Temporarily disable table data to fix hydration
+            tables: [],
           },
           url: `/articles/${slug}`,
           slugs: slugs,
