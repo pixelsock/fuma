@@ -146,22 +146,92 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
+  const [processedContent, setProcessedContent] = useState<ProcessedContent | null>(null);
+  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
-  // Process content consistently for both server and client to avoid hydration issues
-  // Note: Heading IDs are already added by directusOnlySource, so we don't need to add them again
-  const rewrittenContent = rewriteAssetUrls(htmlContent);
+  // Process content on client-side to extract tables for AG-Grid
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const rewrittenContent = rewriteAssetUrls(htmlContent);
+      const processed = extractTables(rewrittenContent);
+      setProcessedContent(processed);
+    }
+  }, [htmlContent]);
   
-  // Simple render without table extraction to ensure TOC works properly
-  // fumadocs will handle the TOC active states natively
+  const handleTableReady = (index: number) => {
+    // Add a small delay to ensure AG-Grid is fully rendered
+    setTimeout(() => {
+      setTablesReady(prev => {
+        const newSet = new Set(prev);
+        newSet.add(index);
+        return newSet;
+      });
+    }, 100);
+  };
+  
+  // Server-side render without table extraction to avoid hydration issues
+  if (!processedContent) {
+    const rewrittenContent = rewriteAssetUrls(htmlContent);
+    return (
+      <DefinitionTooltipProvider>
+        <div className={`udo-content ${className}`}>
+          <ProgressiveDefinitionProcessorV2 
+            content={
+              <HighlightedContent
+                html={rewrittenContent}
+                searchTerm={searchTerm}
+              />
+            } 
+          />
+        </div>
+        <GlobalDefinitionTooltipV2 />
+      </DefinitionTooltipProvider>
+    );
+  }
+  
+  // Client-side render with AG-Grid tables
   return (
     <DefinitionTooltipProvider>
       <div className={`udo-content ${className}`}>
         <ProgressiveDefinitionProcessorV2 
           content={
-            <HighlightedContent
-              html={rewrittenContent}
-              searchTerm={searchTerm}
-            />
+            <>
+              {processedContent.htmlParts.map((part, index) => (
+                <React.Fragment key={index}>
+                  {part && part.trim() && (
+                    <HighlightedContent
+                      html={part}
+                      searchTerm={searchTerm}
+                    />
+                  )}
+                  {index < processedContent.tables.length && processedContent.tables[index] && (
+                    <div className="table-container my-4" data-table-index={index}>
+                      {!tablesReady.has(index) && (
+                        <TableLoading tableIndex={index} />
+                      )}
+                      <div 
+                        className="table-wrapper" 
+                        style={{ 
+                          opacity: tablesReady.has(index) ? 1 : 0,
+                          height: tablesReady.has(index) ? 'auto' : 0,
+                          overflow: 'hidden',
+                          transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
+                          position: tablesReady.has(index) ? 'static' : 'absolute',
+                          visibility: tablesReady.has(index) ? 'visible' : 'hidden',
+                          pointerEvents: tablesReady.has(index) ? 'auto' : 'none'
+                        }}
+                      >
+                        <UDOAgGridTable 
+                          htmlString={processedContent.tables[index]}
+                          tableIndex={index}
+                          onReady={() => handleTableReady(index)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </>
           } 
         />
       </div>
