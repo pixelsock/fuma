@@ -55,6 +55,8 @@ function addHeadingIds(htmlContent: string): string {
 function extractTablesFromHTML(htmlContent: string): ProcessedContent {
   if (!htmlContent) return { htmlParts: [htmlContent], tables: [] };
   
+  console.log('Starting table extraction...');
+  
   // Simple regex-based table extraction for server-side processing
   const tableRegex = /<table[^>]*>.*?<\/table>/gis;
   const tables: string[] = [];
@@ -62,29 +64,44 @@ function extractTablesFromHTML(htmlContent: string): ProcessedContent {
   const htmlParts: string[] = [];
   
   let match;
+  let tableCount = 0;
+  
   while ((match = tableRegex.exec(htmlContent)) !== null) {
+    console.log(`Found table ${tableCount + 1} at index ${match.index}`);
+    
     // Add content before the table
     if (match.index > lastIndex) {
-      htmlParts.push(htmlContent.substring(lastIndex, match.index));
+      const beforeTable = htmlContent.substring(lastIndex, match.index);
+      htmlParts.push(beforeTable);
+      console.log(`Added content part ${htmlParts.length - 1}: ${beforeTable.length} chars`);
     }
     
     // Add table placeholder
-    htmlParts.push(`<!--TABLE_PLACEHOLDER_${tables.length}-->`);
+    const placeholder = `<!--TABLE_PLACEHOLDER_${tables.length}-->`;
+    htmlParts.push(placeholder);
     tables.push(match[0]);
     
+    console.log(`Added table ${tables.length - 1}: ${match[0].length} chars`);
+    console.log(`Added placeholder: ${placeholder}`);
+    
     lastIndex = match.index + match[0].length;
+    tableCount++;
   }
   
   // Add remaining content after last table
   if (lastIndex < htmlContent.length) {
-    htmlParts.push(htmlContent.substring(lastIndex));
+    const afterTables = htmlContent.substring(lastIndex);
+    htmlParts.push(afterTables);
+    console.log(`Added final content part: ${afterTables.length} chars`);
   }
   
   // If no tables found, return original content
   if (tables.length === 0) {
+    console.log('No tables found, returning original content');
     return { htmlParts: [htmlContent], tables: [] };
   }
   
+  console.log(`Table extraction complete: ${tables.length} tables, ${htmlParts.length} parts`);
   return { htmlParts, tables };
 }
 
@@ -322,11 +339,14 @@ export const directusOnlySource = {
         const rawHtmlContent = article.htmlContent || '';
         const htmlContent = addHeadingIds(rawHtmlContent);
         
-        // Temporarily disable table extraction to fix hydration issues
-        // const processedContent = extractTablesFromHTML(htmlContent);
+        // Extract tables on server-side with debugging
+        console.log('Extracting tables from HTML content...');
+        const processedContent = extractTablesFromHTML(htmlContent);
+        console.log(`Extracted ${processedContent.tables.length} tables`);
+        console.log(`Generated ${processedContent.htmlParts.length} content parts`);
         
-        // Generate TOC from the HTML content
-        const toc = generateTOCFromHTML(htmlContent);
+        // Generate TOC from the processed HTML content (with table placeholders)
+        const toc = generateTOCFromHTML(processedContent.htmlParts.join(''));
         
         return {
           file: {
@@ -339,16 +359,16 @@ export const directusOnlySource = {
           data: {
             title: article.name,
             description: article.description,
-            body: htmlContent,
+            body: processedContent.htmlParts.join(''),
             toc: toc,
             structuredData: [],
             _exports: {},
-            content: htmlContent,
+            content: processedContent.htmlParts.join(''),
             full: false,
             pdf: article.pdf, // Include PDF field
             category: article.category, // Add category information
-            // Temporarily disable table data to fix hydration
-            tables: [],
+            // Pass table data separately for client-side AG-Grid rendering
+            tables: processedContent.tables,
           },
           url: `/articles/${slug}`,
           slugs: slugs,
