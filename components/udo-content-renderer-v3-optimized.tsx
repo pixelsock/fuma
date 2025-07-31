@@ -59,131 +59,20 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className, tables }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
-  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
-  const [extractedTables, setExtractedTables] = useState<string[]>([]);
-  const [contentWithPlaceholders, setContentWithPlaceholders] = useState<string>('');
-  const [hasProcessedTables, setHasProcessedTables] = useState(false);
   
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // Client-side table extraction after hydration
-  useEffect(() => {
-    if (hasProcessedTables) return; // Only process once
-    
-    const extractTablesFromContent = () => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(rewrittenContent, 'text/html');
-      
-      const tables = doc.querySelectorAll('table');
-      const extractedTables: string[] = [];
-      let modifiedContent = rewrittenContent;
-      
-      if (tables.length > 0) {
-        console.log(`Found ${tables.length} tables for client-side processing`);
-        
-        // Process tables in reverse order to maintain indices
-        for (let i = tables.length - 1; i >= 0; i--) {
-          const table = tables[i];
-          const tableHtml = table.outerHTML;
-          extractedTables.unshift(tableHtml);
-          
-          // Replace table with placeholder
-          const placeholder = `<!--TABLE_PLACEHOLDER_${extractedTables.length - 1}-->`;
-          modifiedContent = modifiedContent.replace(tableHtml, placeholder);
-        }
-        
-        setExtractedTables(extractedTables);
-        setContentWithPlaceholders(modifiedContent);
-        setHasProcessedTables(true);
-      } else {
-        // No tables found, use original content
-        setContentWithPlaceholders(rewrittenContent);
-        setHasProcessedTables(true);
-      }
-    };
-    
-    // Small delay to ensure hydration is complete
-    const timer = setTimeout(extractTablesFromContent, 100);
-    return () => clearTimeout(timer);
-  }, [rewrittenContent, hasProcessedTables]);
-  
-  // If no tables found or not yet processed, render simple content
-  if (!hasProcessedTables || extractedTables.length === 0) {
-    return (
-      <DefinitionTooltipProvider>
-        <div className={`udo-content ${className}`}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <HighlightedContent
-                html={rewrittenContent}
-                searchTerm={searchTerm}
-              />
-            } 
-          />
-        </div>
-        <GlobalDefinitionTooltipV2 />
-      </DefinitionTooltipProvider>
-    );
-  }
-  
-  // Process table placeholders
-  const contentParts = contentWithPlaceholders.split(/<!--TABLE_PLACEHOLDER_\d+-->/);
-  
-  const handleTableReady = (index: number) => {
-    // Add a small delay to ensure AG-Grid is fully rendered
-    setTimeout(() => {
-      setTablesReady(prev => {
-        const newSet = new Set(prev);
-        newSet.add(index);
-        return newSet;
-      });
-    }, 100);
-  };
-  
-  // Render content with AG-Grid tables
+  // Simple render without any table processing to ensure TOC works
   return (
     <DefinitionTooltipProvider>
       <div className={`udo-content ${className}`}>
         <ProgressiveDefinitionProcessorV2 
           content={
-            <>
-              {contentParts.map((part, index) => (
-                <React.Fragment key={index}>
-                  {part && part.trim() && (
-                    <HighlightedContent
-                      html={part}
-                      searchTerm={searchTerm}
-                    />
-                  )}
-                  {index < extractedTables.length && extractedTables[index] && (
-                    <div className="table-container my-4" data-table-index={index}>
-                      {!tablesReady.has(index) && (
-                        <TableLoading tableIndex={index} />
-                      )}
-                      <div 
-                        className="table-wrapper" 
-                        style={{ 
-                          opacity: tablesReady.has(index) ? 1 : 0,
-                          height: tablesReady.has(index) ? 'auto' : 0,
-                          overflow: 'hidden',
-                          transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
-                          position: tablesReady.has(index) ? 'static' : 'absolute',
-                          visibility: tablesReady.has(index) ? 'visible' : 'hidden',
-                          pointerEvents: tablesReady.has(index) ? 'auto' : 'none'
-                        }}
-                      >
-                        <UDOAgGridTable 
-                          htmlString={extractedTables[index]}
-                          tableIndex={index}
-                          onReady={() => handleTableReady(index)}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </>
+            <HighlightedContent
+              html={rewrittenContent}
+              searchTerm={searchTerm}
+            />
           } 
         />
       </div>
