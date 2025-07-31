@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { UDOAgGridTable } from './udo-ag-grid-table';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
@@ -59,14 +59,60 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className, tables }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [enhancedTables, setEnhancedTables] = useState<Map<number, { element: HTMLElement; tableHtml: string }>>(new Map());
+  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // Simple render without any table processing to ensure TOC works
+  // Enhance existing tables with AG-Grid after content is rendered
+  useEffect(() => {
+    if (!contentRef.current) return;
+    
+    const enhanceTables = () => {
+      const contentElement = contentRef.current;
+      if (!contentElement) return;
+      
+      const tables = contentElement.querySelectorAll('table');
+      const newEnhancedTables = new Map<number, { element: HTMLElement; tableHtml: string }>();
+      
+      tables.forEach((table, index) => {
+        // Skip if already enhanced
+        if (table.closest('.ag-grid-enhanced')) return;
+        
+        const tableHtml = table.outerHTML;
+        const tableElement = table as HTMLElement;
+        
+        // Hide the original table
+        tableElement.style.display = 'none';
+        
+        // Store the table for AG-Grid enhancement
+        newEnhancedTables.set(index, { element: tableElement, tableHtml });
+      });
+      
+      setEnhancedTables(newEnhancedTables);
+    };
+    
+    // Small delay to ensure content is fully rendered
+    const timer = setTimeout(enhanceTables, 200);
+    return () => clearTimeout(timer);
+  }, [rewrittenContent]);
+  
+  const handleTableReady = (index: number) => {
+    setTimeout(() => {
+      setTablesReady(prev => {
+        const newSet = new Set(prev);
+        newSet.add(index);
+        return newSet;
+      });
+    }, 100);
+  };
+  
+  // Render content with potential AG-Grid enhancement
   return (
     <DefinitionTooltipProvider>
-      <div className={`udo-content ${className}`}>
+      <div className={`udo-content ${className}`} ref={contentRef}>
         <ProgressiveDefinitionProcessorV2 
           content={
             <HighlightedContent
@@ -75,6 +121,33 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
             />
           } 
         />
+        
+        {/* Render AG-Grid tables for enhanced tables */}
+        {Array.from(enhancedTables.entries()).map(([index, { element, tableHtml }]) => (
+          <div key={`ag-grid-${index}`} className="ag-grid-enhanced" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            {!tablesReady.has(index) && (
+              <TableLoading tableIndex={index} />
+            )}
+            <div 
+              className="table-wrapper" 
+              style={{ 
+                opacity: tablesReady.has(index) ? 1 : 0,
+                height: tablesReady.has(index) ? 'auto' : 0,
+                overflow: 'hidden',
+                transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
+                position: tablesReady.has(index) ? 'static' : 'absolute',
+                visibility: tablesReady.has(index) ? 'visible' : 'hidden',
+                pointerEvents: tablesReady.has(index) ? 'auto' : 'none'
+              }}
+            >
+              <UDOAgGridTable 
+                htmlString={tableHtml}
+                tableIndex={index}
+                onReady={() => handleTableReady(index)}
+              />
+            </div>
+          </div>
+        ))}
       </div>
       <GlobalDefinitionTooltipV2 />
     </DefinitionTooltipProvider>
