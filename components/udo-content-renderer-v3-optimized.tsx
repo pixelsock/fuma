@@ -7,7 +7,6 @@ import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-proce
 import { GlobalDefinitionTooltipV2 } from './global-definition-tooltip-v2';
 import { TooltipProvider as DefinitionTooltipProvider } from './definition-tooltip-context';
 import { HighlightedContent } from '@/lib/search-highlight-react';
-import { ContentWithHeadingLinks } from './content-with-heading-links';
 
 interface UDOContentRendererV3OptimizedProps {
   htmlContent: string;
@@ -147,107 +146,25 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
-  const [processedContent, setProcessedContent] = useState<ProcessedContent | null>(null);
-  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
-  const [tablesMounted, setTablesMounted] = useState<Set<number>>(new Set());
   
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const rewrittenContent = rewriteAssetUrls(htmlContent);
-      const contentWithIds = ensureHeadingIds(rewrittenContent);
-      const processed = extractTables(contentWithIds);
-      setProcessedContent(processed);
-    }
-  }, [htmlContent]);
+  // Process content consistently for both server and client to avoid hydration issues
+  // Note: Heading IDs are already added by directusOnlySource, so we don't need to add them again
+  const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  const handleTableMounted = (index: number) => {
-    setTablesMounted(prev => {
-      const newSet = new Set(prev);
-      newSet.add(index);
-      return newSet;
-    });
-  };
-  
-  const handleTableReady = (index: number) => {
-    // Add a small delay to ensure AG-Grid is fully rendered
-    setTimeout(() => {
-      setTablesReady(prev => {
-        const newSet = new Set(prev);
-        newSet.add(index);
-        return newSet;
-      });
-    }, 100);
-  };
-  
-  // Server-side render without table extraction to avoid hydration issues
-  if (!processedContent) {
-    const rewrittenContent = rewriteAssetUrls(htmlContent);
-    const contentWithIds = ensureHeadingIds(rewrittenContent);
-    return (
-      <DefinitionTooltipProvider>
-        <div className={className || "udo-content"}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <HighlightedContent
-                html={contentWithIds}
-                searchTerm={searchTerm}
-              />
-            } 
-          />
-        </div>
-        <GlobalDefinitionTooltipV2 />
-      </DefinitionTooltipProvider>
-    );
-  }
-  
-  // Client-side render with AG-Grid tables
+  // Simple render without table extraction to ensure TOC works properly
+  // fumadocs will handle the TOC active states natively
   return (
     <DefinitionTooltipProvider>
-      <ContentWithHeadingLinks>
-        <div className={className || "udo-content"}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <>
-                {processedContent.htmlParts.map((part, index) => (
-                  <React.Fragment key={index}>
-                    {part && part.trim() && (
-                      <HighlightedContent
-                        html={part}
-                        searchTerm={searchTerm}
-                      />
-                    )}
-                    {index < processedContent.tables.length && processedContent.tables[index] && (
-                      <div className="table-container my-4" data-table-index={index}>
-                        {!tablesReady.has(index) && (
-                          <TableLoading tableIndex={index} />
-                        )}
-                        <div 
-                          className="table-wrapper" 
-                          style={{ 
-                            opacity: tablesReady.has(index) ? 1 : 0,
-                            height: tablesReady.has(index) ? 'auto' : 0,
-                            overflow: 'hidden',
-                            transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
-                            position: tablesReady.has(index) ? 'static' : 'absolute',
-                            visibility: tablesReady.has(index) ? 'visible' : 'hidden',
-                            pointerEvents: tablesReady.has(index) ? 'auto' : 'none'
-                          }}
-                        >
-                          <UDOAgGridTable 
-                            htmlString={processedContent.tables[index]}
-                            tableIndex={index}
-                            onReady={() => handleTableReady(index)}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </>
-            } 
-          />
-        </div>
-      </ContentWithHeadingLinks>
+      <div className={`udo-content ${className}`}>
+        <ProgressiveDefinitionProcessorV2 
+          content={
+            <HighlightedContent
+              html={rewrittenContent}
+              searchTerm={searchTerm}
+            />
+          } 
+        />
+      </div>
       <GlobalDefinitionTooltipV2 />
     </DefinitionTooltipProvider>
   );
