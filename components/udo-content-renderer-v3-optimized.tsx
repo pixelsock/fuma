@@ -149,79 +149,20 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
-  const [processedContent, setProcessedContent] = useState<ProcessedContent | null>(null);
-  const [tablesMounted, setTablesMounted] = useState<Set<number>>(new Set());
-  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const rewrittenContent = rewriteAssetUrls(htmlContent);
-      const contentWithIds = ensureHeadingIds(rewrittenContent);
-      const processed = extractTables(contentWithIds);
-      console.log('Extracted tables:', processed.tables.length, 'tables found');
-      console.log('HTML parts:', processed.htmlParts.length, 'parts');
-      setProcessedContent(processed);
-    }
-  }, [htmlContent]);
+  // Process content consistently for both server and client
+  const rewrittenContent = rewriteAssetUrls(htmlContent);
+  const contentWithIds = ensureHeadingIds(rewrittenContent);
   
-  const handleTableMounted = (index: number) => {
-    setTablesMounted(prev => {
-      const newSet = new Set(prev);
-      newSet.add(index);
-      return newSet;
-    });
-  };
-  
-  const handleTableReady = (index: number) => {
-    // Add a small delay to ensure AG Grid is fully rendered
-    setTimeout(() => {
-      setTablesReady(prev => {
-        const newSet = new Set(prev);
-        newSet.add(index);
-        return newSet;
-      });
-    }, 100);
-  };
-  
-  if (!processedContent) {
-    // Server-side render or initial load
-    const rewrittenContent = rewriteAssetUrls(htmlContent);
-    const contentWithIds = ensureHeadingIds(rewrittenContent);
-    return (
-      <DefinitionTooltipProvider>
-        <div className={`udo-content ${className}`}>
-          <HighlightedContent
-            html={contentWithIds}
-            searchTerm={searchTerm}
-          />
-        </div>
-        <GlobalDefinitionTooltipV2 />
-      </DefinitionTooltipProvider>
-    );
-  }
-  
-  // Render with AG-Grid tables and definition tooltips
+  // For now, render without table extraction to avoid hydration issues
+  // We can add table extraction back later if needed
   return (
     <DefinitionTooltipProvider>
       <div className={`udo-content ${className}`}>
-        {processedContent.htmlParts.map((part, index) => (
-          <React.Fragment key={index}>
-            {part && part.trim() && (
-              <HighlightedContent
-                html={part}
-                searchTerm={searchTerm}
-              />
-            )}
-            {index < processedContent.tables.length && processedContent.tables[index] && (
-              <div className="my-4">
-                <UDOAgGridTable 
-                  htmlString={processedContent.tables[index]}
-                  tableIndex={index}
-                />
-              </div>
-            )}
-          </React.Fragment>
-        ))}
+        <HighlightedContent
+          html={contentWithIds}
+          searchTerm={searchTerm}
+        />
       </div>
       <GlobalDefinitionTooltipV2 />
     </DefinitionTooltipProvider>
