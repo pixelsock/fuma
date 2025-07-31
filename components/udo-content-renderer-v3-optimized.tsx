@@ -152,7 +152,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // If no tables provided, render simple content
+  // If no tables provided, render simple content without any table processing
   if (!tables || tables.length === 0) {
     return (
       <DefinitionTooltipProvider>
@@ -171,8 +171,27 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
     );
   }
   
-  // Split content by table placeholders
+  // Only process table placeholders if tables are actually provided
   const contentParts = rewrittenContent.split(/<!--TABLE_PLACEHOLDER_\d+-->/);
+  
+  // If no placeholders found, render as simple content
+  if (contentParts.length === 1) {
+    return (
+      <DefinitionTooltipProvider>
+        <div className={`udo-content ${className}`}>
+          <ProgressiveDefinitionProcessorV2 
+            content={
+              <HighlightedContent
+                html={rewrittenContent}
+                searchTerm={searchTerm}
+              />
+            } 
+          />
+        </div>
+        <GlobalDefinitionTooltipV2 />
+      </DefinitionTooltipProvider>
+    );
+  }
   
   const handleTableReady = (index: number) => {
     // Add a small delay to ensure AG-Grid is fully rendered
