@@ -49,7 +49,10 @@ export default async function Page(props: {
           description={directusPage.data.description}
           pdfUrl={directusPage.data.pdf}
         />
-        <UDOContentRendererV3Optimized htmlContent={directusPage.data.content || ''} />
+        <UDOContentRendererV3Optimized 
+          htmlContent={directusPage.data.content || ''} 
+          tables={directusPage.data.tables}
+        />
       </DocsBody>
     </DocsPage>
   );

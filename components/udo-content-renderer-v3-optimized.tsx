@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { UDOAgGridTable } from './udo-ag-grid-table';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
@@ -11,6 +11,7 @@ import { HighlightedContent } from '@/lib/search-highlight-react';
 interface UDOContentRendererV3OptimizedProps {
   htmlContent: string;
   className?: string;
+  tables?: string[]; // Server-provided table data
 }
 
 // Function to rewrite asset URLs to use the correct Directus instance
@@ -143,35 +144,16 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
   );
 }
 
-export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOContentRendererV3OptimizedProps) {
+export function UDOContentRendererV3Optimized({ htmlContent, className, tables }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
-  const [processedContent, setProcessedContent] = useState<ProcessedContent | null>(null);
   const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
-  // Process content on client-side to extract tables for AG-Grid
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const rewrittenContent = rewriteAssetUrls(htmlContent);
-      const processed = extractTables(rewrittenContent);
-      setProcessedContent(processed);
-    }
-  }, [htmlContent]);
+  // Process content consistently for both server and client
+  const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  const handleTableReady = (index: number) => {
-    // Add a small delay to ensure AG-Grid is fully rendered
-    setTimeout(() => {
-      setTablesReady(prev => {
-        const newSet = new Set(prev);
-        newSet.add(index);
-        return newSet;
-      });
-    }, 100);
-  };
-  
-  // Server-side render without table extraction to avoid hydration issues
-  if (!processedContent) {
-    const rewrittenContent = rewriteAssetUrls(htmlContent);
+  // If no tables provided, render simple content
+  if (!tables || tables.length === 0) {
     return (
       <DefinitionTooltipProvider>
         <div className={`udo-content ${className}`}>
@@ -189,14 +171,28 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
     );
   }
   
-  // Client-side render with AG-Grid tables
+  // Split content by table placeholders
+  const contentParts = rewrittenContent.split(/<!--TABLE_PLACEHOLDER_\d+-->/);
+  
+  const handleTableReady = (index: number) => {
+    // Add a small delay to ensure AG-Grid is fully rendered
+    setTimeout(() => {
+      setTablesReady(prev => {
+        const newSet = new Set(prev);
+        newSet.add(index);
+        return newSet;
+      });
+    }, 100);
+  };
+  
+  // Render content with AG-Grid tables
   return (
     <DefinitionTooltipProvider>
       <div className={`udo-content ${className}`}>
         <ProgressiveDefinitionProcessorV2 
           content={
             <>
-              {processedContent.htmlParts.map((part, index) => (
+              {contentParts.map((part, index) => (
                 <React.Fragment key={index}>
                   {part && part.trim() && (
                     <HighlightedContent
@@ -204,7 +200,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
                       searchTerm={searchTerm}
                     />
                   )}
-                  {index < processedContent.tables.length && processedContent.tables[index] && (
+                  {index < tables.length && tables[index] && (
                     <div className="table-container my-4" data-table-index={index}>
                       {!tablesReady.has(index) && (
                         <TableLoading tableIndex={index} />
@@ -222,7 +218,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
                         }}
                       >
                         <UDOAgGridTable 
-                          htmlString={processedContent.tables[index]}
+                          htmlString={tables[index]}
                           tableIndex={index}
                           onReady={() => handleTableReady(index)}
                         />

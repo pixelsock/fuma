@@ -8,6 +8,11 @@ type TOCItem = {
   depth: number;
 }
 
+interface ProcessedContent {
+  htmlParts: string[];
+  tables: string[];
+}
+
 /**
  * Generates a clean ID from heading text
  */
@@ -42,6 +47,45 @@ function addHeadingIds(htmlContent: string): string {
     // Add ID to the heading
     return `<${tagName}${attributes} id="${id}">${titleHTML}</${tagName}>`;
   });
+}
+
+/**
+ * Extracts tables from HTML content and returns processed content with table placeholders
+ */
+function extractTablesFromHTML(htmlContent: string): ProcessedContent {
+  if (!htmlContent) return { htmlParts: [htmlContent], tables: [] };
+  
+  // Simple regex-based table extraction for server-side processing
+  const tableRegex = /<table[^>]*>.*?<\/table>/gis;
+  const tables: string[] = [];
+  let lastIndex = 0;
+  const htmlParts: string[] = [];
+  
+  let match;
+  while ((match = tableRegex.exec(htmlContent)) !== null) {
+    // Add content before the table
+    if (match.index > lastIndex) {
+      htmlParts.push(htmlContent.substring(lastIndex, match.index));
+    }
+    
+    // Add table placeholder
+    htmlParts.push(`<!--TABLE_PLACEHOLDER_${tables.length}-->`);
+    tables.push(match[0]);
+    
+    lastIndex = match.index + match[0].length;
+  }
+  
+  // Add remaining content after last table
+  if (lastIndex < htmlContent.length) {
+    htmlParts.push(htmlContent.substring(lastIndex));
+  }
+  
+  // If no tables found, return original content
+  if (tables.length === 0) {
+    return { htmlParts: [htmlContent], tables: [] };
+  }
+  
+  return { htmlParts, tables };
 }
 
 /**
@@ -278,8 +322,11 @@ export const directusOnlySource = {
         const rawHtmlContent = article.htmlContent || '';
         const htmlContent = addHeadingIds(rawHtmlContent);
         
-        // Generate TOC from HTML headings
-        const toc = generateTOCFromHTML(htmlContent);
+        // Extract tables on server-side to avoid client-side processing issues
+        const processedContent = extractTablesFromHTML(htmlContent);
+        
+        // Generate TOC from the processed HTML content (with table placeholders)
+        const toc = generateTOCFromHTML(processedContent.htmlParts.join(''));
         
         return {
           file: {
@@ -292,14 +339,16 @@ export const directusOnlySource = {
           data: {
             title: article.name,
             description: article.description,
-            body: htmlContent,
+            body: processedContent.htmlParts.join(''),
             toc: toc,
             structuredData: [],
             _exports: {},
-            content: htmlContent,
+            content: processedContent.htmlParts.join(''),
             full: false,
             pdf: article.pdf, // Include PDF field
             category: article.category, // Add category information
+            // Pass table data separately for client-side AG-Grid rendering
+            tables: processedContent.tables,
           },
           url: `/articles/${slug}`,
           slugs: slugs,
