@@ -16,8 +16,9 @@ interface UDOContentRendererV3OptimizedProps {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
-  const isProduction = process.env.NODE_ENV === 'production';
+  // Check deployment environment instead of just NODE_ENV
+  const deploymentEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
+  const isProduction = deploymentEnv === 'production' || process.env.NODE_ENV === 'production';
   
   if (isProduction) {
     // In production, replace localhost URLs with production URLs
@@ -157,6 +158,8 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
       const rewrittenContent = rewriteAssetUrls(htmlContent);
       const contentWithIds = ensureHeadingIds(rewrittenContent);
       const processed = extractTables(contentWithIds);
+      console.log('Extracted tables:', processed.tables.length, 'tables found');
+      console.log('HTML parts:', processed.htmlParts.length, 'parts');
       setProcessedContent(processed);
     }
   }, [htmlContent]);
@@ -181,19 +184,15 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
   };
   
   if (!processedContent) {
-    // Server-side render or initial load - show content without table processing
+    // Server-side render or initial load
     const rewrittenContent = rewriteAssetUrls(htmlContent);
     const contentWithIds = ensureHeadingIds(rewrittenContent);
     return (
       <DefinitionTooltipProvider>
-        <div className={className || "udo-content"}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <HighlightedContent
-                html={contentWithIds}
-                searchTerm={searchTerm}
-              />
-            } 
+        <div className={`udo-content ${className}`}>
+          <HighlightedContent
+            html={contentWithIds}
+            searchTerm={searchTerm}
           />
         </div>
         <GlobalDefinitionTooltipV2 />
@@ -204,51 +203,26 @@ export function UDOContentRendererV3Optimized({ htmlContent, className }: UDOCon
   // Render with AG-Grid tables and definition tooltips
   return (
     <DefinitionTooltipProvider>
-      <ContentWithHeadingLinks>
-        <div className={className || "udo-content"}>
-          <ProgressiveDefinitionProcessorV2 
-            content={
-              <>
-                {processedContent.htmlParts.map((part, index) => (
-                  <React.Fragment key={index}>
-                    {part && part.trim() && (
-                      <HighlightedContent
-                        html={part}
-                        searchTerm={searchTerm}
-                      />
-                    )}
-                    {index < processedContent.tables.length && processedContent.tables[index] && (
-                      <div className="table-container my-4" data-table-index={index}>
-                        {!tablesReady.has(index) && (
-                          <TableLoading tableIndex={index} />
-                        )}
-                        <div 
-                          className="table-wrapper" 
-                          style={{ 
-                            opacity: tablesReady.has(index) ? 1 : 0,
-                            height: tablesReady.has(index) ? 'auto' : 0,
-                            overflow: 'hidden',
-                            transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
-                            position: tablesReady.has(index) ? 'static' : 'absolute',
-                            visibility: tablesReady.has(index) ? 'visible' : 'hidden',
-                            pointerEvents: tablesReady.has(index) ? 'auto' : 'none'
-                          }}
-                        >
-                          <UDOAgGridTable 
-                            htmlString={processedContent.tables[index]}
-                            tableIndex={index}
-                            onReady={() => handleTableReady(index)}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </>
-            } 
-          />
-        </div>
-      </ContentWithHeadingLinks>
+      <div className={`udo-content ${className}`}>
+        {processedContent.htmlParts.map((part, index) => (
+          <React.Fragment key={index}>
+            {part && part.trim() && (
+              <HighlightedContent
+                html={part}
+                searchTerm={searchTerm}
+              />
+            )}
+            {index < processedContent.tables.length && processedContent.tables[index] && (
+              <div className="my-4">
+                <UDOAgGridTable 
+                  htmlString={processedContent.tables[index]}
+                  tableIndex={index}
+                />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
       <GlobalDefinitionTooltipV2 />
     </DefinitionTooltipProvider>
   );

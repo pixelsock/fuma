@@ -25,8 +25,9 @@ interface UDOContentRendererOptimizedProps {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
-  const isProduction = process.env.NODE_ENV === 'production';
+  // Check deployment environment instead of just NODE_ENV
+  const deploymentEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
+  const isProduction = deploymentEnv === 'production' || process.env.NODE_ENV === 'production';
   
   if (isProduction) {
     // In production, replace localhost URLs with production URLs
