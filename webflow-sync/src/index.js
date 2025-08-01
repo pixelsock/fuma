@@ -3,16 +3,17 @@
  * A lightweight JavaScript widget that integrates Directus API content into Webflow sites
  */
 
-// Main widget functionality will be implemented in upcoming tasks
-// For now, we create a basic structure to test the build system
+import { fetchArticle } from './api-client.js';
 
 (function() {
   'use strict';
 
   // Widget will be initialized when DOM is ready
-  function initializeWidget() {
+  async function initializeWidget() {
     console.log('Charlotte UDO Content Bridge initialized');
-    // TODO: Implement API client, DOM scanner, and content renderer
+    
+    // TODO: Implement DOM scanner and content renderer
+    // For now, the API client is available for use
   }
 
   // Early execution strategy - run before DOMContentLoaded if possible
