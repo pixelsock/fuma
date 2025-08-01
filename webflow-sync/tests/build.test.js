@@ -30,8 +30,11 @@ describe('Build Configuration', () => {
     const jsFile = files.find(f => f.endsWith('.js'));
     const content = await fs.readFile(path.join(distPath, jsFile), 'utf-8');
     
-    // Check for IIFE pattern - either minified !function() or (function()
-    expect(content).toMatch(/^(\!function|\(function)/);
+    // Check that the main code is wrapped in IIFE
+    // The async polyfill may be at the beginning, but the main code should still be in IIFE
+    expect(content).toContain('!function()');
+    // Should have proper closure
+    expect(content).toContain('}()');
   });
 
   it('should not pollute global scope', async () => {

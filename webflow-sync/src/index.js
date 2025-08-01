@@ -4,6 +4,7 @@
  */
 
 import { fetchArticle } from './api-client.js';
+import { scanForArticles } from './dom-scanner.js';
 
 (function() {
   'use strict';
@@ -12,8 +13,18 @@ import { fetchArticle } from './api-client.js';
   async function initializeWidget() {
     console.log('Charlotte UDO Content Bridge initialized');
     
-    // TODO: Implement DOM scanner and content renderer
-    // For now, the API client is available for use
+    // Scan DOM for article elements
+    const articleMap = scanForArticles();
+    
+    if (articleMap.size === 0) {
+      console.log('No article elements found');
+      return;
+    }
+    
+    console.log(`Found ${articleMap.size} unique article(s) to load`);
+    
+    // TODO: Implement content renderer
+    // For now, we have the API client and DOM scanner ready
   }
 
   // Early execution strategy - run before DOMContentLoaded if possible
