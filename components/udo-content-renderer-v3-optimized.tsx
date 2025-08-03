@@ -99,10 +99,17 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
         // Mark as processed
         tableElement.setAttribute('data-ag-grid-processed', 'true');
         
-        // Hide original table but keep it in DOM for TOC
+        // Completely hide original table but keep it in DOM for TOC
+        tableElement.style.display = 'none';
         tableElement.style.visibility = 'hidden';
+        tableElement.style.position = 'absolute';
+        tableElement.style.top = '-9999px';
+        tableElement.style.left = '-9999px';
+        tableElement.style.width = '0';
         tableElement.style.height = '0';
         tableElement.style.overflow = 'hidden';
+        tableElement.style.opacity = '0';
+        tableElement.style.pointerEvents = 'none';
         
         overlays.push({
           id: `table-overlay-${index}`,
@@ -138,7 +145,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
   // Render content with AG-Grid overlays
   return (
     <DefinitionTooltipProvider>
-      <div className={`udo-content ${className}`} ref={contentRef}>
+      <div className={`udo-content ${className}`} ref={contentRef} style={{ position: 'relative' }}>
         <ProgressiveDefinitionProcessorV2 
           content={
             <HighlightedContent
@@ -162,6 +169,7 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
               zIndex: 10,
               opacity: tablesReady.has(overlay.id) ? 1 : 0,
               transition: 'opacity 0.3s ease-out',
+              backgroundColor: 'white', // Ensure background covers original table
             }}
           >
             {!tablesReady.has(overlay.id) && (
