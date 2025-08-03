@@ -33,6 +33,36 @@ function rewriteAssetUrls(html: string): string {
   return result;
 }
 
+// Function to extract tables from HTML content
+function extractTables(html: string): { htmlParts: string[], tables: string[] } {
+  if (!html) return { htmlParts: [html], tables: [] };
+  
+  const tableRegex = /<table[^>]*>.*?<\/table>/gis;
+  const tables: string[] = [];
+  let lastIndex = 0;
+  const htmlParts: string[] = [];
+  
+  let match;
+  while ((match = tableRegex.exec(html)) !== null) {
+    if (match.index > lastIndex) {
+      htmlParts.push(html.substring(lastIndex, match.index));
+    }
+    htmlParts.push(`<!--TABLE_PLACEHOLDER_${tables.length}-->`);
+    tables.push(match[0]);
+    lastIndex = match.index + match[0].length;
+  }
+  
+  if (lastIndex < html.length) {
+    htmlParts.push(html.substring(lastIndex));
+  }
+  
+  if (tables.length === 0) {
+    return { htmlParts: [html], tables: [] };
+  }
+  
+  return { htmlParts, tables };
+}
+
 // Table loading component
 function TableLoading({ tableIndex }: { tableIndex: number }) {
   return (
@@ -59,52 +89,20 @@ function TableLoading({ tableIndex }: { tableIndex: number }) {
 export function UDOContentRendererV3Optimized({ htmlContent, className, tables }: UDOContentRendererV3OptimizedProps) {
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [enhancedTables, setEnhancedTables] = useState<Map<number, { element: HTMLElement; tableHtml: string }>>(new Map());
+  const [processedContent, setProcessedContent] = useState<{ htmlParts: string[], tables: string[] } | null>(null);
   const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // Enhance existing tables with AG-Grid in-place
+  // Extract tables from content
   useEffect(() => {
-    if (!contentRef.current) return;
-    
-    const enhanceTables = () => {
-      const contentElement = contentRef.current;
-      if (!contentElement) return;
-      
-      const tables = contentElement.querySelectorAll('table');
-      const newEnhancedTables = new Map<number, { element: HTMLElement; tableHtml: string }>();
-      
-      tables.forEach((table, index) => {
-        // Skip if already enhanced
-        if (table.hasAttribute('data-ag-grid-enhanced')) return;
-        
-        const tableElement = table as HTMLElement;
-        const tableHtml = tableElement.outerHTML;
-        
-        // Mark as enhanced
-        tableElement.setAttribute('data-ag-grid-enhanced', 'true');
-        
-        // Hide original table but keep it in DOM for TOC
-        tableElement.style.display = 'none';
-        tableElement.style.visibility = 'hidden';
-        tableElement.style.height = '0';
-        tableElement.style.overflow = 'hidden';
-        tableElement.style.opacity = '0';
-        tableElement.style.pointerEvents = 'none';
-        
-        // Store the table for AG-Grid enhancement
-        newEnhancedTables.set(index, { element: tableElement, tableHtml });
-      });
-      
-      setEnhancedTables(newEnhancedTables);
-    };
-    
-    // Wait for content to be fully rendered
-    const timer = setTimeout(enhanceTables, 500);
-    return () => clearTimeout(timer);
+    if (typeof window !== 'undefined') {
+      const processed = extractTables(rewrittenContent);
+      console.log('Extracted tables:', processed.tables.length, 'tables found');
+      console.log('HTML parts:', processed.htmlParts.length, 'parts');
+      setProcessedContent(processed);
+    }
   }, [rewrittenContent]);
   
   const handleTableReady = (index: number) => {
@@ -117,54 +115,59 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
     }, 100);
   };
   
-  // Render content with in-place AG-Grid enhancement
+  // Render content with AG-Grid tables
   return (
     <DefinitionTooltipProvider>
-      <div className={`udo-content ${className}`} ref={contentRef}>
+      <div className={`udo-content ${className}`}>
         <ProgressiveDefinitionProcessorV2 
           content={
-            <HighlightedContent
-              html={rewrittenContent}
-              searchTerm={searchTerm}
-            />
+            <>
+              {processedContent ? (
+                // Client-side render with AG-Grid
+                processedContent.htmlParts.map((part, index) => (
+                  <React.Fragment key={index}>
+                    {part && part.trim() && (
+                      <HighlightedContent
+                        html={part}
+                        searchTerm={searchTerm}
+                      />
+                    )}
+                    {index < processedContent.tables.length && processedContent.tables[index] && (
+                      <div className="my-4">
+                        {!tablesReady.has(index) && (
+                          <TableLoading tableIndex={index} />
+                        )}
+                        <div 
+                          className="table-wrapper" 
+                          style={{ 
+                            opacity: tablesReady.has(index) ? 1 : 0,
+                            height: tablesReady.has(index) ? 'auto' : 0,
+                            overflow: 'hidden',
+                            transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
+                            visibility: tablesReady.has(index) ? 'visible' : 'hidden',
+                            pointerEvents: tablesReady.has(index) ? 'auto' : 'none',
+                          }}
+                        >
+                          <UDOAgGridTable 
+                            htmlString={processedContent.tables[index]}
+                            tableIndex={index}
+                            onReady={() => handleTableReady(index)}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))
+              ) : (
+                // Server-side render or initial load
+                <HighlightedContent
+                  html={rewrittenContent}
+                  searchTerm={searchTerm}
+                />
+              )}
+            </>
           } 
         />
-        
-        {/* Render AG-Grid tables in-place */}
-        {Array.from(enhancedTables.entries()).map(([index, { element, tableHtml }]) => (
-          <div 
-            key={`ag-grid-${index}`} 
-            className="ag-grid-enhanced-table"
-            style={{
-              marginTop: '1rem',
-              marginBottom: '1rem',
-              position: 'relative',
-              zIndex: 1,
-            }}
-          >
-            {!tablesReady.has(index) && (
-              <TableLoading tableIndex={index} />
-            )}
-            <div 
-              className="table-wrapper" 
-              style={{ 
-                opacity: tablesReady.has(index) ? 1 : 0,
-                height: tablesReady.has(index) ? 'auto' : 0,
-                overflow: 'hidden',
-                transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
-                visibility: tablesReady.has(index) ? 'visible' : 'hidden',
-                pointerEvents: tablesReady.has(index) ? 'auto' : 'none',
-                maxWidth: '100%',
-              }}
-            >
-              <UDOAgGridTable 
-                htmlString={tableHtml}
-                tableIndex={index}
-                onReady={() => handleTableReady(index)}
-              />
-            </div>
-          </div>
-        ))}
       </div>
       <GlobalDefinitionTooltipV2 />
     </DefinitionTooltipProvider>
