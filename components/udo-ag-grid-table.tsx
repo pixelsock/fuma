@@ -227,6 +227,26 @@ function parseHTMLTable(htmlString: string): ParsedTable | null {
         }
       }
     }
+    
+    // Fallback: if no title detected but first row looks like a title, use it
+    if (!title && allRows.length > 0) {
+      const firstRow = allRows[0];
+      const firstRowCells = firstRow.querySelectorAll('td');
+      
+      // If first row has only one cell and spans multiple columns, treat as title
+      if (firstRowCells.length === 1) {
+        const cell = firstRowCells[0];
+        const colspan = parseInt(cell.getAttribute('colspan') || cell.getAttribute('data-colspan') || '1');
+        const cellText = cell.textContent?.trim() || '';
+        
+        // If it spans most of the table width, it's likely a title
+        if (colspan >= 2 && cellText.length > 10) {
+          title = extractFormattedContent(cell);
+          titleRowIndex = 0;
+          console.log('Using fallback title detection for row 0 with text:', cellText);
+        }
+      }
+    }
   }
 
   // Find header row - first row with dark blue background (after title row)
@@ -294,6 +314,21 @@ function parseHTMLTable(htmlString: string): ParsedTable | null {
       return { text, colspan, style };
     });
     console.log(`Row ${i}:`, cellTexts);
+    
+    // Additional debugging for potential title rows
+    if (i === 0 && cells.length === 1) {
+      const cell = cells[0];
+      const cellText = cell.textContent?.trim() || '';
+      const colspan = parseInt(cell.getAttribute('colspan') || cell.getAttribute('data-colspan') || '1');
+      console.log(`Row ${i} potential title check:`, {
+        text: cellText,
+        colspan: colspan,
+        length: cellText.length,
+        hasTable: cellText.includes('Table'),
+        hasColon: cellText.includes(':'),
+        style: cell.getAttribute('style') || 'none'
+      });
+    }
   }
 
   // Calculate max columns needed based on actual column structure
