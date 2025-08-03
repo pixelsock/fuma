@@ -60,92 +60,67 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
   const searchParams = useSearchParams();
   const searchTerm = searchParams?.get('search') || '';
   const contentRef = useRef<HTMLDivElement>(null);
-  const [tableOverlays, setTableOverlays] = useState<Array<{
-    id: string;
-    originalTable: HTMLElement;
-    tableHtml: string;
-    position: { top: number; left: number; width: number; height: number };
-  }>>([]);
-  const [tablesReady, setTablesReady] = useState<Set<string>>(new Set());
+  const [enhancedTables, setEnhancedTables] = useState<Map<number, { element: HTMLElement; tableHtml: string }>>(new Map());
+  const [tablesReady, setTablesReady] = useState<Set<number>>(new Set());
   
   // Process content consistently for both server and client
   const rewrittenContent = rewriteAssetUrls(htmlContent);
   
-  // Create AG-Grid overlays for existing tables without modifying content structure
+  // Enhance existing tables with AG-Grid in-place
   useEffect(() => {
     if (!contentRef.current) return;
     
-    const createTableOverlays = () => {
+    const enhanceTables = () => {
       const contentElement = contentRef.current;
       if (!contentElement) return;
       
       const tables = contentElement.querySelectorAll('table');
-      const overlays: Array<{
-        id: string;
-        originalTable: HTMLElement;
-        tableHtml: string;
-        position: { top: number; left: number; width: number; height: number };
-      }> = [];
+      const newEnhancedTables = new Map<number, { element: HTMLElement; tableHtml: string }>();
       
       tables.forEach((table, index) => {
-        // Skip if already processed
-        if (table.hasAttribute('data-ag-grid-processed')) return;
+        // Skip if already enhanced
+        if (table.hasAttribute('data-ag-grid-enhanced')) return;
         
         const tableElement = table as HTMLElement;
         const tableHtml = tableElement.outerHTML;
-        const rect = tableElement.getBoundingClientRect();
-        const contentRect = contentElement.getBoundingClientRect();
         
-        // Mark as processed
-        tableElement.setAttribute('data-ag-grid-processed', 'true');
+        // Mark as enhanced
+        tableElement.setAttribute('data-ag-grid-enhanced', 'true');
         
-        // Completely hide original table but keep it in DOM for TOC
+        // Hide original table but keep it in DOM for TOC
         tableElement.style.display = 'none';
         tableElement.style.visibility = 'hidden';
-        tableElement.style.position = 'absolute';
-        tableElement.style.top = '-9999px';
-        tableElement.style.left = '-9999px';
-        tableElement.style.width = '0';
         tableElement.style.height = '0';
         tableElement.style.overflow = 'hidden';
         tableElement.style.opacity = '0';
         tableElement.style.pointerEvents = 'none';
         
-        overlays.push({
-          id: `table-overlay-${index}`,
-          originalTable: tableElement,
-          tableHtml,
-          position: {
-            top: rect.top - contentRect.top,
-            left: rect.left - contentRect.left,
-            width: rect.width,
-            height: rect.height
-          }
-        });
+        // Store the table for AG-Grid enhancement
+        newEnhancedTables.set(index, { element: tableElement, tableHtml });
       });
       
-      setTableOverlays(overlays);
+      setEnhancedTables(newEnhancedTables);
     };
     
-    // Wait for content to be fully rendered and positioned
-    const timer = setTimeout(createTableOverlays, 500);
+    // Wait for content to be fully rendered
+    const timer = setTimeout(enhanceTables, 500);
     return () => clearTimeout(timer);
   }, [rewrittenContent]);
   
-  const handleTableReady = (tableId: string) => {
+  const handleTableReady = (index: number) => {
     setTimeout(() => {
       setTablesReady(prev => {
         const newSet = new Set(prev);
-        newSet.add(tableId);
+        newSet.add(index);
         return newSet;
       });
     }, 100);
   };
   
-  // Render content with AG-Grid overlays
+  // Render content with in-place AG-Grid enhancement
   return (
     <DefinitionTooltipProvider>
-      <div className={`udo-content ${className}`} ref={contentRef} style={{ position: 'relative' }}>
+      <div className={`udo-content ${className}`} ref={contentRef}>
         <ProgressiveDefinitionProcessorV2 
           content={
             <HighlightedContent
@@ -155,41 +130,37 @@ export function UDOContentRendererV3Optimized({ htmlContent, className, tables }
           } 
         />
         
-        {/* AG-Grid table overlays */}
-        {tableOverlays.map((overlay) => (
-          <div
-            key={overlay.id}
-            className="ag-grid-overlay"
+        {/* Render AG-Grid tables in-place */}
+        {Array.from(enhancedTables.entries()).map(([index, { element, tableHtml }]) => (
+          <div 
+            key={`ag-grid-${index}`} 
+            className="ag-grid-enhanced-table"
             style={{
-              position: 'absolute',
-              top: `${overlay.position.top}px`,
-              left: `${overlay.position.left}px`,
-              width: `${overlay.position.width}px`,
-              minHeight: `${overlay.position.height}px`,
-              zIndex: 10,
-              opacity: tablesReady.has(overlay.id) ? 1 : 0,
-              transition: 'opacity 0.3s ease-out',
-              backgroundColor: 'white', // Ensure background covers original table
+              marginTop: '1rem',
+              marginBottom: '1rem',
+              position: 'relative',
+              zIndex: 1,
             }}
           >
-            {!tablesReady.has(overlay.id) && (
-              <TableLoading tableIndex={parseInt(overlay.id.split('-').pop() || '0')} />
+            {!tablesReady.has(index) && (
+              <TableLoading tableIndex={index} />
             )}
             <div 
               className="table-wrapper" 
               style={{ 
-                opacity: tablesReady.has(overlay.id) ? 1 : 0,
-                height: tablesReady.has(overlay.id) ? 'auto' : 0,
+                opacity: tablesReady.has(index) ? 1 : 0,
+                height: tablesReady.has(index) ? 'auto' : 0,
                 overflow: 'hidden',
                 transition: 'opacity 0.3s ease-out, height 0.3s ease-out',
-                visibility: tablesReady.has(overlay.id) ? 'visible' : 'hidden',
-                pointerEvents: tablesReady.has(overlay.id) ? 'auto' : 'none'
+                visibility: tablesReady.has(index) ? 'visible' : 'hidden',
+                pointerEvents: tablesReady.has(index) ? 'auto' : 'none',
+                maxWidth: '100%',
               }}
             >
               <UDOAgGridTable 
-                htmlString={overlay.tableHtml}
-                tableIndex={parseInt(overlay.id.split('-').pop() || '0')}
-                onReady={() => handleTableReady(overlay.id)}
+                htmlString={tableHtml}
+                tableIndex={index}
+                onReady={() => handleTableReady(index)}
               />
             </div>
           </div>
