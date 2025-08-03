@@ -113,8 +113,17 @@ function extractFormattedContent(cell: Element): React.ReactNode {
             key: Math.random(),
             style: Object.keys(styleObj).length > 0 ? styleObj : undefined
           }, children);
+        case 'h1':
+        case 'h2':
+        case 'h3':
+        case 'h4':
+        case 'h5':
+        case 'h6':
+          // Convert heading tags to plain text to avoid TOC conflicts
+          return element.textContent || '';
         default:
-          return children;
+          // For any other tags, just return the text content to avoid conflicts
+          return element.textContent || children;
       }
     }
     return null;
@@ -827,6 +836,35 @@ export function UDOAgGridTable({ htmlString, tableIndex = 0, onReady }: UDOAgGri
           font-size: 0.75em;
           vertical-align: sub;
           line-height: 0;
+        }
+        .ag-grid-title-section {
+          margin-bottom: 1rem;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid #e5e7eb;
+        }
+        .ag-grid-title {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #374151;
+          line-height: 1.4;
+          /* Ensure no heading styles are inherited */
+          margin: 0;
+          padding: 0;
+          display: block;
+        }
+        /* Override any heading styles that might be applied */
+        .ag-grid-title h1,
+        .ag-grid-title h2,
+        .ag-grid-title h3,
+        .ag-grid-title h4,
+        .ag-grid-title h5,
+        .ag-grid-title h6 {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          line-height: inherit !important;
+          display: inline !important;
         }
       `}</style>
       
