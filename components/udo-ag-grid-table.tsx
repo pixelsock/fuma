@@ -178,6 +178,46 @@ function parseHTMLTable(htmlString: string): ParsedTable | null {
         titleRowIndex = 0;
       }
     }
+    
+    // More flexible title detection - check for any row that looks like a title
+    if (!title) {
+      for (let i = 0; i < Math.min(3, allRows.length); i++) {
+        const row = allRows[i];
+        const cells = row.querySelectorAll('td');
+        
+        // Check if this row looks like a title row
+        if (cells.length === 1) {
+          const cell = cells[0];
+          const colspan = parseInt(cell.getAttribute('colspan') || cell.getAttribute('data-colspan') || '1');
+          const cellText = cell.textContent?.trim() || '';
+          
+          // More flexible criteria for title detection
+          const isTitleRow = (
+            // Spans multiple columns
+            colspan >= 2 &&
+            // Contains table-related keywords or is formatted as a title
+            (cellText.includes('Table') || 
+             cellText.includes('FIGURE') || 
+             cellText.includes('Figure') ||
+             cellText.includes('SECTION') ||
+             cellText.includes('Section') ||
+             cellText.includes('PART') ||
+             cellText.includes('Part') ||
+             // Or has title-like formatting (centered, bold, etc.)
+             cell.getAttribute('style')?.includes('text-align: center') ||
+             cell.getAttribute('style')?.includes('font-weight: bold') ||
+             cell.getAttribute('style')?.includes('font-weight: 700'))
+          );
+          
+          if (isTitleRow) {
+            title = extractFormattedContent(cell);
+            titleRowIndex = i;
+            console.log('Found title row at index', i, 'with text:', cellText);
+            break;
+          }
+        }
+      }
+    }
   }
 
   // Find header row - first row with dark blue background (after title row)
@@ -225,6 +265,7 @@ function parseHTMLTable(htmlString: string): ParsedTable | null {
   console.log('Table structure:', {
     totalRows: allRows.length,
     titleText: title || 'No title',
+    titleRowIndex: titleRowIndex,
     headerRowCount: headerRows.length,
     headerIndices: Array.from(headerRowIndices),
     headerRowContent: headerRows.length > 0 ? headerRows[0].textContent?.trim().substring(0, 100) : 'No header',
@@ -232,6 +273,20 @@ function parseHTMLTable(htmlString: string): ParsedTable | null {
     firstBodyRowContent: bodyRows.length > 0 ? bodyRows[0].textContent?.trim().substring(0, 50) : 'No body rows'
   });
   
+  // Debug: Log details of first few rows to understand structure
+  console.log('First 3 rows details:');
+  for (let i = 0; i < Math.min(3, allRows.length); i++) {
+    const row = allRows[i];
+    const cells = row.querySelectorAll('td');
+    const cellTexts = Array.from(cells).map(cell => {
+      const colspan = cell.getAttribute('colspan') || cell.getAttribute('data-colspan') || '1';
+      const text = cell.textContent?.trim() || '';
+      const style = cell.getAttribute('style') || '';
+      return { text, colspan, style };
+    });
+    console.log(`Row ${i}:`, cellTexts);
+  }
+
   // Calculate max columns needed based on actual column structure
   let maxColumns = 0;
   allRows.forEach((row) => {
