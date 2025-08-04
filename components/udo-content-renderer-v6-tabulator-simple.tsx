@@ -34,6 +34,8 @@ export function UDOContentRendererV6TabulatorSimple({ htmlContent, className }: 
   const searchTerm = searchParams?.get('search') || '';
   const contentRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
+  const [tablesEnhanced, setTablesEnhanced] = useState(0);
+  const [totalTables, setTotalTables] = useState(0);
   const tabulatorRefs = useRef<Map<number, any>>(new Map());
   
   // Process content
@@ -59,14 +61,24 @@ export function UDOContentRendererV6TabulatorSimple({ htmlContent, className }: 
         initializeTables(TabulatorFull);
       } catch (error) {
         console.error('Failed to load Tabulator:', error);
+        setIsReady(true); // Mark as ready even if failed
       }
     }, 1000);
     
     function initializeTables(Tabulator: any) {
       const tables = contentRef.current?.querySelectorAll('table');
-      if (!tables) return;
+      if (!tables) {
+        setIsReady(true);
+        return;
+      }
       
+      setTotalTables(tables.length);
       console.log(`Found ${tables.length} tables to enhance`);
+      
+      if (tables.length === 0) {
+        setIsReady(true);
+        return;
+      }
       
       tables.forEach((table, index) => {
         // Skip if already processed
@@ -88,21 +100,45 @@ export function UDOContentRendererV6TabulatorSimple({ htmlContent, className }: 
             resizableColumns: true,
             tableBuilt: function() {
               console.log(`Tabulator ${index} built successfully`);
-              setIsReady(true);
+              setTablesEnhanced(prev => {
+                const newCount = prev + 1;
+                if (newCount >= totalTables) {
+                  setIsReady(true);
+                }
+                return newCount;
+              });
             },
           });
           
           // Store reference
           tabulatorRefs.current.set(index, tabulator);
           
+          // Fallback: if tableBuilt doesn't fire, mark as ready after a timeout
+          setTimeout(() => {
+            setTablesEnhanced(prev => {
+              const newCount = prev + 1;
+              if (newCount >= totalTables) {
+                setIsReady(true);
+              }
+              return newCount;
+            });
+          }, 2000);
+          
         } catch (error) {
           console.error(`Failed to initialize Tabulator on table ${index}:`, error);
+          setTablesEnhanced(prev => {
+            const newCount = prev + 1;
+            if (newCount >= totalTables) {
+              setIsReady(true);
+            }
+            return newCount;
+          });
         }
       });
     }
     
     return () => clearTimeout(timer);
-  }, [rewrittenContent]);
+  }, [rewrittenContent, totalTables]);
   
   // Cleanup Tabulator instances on unmount
   useEffect(() => {
@@ -132,11 +168,11 @@ export function UDOContentRendererV6TabulatorSimple({ htmlContent, className }: 
         />
         
         {/* Loading indicator */}
-        {!isReady && (
+        {!isReady && totalTables > 0 && (
           <div className="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span>Enhancing tables with Tabulator...</span>
+              <span>Enhancing tables with Tabulator... ({tablesEnhanced}/{totalTables})</span>
             </div>
           </div>
         )}
