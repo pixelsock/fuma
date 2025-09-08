@@ -163,10 +163,6 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
       const hasColgroup = cols.length === leafHeaders.length && leafHeaders.length > 0;
       table.style.tableLayout = hasColgroup ? 'fixed' : 'auto';
 
-      // Prefer the last header row (leaf headers) so colspans are respected
-      const lastHeaderRow = table.querySelector('thead tr:last-child');
-      const leafHeaders = Array.from(lastHeaderRow?.querySelectorAll('th') || []);
-
       leafHeaders.forEach((header, leafIndex) => {
         // Skip the last leaf column for resize handle
         if (leafIndex === leafHeaders.length - 1) return;
