@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { EnhancedTableSimple } from '@/components/enhanced-table-simple';
+import { EnhancedTableV2 } from '@/components/enhanced-table-v2';
 
 // Debounce utility for performance
 const debounce = (func: Function, wait: number) => {
@@ -106,7 +106,7 @@ export function useTableEnhancementV2(containerSelector?: string) {
     rootsRef.current.set(container, root);
     
     root.render(
-      <EnhancedTableSimple 
+      <EnhancedTableV2 
         html={fullHtml}
         title={title}
       />

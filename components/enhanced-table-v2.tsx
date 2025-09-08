@@ -107,26 +107,27 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
     if (!tableRef.current) return;
 
     // Apply cell styles while preserving original styles
-    const cells = tableRef.current.querySelectorAll('td, th');
+    const table = tableRef.current;
+    const hasColgroup = !!table.querySelector('colgroup col');
+    const cells = table.querySelectorAll('td, th');
     cells.forEach((cell) => {
       const cellEl = cell as HTMLElement;
-      // Only set min-width if not already set
-      if (!cellEl.style.minWidth) {
+      // Respect author/colgroup widths; avoid forcing min-width in complex tables
+      if (!hasColgroup && !cellEl.style.minWidth) {
         cellEl.style.minWidth = '75px';
       }
-      // Set vertical alignment to middle
       cellEl.style.verticalAlign = 'middle';
-      // Ensure padding if not set
       if (!cellEl.style.padding) {
         cellEl.style.padding = '8px';
       }
+      cellEl.style.boxSizing = 'border-box';
     });
 
     // Ensure table has minimum width and proper border collapse
-    tableRef.current.style.minWidth = '100%';
-    tableRef.current.style.width = '100%';
-    tableRef.current.style.borderCollapse = 'collapse';
-    tableRef.current.style.borderSpacing = '0';
+    table.style.minWidth = '100%';
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    table.style.borderSpacing = '0';
     // Don't use table-layout: fixed as it prevents dynamic resizing
 
     // Check scroll on mount and resize
@@ -147,7 +148,7 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
     };
   }, [processedHtml, checkScroll]);
 
-  // Enhanced columns resizable implementation with throttling
+  // Enhanced columns resizable implementation with throttling and colgroup support
   useEffect(() => {
     if (!tableRef.current || !mounted) return;
 
@@ -155,18 +156,22 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
       if (!tableRef.current) return;
 
       const table = tableRef.current;
-      // Use auto layout for better resizing
       table.style.tableLayout = 'auto';
-      
-      const headers = table.querySelectorAll('thead th');
-      
-      headers.forEach((header, index) => {
-        // Skip the last header
-        if (index === headers.length - 1) return;
+
+      // Prefer the last header row (leaf headers) so colspans are respected
+      const lastHeaderRow = table.querySelector('thead tr:last-child');
+      const leafHeaders = Array.from(lastHeaderRow?.querySelectorAll('th') || []);
+
+      const cols = table.querySelectorAll('colgroup col');
+      const hasColgroup = cols.length === leafHeaders.length && leafHeaders.length > 0;
+
+      leafHeaders.forEach((header, leafIndex) => {
+        // Skip the last leaf column for resize handle
+        if (leafIndex === leafHeaders.length - 1) return;
 
         const th = header as HTMLElement;
-        const columnIndex = index + 1; // CSS nth-child is 1-indexed
-        
+        const columnIndex = leafIndex + 1; // CSS nth-child is 1-indexed
+
         // Remove any existing resize handle
         const existingHandle = th.querySelector('.resize-handle');
         if (existingHandle) {
@@ -203,14 +208,21 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
             const maxWidth = Math.max(200, tableWidth * 0.8);
             const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
             
-            // Set width on the header with enhanced consistency
+            // If colgroup exists and matches leaf columns, drive widths via <col>
+            if (hasColgroup) {
+              const col = cols[leafIndex] as HTMLElement;
+              col.style.width = `${constrainedWidth}px`;
+              col.style.minWidth = `${constrainedWidth}px`;
+              col.style.maxWidth = `${constrainedWidth}px`;
+            }
+            // Also set explicit width on header cell for consistency
             th.style.width = `${constrainedWidth}px`;
             th.style.minWidth = `${constrainedWidth}px`;
             th.style.maxWidth = `${constrainedWidth}px`;
             
             // Update all cells in this column with improved selector reliability
             const allCells = tableRef.current.querySelectorAll(
-              `thead th:nth-child(${columnIndex}), tbody td:nth-child(${columnIndex}), tfoot td:nth-child(${columnIndex}), tfoot th:nth-child(${columnIndex})`
+              `thead tr:last-child th:nth-child(${columnIndex}), tbody td:nth-child(${columnIndex}), tfoot td:nth-child(${columnIndex}), tfoot th:nth-child(${columnIndex})`
             );
             
             allCells.forEach(cell => {
