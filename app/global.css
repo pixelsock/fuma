@@ -12,8 +12,147 @@
 /* Table Performance Optimizations */
 @import '../styles/table-performance-simple.css';
 
+/* Enhanced Table Styles */
+@import '../styles/enhanced-table.css';
+@import '../styles/enhanced-table-v4.css';
+
 /* Layout and Component Styles */
 @import '../styles/layout.css';
+
+/* Override prose table styles for clean borders */
+.prose table,
+.udo-content table,
+.prose :where(table):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  border-radius: 0 !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+}
+
+/* Ensure enhanced tables override prose defaults */
+.prose .enhanced-table,
+.udo-content .enhanced-table {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Force correct border colors on enhanced tables */
+.prose .enhanced-table th,
+.prose .enhanced-table td,
+.udo-content .enhanced-table th,
+.udo-content .enhanced-table td {
+  border: 1px solid #9ca3af !important;
+  border-color: #9ca3af !important;
+}
+
+.dark .prose .enhanced-table th,
+.dark .prose .enhanced-table td,
+.dark .udo-content .enhanced-table th,
+.dark .udo-content .enhanced-table td {
+  border: 1px solid #6b7280 !important;
+  border-color: #6b7280 !important;
+}
+
+/* Ensure enhanced table containers are properly styled */
+.enhanced-table-container {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+  margin: 1rem 0 !important;
+}
+
+.dark .enhanced-table-container {
+  border-color: #4a5568 !important;
+}
+
+/* Preserve original table wrapper styling */
+.table-wrapper {
+  margin: 1rem 0 !important;
+  overflow-x: auto !important;
+}
+
+.table-title-row {
+  font-weight: bold !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 0.5rem !important;
+  color: #1f2937 !important;
+}
+
+.dark .table-title-row {
+  color: #f9fafb !important;
+}
+
+/* Force table borders to be visible */
+.enhanced-table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+}
+
+.enhanced-table th,
+.enhanced-table td {
+  border: 1px solid #9ca3af !important;
+  padding: 8px !important;
+}
+
+.dark .enhanced-table th,
+.dark .enhanced-table td {
+  border: 1px solid #6b7280 !important;
+}
+
+/* Preserve original UDO table styling */
+.udo-table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.udo-table th,
+.udo-table td {
+  border: 1px solid #9ca3af !important;
+  padding: 8px !important;
+}
+
+.dark .udo-table th,
+.dark .udo-table td {
+  border: 1px solid #6b7280 !important;
+}
+
+/* Resize handles for enhanced tables */
+.enhanced-table th,
+.udo-table th {
+  position: relative !important;
+}
+
+.resize-handle {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 4px !important;
+  height: 100% !important;
+  background: #3b82f6 !important;
+  cursor: col-resize !important;
+  opacity: 0.3 !important;
+  transition: opacity 0.2s !important;
+  z-index: 10 !important;
+}
+
+.resize-handle:hover {
+  opacity: 1 !important;
+  background: #1d4ed8 !important;
+}
+
+/* Override any Fumadocs table border colors */
+.enhanced-table th,
+.enhanced-table td {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity)) !important;
+}
+
+.dark .enhanced-table th,
+.dark .enhanced-table td {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(107 114 128 / var(--tw-border-opacity)) !important;
+}
 
 /* Search Dialog Styles */
 [data-search-dialog] input:focus,
@@ -230,7 +369,7 @@ a.definition-link {
   gap: 0.5rem;
   white-space: nowrap;
   overflow: visible; /* Allow tooltip to show */
-  position: relative;
+  position: relative !important; /* Ensure relative for click area */
   scroll-margin-top: 140px; /* Offset for fixed header - match other headings */
 }
 
@@ -282,16 +421,37 @@ a.definition-link {
   transition: none;
 }
 
-/* Prevent layout shift while icons load */
+/* Add link icon to h2 headings */
 .udo-content h2[id]::after {
-  content: '';
+  content: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>');
   display: inline-block;
-  width: 24px;
-  height: 24px;
-  margin-left: auto;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
   flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s;
 }
 
+/* Show link icon on hover */
+.udo-content h2[id]:hover::after,
+.udo-content h2[id].link-icon-hover::after {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Dark mode link icon color */
+.dark .udo-content h2[id]::after {
+  content: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>');
+}
+
+/* Make the link icon area clickable */
+.udo-content h2[id] .heading-link-click-area {
+  /* Invisible click area that overlays the pseudo-element */
+  background: transparent;
+}
+
+/* Hide the pseudo-element if there's already a copy button */
 .udo-content h2[id]:has(.heading-copy-button)::after {
   display: none;
 }
