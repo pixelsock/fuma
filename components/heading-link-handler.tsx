@@ -81,75 +81,49 @@ export function HeadingLinkHandler() {
         }
       };
 
-      // Add click handlers to h2 headings with IDs
-      const addClickHandlers = () => {
+      // Attach interactive behaviors to h2 headings with IDs without mutating structure
+      const addHeadingBehaviors = () => {
         const headings = document.querySelectorAll('.udo-content h2[id]');
         
         headings.forEach((heading) => {
           const h2 = heading as HTMLHeadingElement;
-          
-          // Skip if already has a click area or has a copy button
-          if (h2.querySelector('.heading-link-click-area') || h2.querySelector('.heading-copy-button')) {
-            return;
-          }
+          // Use a data-flag to prevent double-binding
+          if ((h2 as any)._linkHandlerAttached) return;
+          (h2 as any)._linkHandlerAttached = true;
 
-          // Create an invisible clickable area over the ::after pseudo-element
-          const clickArea = document.createElement('span');
-          clickArea.className = 'heading-link-click-area';
-          clickArea.setAttribute('aria-label', 'Copy link to section');
-          clickArea.setAttribute('role', 'button');
-          clickArea.setAttribute('tabindex', '0');
-          
-          // Style the click area to overlay the pseudo-element
-          Object.assign(clickArea.style, {
-            position: 'absolute',
-            right: '12px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '20px',
-            height: '20px',
-            cursor: 'pointer',
-            zIndex: '10'
-          });
+          // Make focusable for keyboard access
+          h2.setAttribute('tabindex', '0');
+          h2.setAttribute('role', 'button');
+          h2.setAttribute('aria-label', 'Copy link to section');
 
-          // Add click handler
-          clickArea.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+          // Click to copy
+          h2.addEventListener('click', (e) => {
+            // Ignore if selecting text
+            const selection = window.getSelection();
+            if (selection && selection.toString()) return;
             copyLinkToClipboard(h2);
           });
 
-          // Add keyboard handler for accessibility
-          clickArea.addEventListener('keydown', (e) => {
+          // Keyboard support
+          h2.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               copyLinkToClipboard(h2);
             }
           });
 
-          // Add hover effect
-          clickArea.addEventListener('mouseenter', () => {
-            h2.classList.add('link-icon-hover');
-          });
-
-          clickArea.addEventListener('mouseleave', () => {
-            h2.classList.remove('link-icon-hover');
-          });
-
-          // Don't modify styles directly to avoid hydration issues
-          // Only add the click area if h2 doesn't already have one
-          if (!h2.querySelector('.heading-link-click-area')) {
-            h2.appendChild(clickArea);
-          }
+          // Hover effect to show icon via CSS
+          h2.addEventListener('mouseenter', () => h2.classList.add('link-icon-hover'));
+          h2.addEventListener('mouseleave', () => h2.classList.remove('link-icon-hover'));
         });
       };
 
       // Initial setup
-      addClickHandlers();
+      addHeadingBehaviors();
 
       // Watch for dynamic content changes
       const observer = new MutationObserver(() => {
-        addClickHandlers();
+        addHeadingBehaviors();
       });
 
       // Start observing
@@ -162,8 +136,7 @@ export function HeadingLinkHandler() {
       return () => {
         observer.disconnect();
         
-        // Remove click areas and tooltips
-        document.querySelectorAll('.heading-link-click-area').forEach(el => el.remove());
+        // Remove tooltips
         document.querySelectorAll('.heading-link-tooltip').forEach(el => el.remove());
       };
     };
@@ -182,8 +155,7 @@ export function HeadingLinkHandler() {
       if (cleanupFn) {
         cleanupFn();
       }
-      // Remove click areas and tooltips
-      document.querySelectorAll('.heading-link-click-area').forEach(el => el.remove());
+      // Remove tooltips
       document.querySelectorAll('.heading-link-tooltip').forEach(el => el.remove());
     };
   }, [isMounted]);
