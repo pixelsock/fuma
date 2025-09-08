@@ -156,14 +156,16 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
       if (!tableRef.current) return;
 
       const table = tableRef.current;
-      table.style.tableLayout = 'auto';
+      const cols = table.querySelectorAll('colgroup col');
+      // Use fixed layout when a matching colgroup exists so <col> widths apply reliably
+      const lastHeaderRow = table.querySelector('thead tr:last-child');
+      const leafHeaders = Array.from(lastHeaderRow?.querySelectorAll('th') || []);
+      const hasColgroup = cols.length === leafHeaders.length && leafHeaders.length > 0;
+      table.style.tableLayout = hasColgroup ? 'fixed' : 'auto';
 
       // Prefer the last header row (leaf headers) so colspans are respected
       const lastHeaderRow = table.querySelector('thead tr:last-child');
       const leafHeaders = Array.from(lastHeaderRow?.querySelectorAll('th') || []);
-
-      const cols = table.querySelectorAll('colgroup col');
-      const hasColgroup = cols.length === leafHeaders.length && leafHeaders.length > 0;
 
       leafHeaders.forEach((header, leafIndex) => {
         // Skip the last leaf column for resize handle
@@ -220,19 +222,29 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
             th.style.minWidth = `${constrainedWidth}px`;
             th.style.maxWidth = `${constrainedWidth}px`;
             
-            // Update all cells in this column with improved selector reliability
-            const allCells = tableRef.current.querySelectorAll(
-              `thead tr:last-child th:nth-child(${columnIndex}), tbody td:nth-child(${columnIndex}), tfoot td:nth-child(${columnIndex}), tfoot th:nth-child(${columnIndex})`
+            // Update header cell and data cells; when colgroup is present, avoid forcing td widths
+            const headerCells = tableRef.current.querySelectorAll(
+              `thead tr:last-child th:nth-child(${columnIndex})`
             );
-            
-            allCells.forEach(cell => {
+            headerCells.forEach(cell => {
               const cellEl = cell as HTMLElement;
               cellEl.style.width = `${constrainedWidth}px`;
               cellEl.style.minWidth = `${constrainedWidth}px`;
               cellEl.style.maxWidth = `${constrainedWidth}px`;
-              // Ensure the cell maintains its styling during resize
               cellEl.style.boxSizing = 'border-box';
             });
+            if (!hasColgroup) {
+              const bodyCells = tableRef.current.querySelectorAll(
+                `tbody td:nth-child(${columnIndex}), tfoot td:nth-child(${columnIndex}), tfoot th:nth-child(${columnIndex})`
+              );
+              bodyCells.forEach(cell => {
+                const cellEl = cell as HTMLElement;
+                cellEl.style.width = `${constrainedWidth}px`;
+                cellEl.style.minWidth = `${constrainedWidth}px`;
+                cellEl.style.maxWidth = `${constrainedWidth}px`;
+                cellEl.style.boxSizing = 'border-box';
+              });
+            }
           });
         };
 
@@ -282,6 +294,14 @@ export function EnhancedTableV2({ html, title: initialTitle }: EnhancedTableProp
         };
         
         resizeHandle.addEventListener('mousedown', onMouseDown);
+        // Fallback: allow grabbing near the right edge of the header, not just the handle
+        th.addEventListener('mousedown', (e: MouseEvent) => {
+          const rect = th.getBoundingClientRect();
+          const nearRightEdge = rect.right - e.clientX < 8;
+          if (nearRightEdge) {
+            onMouseDown(e);
+          }
+        });
       });
     };
 
