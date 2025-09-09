@@ -29,16 +29,58 @@ export function useTableEnhancementV2(containerSelector?: string) {
     const parent = table.parentElement;
     if (!parent) return false;
 
-    // Extract title with better performance
+    // Extract title from table
     let title = '';
+    let titleElement: HTMLElement | null = null;
+    
     const caption = table.querySelector('caption');
     if (caption) {
       title = caption.textContent?.trim() || '';
     } else {
-      // Check for heading before table
-      const prevElement = table.previousElementSibling;
-      if (prevElement && /^H[1-6]$/.test(prevElement.tagName)) {
+      // First, check for .table-title-row element before the table
+      let prevElement = table.parentElement?.previousElementSibling;
+      while (prevElement && prevElement.nodeType !== 1) {
+        prevElement = prevElement.previousElementSibling;
+      }
+      
+      if (prevElement && (prevElement as HTMLElement).classList?.contains('table-title-row')) {
         title = prevElement.textContent?.trim() || '';
+        titleElement = prevElement as HTMLElement;
+        console.log(`🔍 Found .table-title-row: "${title}"`);
+      } else {
+        // Extract title from first row
+        const firstRow = table.querySelector('tr');
+        if (firstRow) {
+          const cells = firstRow.querySelectorAll('td, th');
+          console.log(`🔍 Processing table - first row has ${cells.length} cells`);
+          
+          if (cells.length === 1) {
+            // Single cell - use its content as title
+            title = cells[0].textContent?.trim() || '';
+            console.log(`🔍 Single cell title: "${title}"`);
+          } else if (cells.length > 0) {
+            // Multiple cells - check various conditions
+            const firstCell = cells[0];
+            const cellText = firstCell.textContent?.trim() || '';
+            
+            if (firstCell.hasAttribute('colspan')) {
+              // Cell spans multiple columns, likely a title
+              title = cellText;
+              console.log(`🔍 Colspan title: "${title}"`);
+            } else if (cellText.toLowerCase().includes('table') && cellText.includes(':')) {
+              // Text pattern matches table title format
+              title = cellText;
+              console.log(`🔍 Pattern match title: "${title}"`);
+            } else {
+              // Combine all cells in first row as title
+              title = Array.from(cells)
+                .map(cell => cell.textContent?.trim())
+                .filter(text => text)
+                .join(' - ');
+              console.log(`🔍 Combined cells title: "${title}"`);
+            }
+          }
+        }
       }
     }
 
@@ -48,6 +90,15 @@ export function useTableEnhancementV2(containerSelector?: string) {
     
     // Clone the table and its context
     const tableClone = table.cloneNode(true) as HTMLTableElement;
+    
+    // Remove the first row from the cloned table if we extracted it as a title
+    if (title && !caption) {
+      const firstRowClone = tableClone.querySelector('tr');
+      if (firstRowClone) {
+        firstRowClone.remove();
+        console.log(`🔍 Removed first row from cloned table for title: "${title}"`);
+      }
+    }
     
     // Collect footnotes more efficiently
     let footnotesHtml = '';
@@ -80,6 +131,10 @@ export function useTableEnhancementV2(containerSelector?: string) {
 
     // Clean up title and footnotes from DOM
     if (caption) caption.remove();
+    if (titleElement) {
+      titleElement.remove();
+      console.log(`🔍 Removed .table-title-row element`);
+    }
     const prevElement = container.previousElementSibling;
     if (prevElement && /^H[1-6]$/.test(prevElement.tagName) && prevElement.textContent === title) {
       prevElement.remove();

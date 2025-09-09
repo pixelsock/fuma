@@ -44,6 +44,9 @@ function initRuntime() {
     Object.assign(process.versions, { node: "22.14.0", ...process.versions });
     globalThis.__dirname ??= "";
     globalThis.__filename ??= "";
+    // Some packages rely on `import.meta.url` but it is undefined in workerd
+    // For example it causes a bunch of issues, and will make even import crash with payload
+    import.meta.url ??= "file:///worker.js";
     // Do not crash on cache not supported
     // https://github.com/cloudflare/workerd/pull/2434
     // compatibility flag "cache_option_enabled" -> does not support "force-cache"
@@ -70,8 +73,13 @@ function initRuntime() {
     };
     Object.assign(globalThis, {
         Request: CustomRequest,
-        __BUILD_TIMESTAMP_MS__: __BUILD_TIMESTAMP_MS__,
-        __NEXT_BASE_PATH__: __NEXT_BASE_PATH__,
+        __BUILD_TIMESTAMP_MS__,
+        __NEXT_BASE_PATH__,
+        __ASSETS_RUN_WORKER_FIRST__,
+        // The external middleware will use the convertTo function of the `edge` converter
+        // by default it will try to fetch the request, but since we are running everything in the same worker
+        // we need to use the request as is.
+        __dangerous_ON_edge_converter_returns_request: true,
     });
 }
 /**
@@ -101,5 +109,13 @@ function populateProcessEnv(url, env) {
             port: url.port,
         },
     });
+    /* We need to set this environment variable to make redirects work properly in preview mode.
+     * Next sets this in standalone mode during `startServer`. Without this the protocol would always be `https` here:
+     * https://github.com/vercel/next.js/blob/6b1e48080e896e0d44a05fe009cb79d2d3f91774/packages/next/src/server/app-render/action-handler.ts#L307-L316
+     */
+    process.env.__NEXT_PRIVATE_ORIGIN = url.origin;
+    // `__DEPLOYMENT_ID__` is a string (passed via ESBuild).
+    if (__DEPLOYMENT_ID__) {
+        process.env.DEPLOYMENT_ID = __DEPLOYMENT_ID__;
+    }
 }
-/* eslint-enable no-var */

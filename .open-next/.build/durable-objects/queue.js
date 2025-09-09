@@ -1,6 +1,6 @@
-globalThis.openNextDebug = false;globalThis.openNextVersion = "3.5.7";
+globalThis.openNextDebug = false;globalThis.openNextVersion = "3.7.4";
 
-// node_modules/@opennextjs/aws/dist/utils/error.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/error.js
 var IgnorableError = class extends Error {
   __openNextInternal = true;
   canIgnore = true;
@@ -36,7 +36,7 @@ function isOpenNextError(e) {
   }
 }
 
-// node_modules/@opennextjs/aws/dist/adapters/logger.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/logger.js
 function debug(...args) {
   if (globalThis.openNextDebug) {
     console.log(...args);
@@ -86,7 +86,7 @@ function getOpenNextErrorLogLevel() {
   }
 }
 
-// node_modules/@opennextjs/cloudflare/dist/api/durable-objects/queue.js
+// node_modules/.pnpm/@opennextjs+cloudflare@1.6.4_wrangler@4.27.0/node_modules/@opennextjs/cloudflare/dist/api/durable-objects/queue.js
 import { DurableObject } from "cloudflare:workers";
 var DEFAULT_MAX_REVALIDATION = 5;
 var DEFAULT_REVALIDATION_TIMEOUT_MS = 1e4;
@@ -124,6 +124,9 @@ var DOQueueHandler = class extends DurableObject {
     debug(`Durable object initialized`);
   }
   async revalidate(msg) {
+    if (this.ongoingRevalidations.size > 2 * this.maxRevalidations) {
+      warn(`Your durable object has 2 times the maximum number of revalidations (${this.maxRevalidations}) in progress. If this happens often, you should consider increasing the NEXT_CACHE_DO_QUEUE_MAX_REVALIDATION or the number of durable objects with the MAX_REVALIDATE_CONCURRENCY env var.`);
+    }
     if (this.ongoingRevalidations.has(msg.MessageDeduplicationId))
       return;
     if (this.routeInFailedState.has(msg.MessageDeduplicationId))
@@ -132,28 +135,30 @@ var DOQueueHandler = class extends DurableObject {
       return;
     if (this.ongoingRevalidations.size >= this.maxRevalidations) {
       debug(`The maximum number of revalidations (${this.maxRevalidations}) is reached. Blocking until one of the revalidations finishes.`);
-      const ongoingRevalidations = this.ongoingRevalidations.values();
-      await this.ctx.blockConcurrencyWhile(async () => {
+      while (this.ongoingRevalidations.size >= this.maxRevalidations) {
+        const ongoingRevalidations = this.ongoingRevalidations.values();
         debug(`Waiting for one of the revalidations to finish`);
         await Promise.race(ongoingRevalidations);
-      });
+      }
     }
     const revalidationPromise = this.executeRevalidation(msg);
     this.ongoingRevalidations.set(msg.MessageDeduplicationId, revalidationPromise);
     this.ctx.waitUntil(revalidationPromise);
   }
   async executeRevalidation(msg) {
+    let response;
     try {
       debug(`Revalidating ${msg.MessageBody.host}${msg.MessageBody.url}`);
       const { MessageBody: { host, url } } = msg;
       const protocol = host.includes("localhost") ? "http" : "https";
-      const response = await this.service.fetch(`${protocol}://${host}${url}`, {
+      response = await this.service.fetch(`${protocol}://${host}${url}`, {
         method: "HEAD",
         headers: {
           // This is defined during build
-          "x-prerender-revalidate": "7ae975dec56f727d7adf09ea431eeeac",
+          "x-prerender-revalidate": "889b1f23e95803b06170e688268d7b4c",
           "x-isr": "1"
         },
+        // This one is kind of problematic, it will always show the wall time of the revalidation to `this.revalidationTimeout`
         signal: AbortSignal.timeout(this.revalidationTimeout)
       });
       if (response.status === 200 && response.headers.get("x-nextjs-cache") !== "REVALIDATED") {
@@ -174,7 +179,7 @@ var DOQueueHandler = class extends DurableObject {
           "INSERT OR REPLACE INTO sync (id, lastSuccess, buildId) VALUES (?, unixepoch(), ?)",
           // We cannot use the deduplication id because it's not unique per route - every time a route is revalidated, the deduplication id is different.
           `${host}${url}`,
-          "dy4mg6vtT-Gzau7a5YQPy"
+          "LjGV6UAoGcX-Z2STpEkZV"
         );
       }
       this.routeInFailedState.delete(msg.MessageDeduplicationId);
@@ -185,6 +190,10 @@ var DOQueueHandler = class extends DurableObject {
       error(e);
     } finally {
       this.ongoingRevalidations.delete(msg.MessageDeduplicationId);
+      try {
+        await response?.body?.cancel();
+      } catch {
+      }
     }
   }
   async alarm() {
@@ -222,7 +231,7 @@ var DOQueueHandler = class extends DurableObject {
     }
     this.routeInFailedState.set(msg.MessageDeduplicationId, updatedFailedState);
     if (!this.disableSQLite) {
-      this.sql.exec("INSERT OR REPLACE INTO failed_state (id, data, buildId) VALUES (?, ?, ?)", msg.MessageDeduplicationId, JSON.stringify(updatedFailedState), "dy4mg6vtT-Gzau7a5YQPy");
+      this.sql.exec("INSERT OR REPLACE INTO failed_state (id, data, buildId) VALUES (?, ?, ?)", msg.MessageDeduplicationId, JSON.stringify(updatedFailedState), "LjGV6UAoGcX-Z2STpEkZV");
     }
     await this.addAlarm();
   }
@@ -246,8 +255,8 @@ var DOQueueHandler = class extends DurableObject {
       return;
     this.sql.exec("CREATE TABLE IF NOT EXISTS failed_state (id TEXT PRIMARY KEY, data TEXT, buildId TEXT)");
     this.sql.exec("CREATE TABLE IF NOT EXISTS sync (id TEXT PRIMARY KEY, lastSuccess INTEGER, buildId TEXT)");
-    this.sql.exec("DELETE FROM failed_state WHERE buildId != ?", "dy4mg6vtT-Gzau7a5YQPy");
-    this.sql.exec("DELETE FROM sync WHERE buildId != ?", "dy4mg6vtT-Gzau7a5YQPy");
+    this.sql.exec("DELETE FROM failed_state WHERE buildId != ?", "LjGV6UAoGcX-Z2STpEkZV");
+    this.sql.exec("DELETE FROM sync WHERE buildId != ?", "LjGV6UAoGcX-Z2STpEkZV");
     const failedStateCursor = this.sql.exec("SELECT * FROM failed_state");
     for (const row of failedStateCursor) {
       this.routeInFailedState.set(row.id, JSON.parse(row.data));

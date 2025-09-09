@@ -1,6 +1,6 @@
-globalThis.openNextDebug = false;globalThis.openNextVersion = "3.5.7";
+globalThis.openNextDebug = false;globalThis.openNextVersion = "3.7.4";
 
-// node_modules/@opennextjs/cloudflare/dist/api/durable-objects/sharded-tag-cache.js
+// node_modules/.pnpm/@opennextjs+cloudflare@1.6.4_wrangler@4.27.0/node_modules/@opennextjs/cloudflare/dist/api/durable-objects/sharded-tag-cache.js
 import { DurableObject } from "cloudflare:workers";
 var DOShardedTagCache = class extends DurableObject {
   sql;
@@ -11,6 +11,17 @@ var DOShardedTagCache = class extends DurableObject {
       this.sql.exec(`CREATE TABLE IF NOT EXISTS revalidations (tag TEXT PRIMARY KEY, revalidatedAt INTEGER)`);
     });
   }
+  async getLastRevalidated(tags) {
+    try {
+      const result = this.sql.exec(`SELECT MAX(revalidatedAt) AS time FROM revalidations WHERE tag IN (${tags.map(() => "?").join(", ")})`, ...tags).toArray();
+      if (result.length === 0)
+        return 0;
+      return result[0]?.time;
+    } catch (e) {
+      console.error(e);
+      return 0;
+    }
+  }
   async hasBeenRevalidated(tags, lastModified) {
     return this.sql.exec(`SELECT 1 FROM revalidations WHERE tag IN (${tags.map(() => "?").join(", ")}) AND revalidatedAt > ? LIMIT 1`, ...tags, lastModified ?? Date.now()).toArray().length > 0;
   }
@@ -18,6 +29,10 @@ var DOShardedTagCache = class extends DurableObject {
     tags.forEach((tag) => {
       this.sql.exec(`INSERT OR REPLACE INTO revalidations (tag, revalidatedAt) VALUES (?, ?)`, tag, lastModified);
     });
+  }
+  async getRevalidationTimes(tags) {
+    const result = this.sql.exec(`SELECT tag, revalidatedAt FROM revalidations WHERE tag IN (${tags.map(() => "?").join(", ")})`, ...tags).toArray();
+    return Object.fromEntries(result.map((row) => [row.tag, row.revalidatedAt]));
   }
 };
 export {

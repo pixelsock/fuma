@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:cloudflare": "opennextjs-cloudflare build",
     "dev": "next dev -p 3002",
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf-typegen": "wrangler types",
     "postinstall": "fumadocs-mdx",
     "sync": "tsx scripts/sync-directus.ts",
     "sync:watch": "tsx --watch scripts/sync-directus.ts"

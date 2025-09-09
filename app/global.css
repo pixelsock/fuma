@@ -57,7 +57,6 @@
   border: 1px solid #e2e8f0 !important;
   border-radius: 0.5rem !important;
   overflow: hidden !important;
-  margin: 1rem 0 !important;
 }
 
 .dark .enhanced-table-container {
@@ -66,7 +65,6 @@
 
 /* Preserve original table wrapper styling */
 .table-wrapper {
-  margin: 1rem 0 !important;
   overflow-x: auto !important;
 }
 

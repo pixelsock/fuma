@@ -1,17 +1,21 @@
-globalThis.monorepoPackagePath = "";globalThis.openNextDebug = false;globalThis.openNextVersion = "3.5.7";
+globalThis.monorepoPackagePath = "";globalThis.openNextDebug = false;globalThis.openNextVersion = "3.7.4";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {
-  if (typeof require !== "undefined")
-    return require.apply(this, arguments);
+  if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __commonJS = (cb, mod3) => function __require2() {
+  return mod3 || (0, cb[__getOwnPropNames(cb)[0]])((mod3 = { exports: {} }).exports, mod3), mod3.exports;
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -26,9 +30,17 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __reExport = (target, mod3, secondTarget) => (__copyProps(target, mod3, "default"), secondTarget && __copyProps(secondTarget, mod3, "default"));
+var __toESM = (mod3, isNodeMode, target) => (target = mod3 != null ? __create(__getProtoOf(mod3)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod3 || !mod3.__esModule ? __defProp(target, "default", { value: mod3, enumerable: true }) : target,
+  mod3
+));
 var __toCommonJS = (mod3) => __copyProps(__defProp({}, "__esModule", { value: true }), mod3);
 
-// node_modules/@opennextjs/aws/dist/utils/error.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/error.js
 function isOpenNextError(e) {
   try {
     return "__openNextInternal" in e;
@@ -38,7 +50,7 @@ function isOpenNextError(e) {
 }
 var IgnorableError, FatalError;
 var init_error = __esm({
-  "node_modules/@opennextjs/aws/dist/utils/error.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/error.js"() {
     IgnorableError = class extends Error {
       __openNextInternal = true;
       canIgnore = true;
@@ -60,7 +72,7 @@ var init_error = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/adapters/logger.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/logger.js
 function debug(...args) {
   if (globalThis.openNextDebug) {
     console.log(...args);
@@ -103,7 +115,7 @@ function getOpenNextErrorLogLevel() {
 }
 var DOWNPLAYED_ERROR_LOGS, isDownplayedErrorLog;
 var init_logger = __esm({
-  "node_modules/@opennextjs/aws/dist/adapters/logger.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/logger.js"() {
     init_error();
     DOWNPLAYED_ERROR_LOGS = [
       {
@@ -116,12 +128,15 @@ var init_logger = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/http/util.js
-function parseCookies(cookies) {
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/http/util.js
+function parseSetCookieHeader(cookies) {
   if (!cookies) {
     return [];
   }
-  return typeof cookies === "string" ? cookies.split(/(?<!Expires=\w+),/i).map((c) => c.trim()) : cookies;
+  if (typeof cookies === "string") {
+    return cookies.split(/(?<!Expires=\w+),/i).map((c) => c.trim());
+  }
+  return cookies;
 }
 function getQueryFromIterator(it) {
   const query = {};
@@ -140,7 +155,7 @@ function getQueryFromIterator(it) {
 }
 var parseHeaders, convertHeader;
 var init_util = __esm({
-  "node_modules/@opennextjs/aws/dist/http/util.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/http/util.js"() {
     parseHeaders = (headers) => {
       const result = {};
       if (!headers) {
@@ -175,11 +190,8 @@ var init_node_module = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/utils/stream.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/stream.js
 import { Readable } from "node:stream";
-function toReadableStream(value, isBase64) {
-  return Readable.toWeb(Readable.from(Buffer.from(value, isBase64 ? "base64" : "utf8")));
-}
 function emptyReadableStream() {
   if (process.env.OPEN_NEXT_FORCE_NON_EMPTY_RESPONSE === "true") {
     return Readable.toWeb(Readable.from([Buffer.from("SOMETHING")]));
@@ -187,31 +199,192 @@ function emptyReadableStream() {
   return Readable.toWeb(Readable.from([]));
 }
 var init_stream = __esm({
-  "node_modules/@opennextjs/aws/dist/utils/stream.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/stream.js"() {
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/converters/utils.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/converters/utils.js
 function getQueryFromSearchParams(searchParams) {
   return getQueryFromIterator(searchParams.entries());
 }
 var init_utils = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/converters/utils.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/converters/utils.js"() {
     init_util();
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/converters/edge.js
+// node_modules/.pnpm/cookie@1.0.2/node_modules/cookie/dist/index.js
+var require_dist = __commonJS({
+  "node_modules/.pnpm/cookie@1.0.2/node_modules/cookie/dist/index.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.parse = parse2;
+    exports.serialize = serialize;
+    var cookieNameRegExp = /^[\u0021-\u003A\u003C\u003E-\u007E]+$/;
+    var cookieValueRegExp = /^[\u0021-\u003A\u003C-\u007E]*$/;
+    var domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
+    var pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
+    var __toString = Object.prototype.toString;
+    var NullObject = /* @__PURE__ */ (() => {
+      const C = function() {
+      };
+      C.prototype = /* @__PURE__ */ Object.create(null);
+      return C;
+    })();
+    function parse2(str, options) {
+      const obj = new NullObject();
+      const len = str.length;
+      if (len < 2)
+        return obj;
+      const dec = options?.decode || decode;
+      let index = 0;
+      do {
+        const eqIdx = str.indexOf("=", index);
+        if (eqIdx === -1)
+          break;
+        const colonIdx = str.indexOf(";", index);
+        const endIdx = colonIdx === -1 ? len : colonIdx;
+        if (eqIdx > endIdx) {
+          index = str.lastIndexOf(";", eqIdx - 1) + 1;
+          continue;
+        }
+        const keyStartIdx = startIndex(str, index, eqIdx);
+        const keyEndIdx = endIndex(str, eqIdx, keyStartIdx);
+        const key = str.slice(keyStartIdx, keyEndIdx);
+        if (obj[key] === void 0) {
+          let valStartIdx = startIndex(str, eqIdx + 1, endIdx);
+          let valEndIdx = endIndex(str, endIdx, valStartIdx);
+          const value = dec(str.slice(valStartIdx, valEndIdx));
+          obj[key] = value;
+        }
+        index = endIdx + 1;
+      } while (index < len);
+      return obj;
+    }
+    function startIndex(str, index, max) {
+      do {
+        const code = str.charCodeAt(index);
+        if (code !== 32 && code !== 9)
+          return index;
+      } while (++index < max);
+      return max;
+    }
+    function endIndex(str, index, min) {
+      while (index > min) {
+        const code = str.charCodeAt(--index);
+        if (code !== 32 && code !== 9)
+          return index + 1;
+      }
+      return min;
+    }
+    function serialize(name, val, options) {
+      const enc = options?.encode || encodeURIComponent;
+      if (!cookieNameRegExp.test(name)) {
+        throw new TypeError(`argument name is invalid: ${name}`);
+      }
+      const value = enc(val);
+      if (!cookieValueRegExp.test(value)) {
+        throw new TypeError(`argument val is invalid: ${val}`);
+      }
+      let str = name + "=" + value;
+      if (!options)
+        return str;
+      if (options.maxAge !== void 0) {
+        if (!Number.isInteger(options.maxAge)) {
+          throw new TypeError(`option maxAge is invalid: ${options.maxAge}`);
+        }
+        str += "; Max-Age=" + options.maxAge;
+      }
+      if (options.domain) {
+        if (!domainValueRegExp.test(options.domain)) {
+          throw new TypeError(`option domain is invalid: ${options.domain}`);
+        }
+        str += "; Domain=" + options.domain;
+      }
+      if (options.path) {
+        if (!pathValueRegExp.test(options.path)) {
+          throw new TypeError(`option path is invalid: ${options.path}`);
+        }
+        str += "; Path=" + options.path;
+      }
+      if (options.expires) {
+        if (!isDate(options.expires) || !Number.isFinite(options.expires.valueOf())) {
+          throw new TypeError(`option expires is invalid: ${options.expires}`);
+        }
+        str += "; Expires=" + options.expires.toUTCString();
+      }
+      if (options.httpOnly) {
+        str += "; HttpOnly";
+      }
+      if (options.secure) {
+        str += "; Secure";
+      }
+      if (options.partitioned) {
+        str += "; Partitioned";
+      }
+      if (options.priority) {
+        const priority = typeof options.priority === "string" ? options.priority.toLowerCase() : void 0;
+        switch (priority) {
+          case "low":
+            str += "; Priority=Low";
+            break;
+          case "medium":
+            str += "; Priority=Medium";
+            break;
+          case "high":
+            str += "; Priority=High";
+            break;
+          default:
+            throw new TypeError(`option priority is invalid: ${options.priority}`);
+        }
+      }
+      if (options.sameSite) {
+        const sameSite = typeof options.sameSite === "string" ? options.sameSite.toLowerCase() : options.sameSite;
+        switch (sameSite) {
+          case true:
+          case "strict":
+            str += "; SameSite=Strict";
+            break;
+          case "lax":
+            str += "; SameSite=Lax";
+            break;
+          case "none":
+            str += "; SameSite=None";
+            break;
+          default:
+            throw new TypeError(`option sameSite is invalid: ${options.sameSite}`);
+        }
+      }
+      return str;
+    }
+    function decode(str) {
+      if (str.indexOf("%") === -1)
+        return str;
+      try {
+        return decodeURIComponent(str);
+      } catch (e) {
+        return str;
+      }
+    }
+    function isDate(val) {
+      return __toString.call(val) === "[object Date]";
+    }
+  }
+});
+
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/converters/edge.js
 var edge_exports = {};
 __export(edge_exports, {
   default: () => edge_default
 });
 import { Buffer as Buffer2 } from "node:buffer";
-var converter, edge_default;
+var import_cookie, NULL_BODY_STATUSES, converter, edge_default;
 var init_edge = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/converters/edge.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/converters/edge.js"() {
+    import_cookie = __toESM(require_dist(), 1);
     init_util();
     init_utils();
+    NULL_BODY_STATUSES = /* @__PURE__ */ new Set([101, 103, 204, 205, 304]);
     converter = {
       convertFrom: async (event) => {
         const url = new URL(event.url);
@@ -225,7 +398,8 @@ var init_edge = __esm({
         const rawPath = url.pathname;
         const method = event.method;
         const shouldHaveBody = method !== "GET" && method !== "HEAD";
-        const cookies = Object.fromEntries(parseCookies(event.headers.get("cookie")).map((cookie) => cookie.split("=")));
+        const cookieHeader = event.headers.get("cookie");
+        const cookies = cookieHeader ? import_cookie.default.parse(cookieHeader) : {};
         return {
           type: "core",
           method,
@@ -261,9 +435,23 @@ var init_edge = __esm({
         }
         const headers = new Headers();
         for (const [key, value] of Object.entries(result.headers)) {
-          headers.set(key, Array.isArray(value) ? value.join(",") : value);
+          if (key === "set-cookie" && typeof value === "string") {
+            const cookies = parseSetCookieHeader(value);
+            for (const cookie of cookies) {
+              headers.append(key, cookie);
+            }
+            continue;
+          }
+          if (Array.isArray(value)) {
+            for (const v of value) {
+              headers.append(key, v);
+            }
+          } else {
+            headers.set(key, value);
+          }
         }
-        return new Response(result.body, {
+        const body = NULL_BODY_STATUSES.has(result.statusCode) ? null : result.body;
+        return new Response(body, {
           status: result.statusCode,
           headers
         });
@@ -274,16 +462,16 @@ var init_edge = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/wrappers/cloudflare-node.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/wrappers/cloudflare-node.js
 var cloudflare_node_exports = {};
 __export(cloudflare_node_exports, {
   default: () => cloudflare_node_default
 });
 import { Writable } from "node:stream";
-var NULL_BODY_STATUSES, handler, cloudflare_node_default;
+var NULL_BODY_STATUSES2, handler, cloudflare_node_default;
 var init_cloudflare_node = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/wrappers/cloudflare-node.js"() {
-    NULL_BODY_STATUSES = /* @__PURE__ */ new Set([101, 204, 205, 304]);
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/wrappers/cloudflare-node.js"() {
+    NULL_BODY_STATUSES2 = /* @__PURE__ */ new Set([101, 204, 205, 304]);
     handler = async (handler3, converter2) => async (request, env, ctx) => {
       globalThis.process = process;
       for (const [key, value] of Object.entries(env)) {
@@ -309,7 +497,7 @@ var init_cloudflare_node = __esm({
               controller.enqueue(Uint8Array.from(chunk.chunk ?? chunk));
             }
           });
-          const body = NULL_BODY_STATUSES.has(statusCode) ? null : readable;
+          const body = NULL_BODY_STATUSES2.has(statusCode) ? null : readable;
           const response = new Response(body, {
             status: statusCode,
             headers: responseHeaders
@@ -332,14 +520,14 @@ var init_cloudflare_node = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/tagCache/dummy.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/tagCache/dummy.js
 var dummy_exports = {};
 __export(dummy_exports, {
   default: () => dummy_default
 });
 var dummyTagCache, dummy_default;
 var init_dummy = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/tagCache/dummy.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/tagCache/dummy.js"() {
     dummyTagCache = {
       name: "dummy",
       mode: "original",
@@ -360,14 +548,14 @@ var init_dummy = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/queue/dummy.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/queue/dummy.js
 var dummy_exports2 = {};
 __export(dummy_exports2, {
   default: () => dummy_default2
 });
 var dummyQueue, dummy_default2;
 var init_dummy2 = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/queue/dummy.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/queue/dummy.js"() {
     init_error();
     dummyQueue = {
       name: "dummy",
@@ -379,14 +567,14 @@ var init_dummy2 = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/incrementalCache/dummy.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/incrementalCache/dummy.js
 var dummy_exports3 = {};
 __export(dummy_exports3, {
   default: () => dummy_default3
 });
 var dummyIncrementalCache, dummy_default3;
 var init_dummy3 = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/incrementalCache/dummy.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/incrementalCache/dummy.js"() {
     init_error();
     dummyIncrementalCache = {
       name: "dummy",
@@ -404,14 +592,29 @@ var init_dummy3 = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/proxyExternalRequest/fetch.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/assetResolver/dummy.js
+var dummy_exports4 = {};
+__export(dummy_exports4, {
+  default: () => dummy_default4
+});
+var resolver, dummy_default4;
+var init_dummy4 = __esm({
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/assetResolver/dummy.js"() {
+    resolver = {
+      name: "dummy"
+    };
+    dummy_default4 = resolver;
+  }
+});
+
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/proxyExternalRequest/fetch.js
 var fetch_exports = {};
 __export(fetch_exports, {
   default: () => fetch_default
 });
 var fetchProxy, fetch_default;
 var init_fetch = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/proxyExternalRequest/fetch.js"() {
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/proxyExternalRequest/fetch.js"() {
     init_stream();
     fetchProxy = {
       name: "fetch-proxy",
@@ -441,15 +644,15 @@ var init_fetch = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/overrides/cdnInvalidation/dummy.js
-var dummy_exports4 = {};
-__export(dummy_exports4, {
-  default: () => dummy_default4
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/cdnInvalidation/dummy.js
+var dummy_exports5 = {};
+__export(dummy_exports5, {
+  default: () => dummy_default5
 });
-var dummy_default4;
-var init_dummy4 = __esm({
-  "node_modules/@opennextjs/aws/dist/overrides/cdnInvalidation/dummy.js"() {
-    dummy_default4 = {
+var dummy_default5;
+var init_dummy5 = __esm({
+  "node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/overrides/cdnInvalidation/dummy.js"() {
+    dummy_default5 = {
       name: "dummy",
       invalidatePaths: (_) => {
         return Promise.resolve();
@@ -458,28 +661,27 @@ var init_dummy4 = __esm({
   }
 });
 
-// node_modules/@opennextjs/aws/dist/adapters/config/index.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/config/index.js
 init_logger();
 import path from "node:path";
 globalThis.__dirname ??= "";
 var NEXT_DIR = path.join(__dirname, ".next");
 var OPEN_NEXT_DIR = path.join(__dirname, ".open-next");
 debug({ NEXT_DIR, OPEN_NEXT_DIR });
-var NextConfig = { "env": { "DIRECTUS_URL": "https://admin.charlotteudo.org", "DIRECTUS_TOKEN": "H8AAfXMOVHZc7Bicu1JVsaNdF0ZXIYoM", "DIRECTUS_EMAIL": "nick@stump.works", "DIRECTUS_PASSWORD": "admin" }, "eslint": { "ignoreDuringBuilds": false }, "typescript": { "ignoreBuildErrors": false, "tsconfigPath": "tsconfig.json" }, "distDir": ".next", "cleanDistDir": true, "assetPrefix": "/articles", "cacheMaxMemorySize": 52428800, "configOrigin": "next.config.mjs", "useFileSystemPublicRoutes": true, "generateEtags": true, "pageExtensions": ["tsx", "ts", "jsx", "js"], "poweredByHeader": true, "compress": true, "images": { "deviceSizes": [640, 750, 828, 1080, 1200, 1920, 2048, 3840], "imageSizes": [16, 32, 48, 64, 96, 128, 256, 384], "path": "/articles/_next/image", "loader": "default", "loaderFile": "", "domains": [], "disableStaticImages": false, "minimumCacheTTL": 60, "formats": ["image/webp"], "dangerouslyAllowSVG": false, "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;", "contentDispositionType": "attachment", "remotePatterns": [{ "protocol": "http", "hostname": "localhost", "port": "8056", "pathname": "/assets/**" }, { "protocol": "https", "hostname": "admin.charlotteudo.org", "pathname": "/assets/**" }], "unoptimized": false }, "devIndicators": { "position": "bottom-left" }, "onDemandEntries": { "maxInactiveAge": 6e4, "pagesBufferLength": 5 }, "amp": { "canonicalBase": "/articles" }, "basePath": "/articles", "sassOptions": {}, "trailingSlash": false, "i18n": null, "productionBrowserSourceMaps": false, "excludeDefaultMomentLocales": true, "serverRuntimeConfig": {}, "publicRuntimeConfig": {}, "reactProductionProfiling": false, "reactStrictMode": true, "reactMaxHeadersLength": 6e3, "httpAgentOptions": { "keepAlive": true }, "logging": {}, "expireTime": 31536e3, "staticPageGenerationTimeout": 60, "output": "standalone", "modularizeImports": { "@mui/icons-material": { "transform": "@mui/icons-material/{{member}}" }, "lodash": { "transform": "lodash/{{member}}" } }, "outputFileTracingRoot": "/Users/nick/Sites/charlotteUDO/directus/frontend-fumadocs/fuma", "experimental": { "nodeMiddleware": false, "cacheLife": { "default": { "stale": 300, "revalidate": 900, "expire": 4294967294 }, "seconds": { "stale": 0, "revalidate": 1, "expire": 60 }, "minutes": { "stale": 300, "revalidate": 60, "expire": 3600 }, "hours": { "stale": 300, "revalidate": 3600, "expire": 86400 }, "days": { "stale": 300, "revalidate": 86400, "expire": 604800 }, "weeks": { "stale": 300, "revalidate": 604800, "expire": 2592e3 }, "max": { "stale": 300, "revalidate": 2592e3, "expire": 4294967294 } }, "cacheHandlers": {}, "cssChunking": true, "multiZoneDraftMode": false, "appNavFailHandling": false, "prerenderEarlyExit": true, "serverMinification": true, "serverSourceMaps": false, "linkNoTouchStart": false, "caseSensitiveRoutes": false, "clientSegmentCache": false, "dynamicOnHover": false, "preloadEntriesOnStart": true, "clientRouterFilter": true, "clientRouterFilterRedirects": false, "fetchCacheKeyPrefix": "", "middlewarePrefetch": "flexible", "optimisticClientCache": true, "manualClientBasePath": false, "cpus": 9, "memoryBasedWorkersCount": false, "imgOptConcurrency": null, "imgOptTimeoutInSeconds": 7, "imgOptMaxInputPixels": 268402689, "imgOptSequentialRead": null, "isrFlushToDisk": true, "workerThreads": false, "optimizeCss": false, "nextScriptWorkers": false, "scrollRestoration": false, "externalDir": false, "disableOptimizedLoading": false, "gzipSize": true, "craCompat": false, "esmExternals": true, "fullySpecified": false, "swcTraceProfiling": false, "forceSwcTransforms": false, "largePageDataBytes": 128e3, "typedRoutes": false, "typedEnv": false, "parallelServerCompiles": false, "parallelServerBuildTraces": false, "ppr": false, "authInterrupts": false, "webpackMemoryOptimizations": false, "optimizeServerReact": true, "useEarlyImport": false, "viewTransition": false, "routerBFCache": false, "staleTimes": { "dynamic": 0, "static": 300 }, "serverComponentsHmrCache": true, "staticGenerationMaxConcurrency": 8, "staticGenerationMinPagesPerWorker": 25, "dynamicIO": false, "inlineCss": false, "useCache": false, "optimizePackageImports": ["lucide-react", "date-fns", "lodash-es", "ramda", "antd", "react-bootstrap", "ahooks", "@ant-design/icons", "@headlessui/react", "@headlessui-float/react", "@heroicons/react/20/solid", "@heroicons/react/24/solid", "@heroicons/react/24/outline", "@visx/visx", "@tremor/react", "rxjs", "@mui/material", "@mui/icons-material", "recharts", "react-use", "effect", "@effect/schema", "@effect/platform", "@effect/platform-node", "@effect/platform-browser", "@effect/platform-bun", "@effect/sql", "@effect/sql-mssql", "@effect/sql-mysql2", "@effect/sql-pg", "@effect/sql-squlite-node", "@effect/sql-squlite-bun", "@effect/sql-squlite-wasm", "@effect/sql-squlite-react-native", "@effect/rpc", "@effect/rpc-http", "@effect/typeclass", "@effect/experimental", "@effect/opentelemetry", "@material-ui/core", "@material-ui/icons", "@tabler/icons-react", "mui-core", "react-icons/ai", "react-icons/bi", "react-icons/bs", "react-icons/cg", "react-icons/ci", "react-icons/di", "react-icons/fa", "react-icons/fa6", "react-icons/fc", "react-icons/fi", "react-icons/gi", "react-icons/go", "react-icons/gr", "react-icons/hi", "react-icons/hi2", "react-icons/im", "react-icons/io", "react-icons/io5", "react-icons/lia", "react-icons/lib", "react-icons/lu", "react-icons/md", "react-icons/pi", "react-icons/ri", "react-icons/rx", "react-icons/si", "react-icons/sl", "react-icons/tb", "react-icons/tfi", "react-icons/ti", "react-icons/vsc", "react-icons/wi"], "trustHostHeader": false, "isExperimentalCompile": false }, "htmlLimitedBots": "Mediapartners-Google|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti", "bundlePagesRouterDependencies": false, "configFileName": "next.config.mjs", "transpilePackages": ["fumadocs-ui", "fumadocs-core"], "turbopack": { "root": "/Users/nick/Sites/charlotteUDO/directus/frontend-fumadocs/fuma" } };
-var BuildId = "dy4mg6vtT-Gzau7a5YQPy";
+var NextConfig = { "env": { "DIRECTUS_URL": "https://admin.charlotteudo.org", "DIRECTUS_TOKEN": "Z71kmsJQS6dANzfg1PQkLtWhbwo5UUHZ", "DIRECTUS_EMAIL": "nick@stump.works", "DIRECTUS_PASSWORD": "admin" }, "eslint": { "ignoreDuringBuilds": false }, "typescript": { "ignoreBuildErrors": false, "tsconfigPath": "tsconfig.json" }, "distDir": ".next", "cleanDistDir": true, "assetPrefix": "/articles", "cacheMaxMemorySize": 52428800, "configOrigin": "next.config.mjs", "useFileSystemPublicRoutes": true, "generateEtags": true, "pageExtensions": ["tsx", "ts", "jsx", "js"], "poweredByHeader": true, "compress": true, "images": { "deviceSizes": [640, 750, 828, 1080, 1200, 1920, 2048, 3840], "imageSizes": [16, 32, 48, 64, 96, 128, 256, 384], "path": "/articles/_next/image", "loader": "default", "loaderFile": "", "domains": [], "disableStaticImages": false, "minimumCacheTTL": 60, "formats": ["image/webp"], "dangerouslyAllowSVG": false, "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;", "contentDispositionType": "attachment", "remotePatterns": [{ "protocol": "http", "hostname": "localhost", "port": "8056", "pathname": "/assets/**" }, { "protocol": "https", "hostname": "admin.charlotteudo.org", "pathname": "/assets/**" }], "unoptimized": false }, "devIndicators": { "position": "bottom-left" }, "onDemandEntries": { "maxInactiveAge": 6e4, "pagesBufferLength": 5 }, "amp": { "canonicalBase": "/articles" }, "basePath": "/articles", "sassOptions": {}, "trailingSlash": false, "i18n": null, "productionBrowserSourceMaps": false, "excludeDefaultMomentLocales": true, "serverRuntimeConfig": {}, "publicRuntimeConfig": {}, "reactProductionProfiling": false, "reactStrictMode": true, "reactMaxHeadersLength": 6e3, "httpAgentOptions": { "keepAlive": true }, "logging": {}, "expireTime": 31536e3, "staticPageGenerationTimeout": 60, "output": "standalone", "modularizeImports": { "@mui/icons-material": { "transform": "@mui/icons-material/{{member}}" }, "lodash": { "transform": "lodash/{{member}}" } }, "outputFileTracingRoot": "/Users/nick/Sites/charlotteUDO/directus/frontend-fumadocs/fuma", "experimental": { "nodeMiddleware": false, "cacheLife": { "default": { "stale": 300, "revalidate": 900, "expire": 4294967294 }, "seconds": { "stale": 0, "revalidate": 1, "expire": 60 }, "minutes": { "stale": 300, "revalidate": 60, "expire": 3600 }, "hours": { "stale": 300, "revalidate": 3600, "expire": 86400 }, "days": { "stale": 300, "revalidate": 86400, "expire": 604800 }, "weeks": { "stale": 300, "revalidate": 604800, "expire": 2592e3 }, "max": { "stale": 300, "revalidate": 2592e3, "expire": 4294967294 } }, "cacheHandlers": {}, "cssChunking": true, "multiZoneDraftMode": false, "appNavFailHandling": false, "prerenderEarlyExit": true, "serverMinification": true, "serverSourceMaps": false, "linkNoTouchStart": false, "caseSensitiveRoutes": false, "clientSegmentCache": false, "dynamicOnHover": false, "preloadEntriesOnStart": true, "clientRouterFilter": true, "clientRouterFilterRedirects": false, "fetchCacheKeyPrefix": "", "middlewarePrefetch": "flexible", "optimisticClientCache": true, "manualClientBasePath": false, "cpus": 9, "memoryBasedWorkersCount": false, "imgOptConcurrency": null, "imgOptTimeoutInSeconds": 7, "imgOptMaxInputPixels": 268402689, "imgOptSequentialRead": null, "isrFlushToDisk": true, "workerThreads": false, "optimizeCss": false, "nextScriptWorkers": false, "scrollRestoration": false, "externalDir": false, "disableOptimizedLoading": false, "gzipSize": true, "craCompat": false, "esmExternals": true, "fullySpecified": false, "swcTraceProfiling": false, "forceSwcTransforms": false, "largePageDataBytes": 128e3, "typedRoutes": false, "typedEnv": false, "parallelServerCompiles": false, "parallelServerBuildTraces": false, "ppr": false, "authInterrupts": false, "webpackMemoryOptimizations": false, "optimizeServerReact": true, "useEarlyImport": false, "viewTransition": false, "routerBFCache": false, "staleTimes": { "dynamic": 0, "static": 300 }, "serverComponentsHmrCache": true, "staticGenerationMaxConcurrency": 8, "staticGenerationMinPagesPerWorker": 25, "dynamicIO": false, "inlineCss": false, "useCache": false, "optimizePackageImports": ["lucide-react", "date-fns", "lodash-es", "ramda", "antd", "react-bootstrap", "ahooks", "@ant-design/icons", "@headlessui/react", "@headlessui-float/react", "@heroicons/react/20/solid", "@heroicons/react/24/solid", "@heroicons/react/24/outline", "@visx/visx", "@tremor/react", "rxjs", "@mui/material", "@mui/icons-material", "recharts", "react-use", "effect", "@effect/schema", "@effect/platform", "@effect/platform-node", "@effect/platform-browser", "@effect/platform-bun", "@effect/sql", "@effect/sql-mssql", "@effect/sql-mysql2", "@effect/sql-pg", "@effect/sql-squlite-node", "@effect/sql-squlite-bun", "@effect/sql-squlite-wasm", "@effect/sql-squlite-react-native", "@effect/rpc", "@effect/rpc-http", "@effect/typeclass", "@effect/experimental", "@effect/opentelemetry", "@material-ui/core", "@material-ui/icons", "@tabler/icons-react", "mui-core", "react-icons/ai", "react-icons/bi", "react-icons/bs", "react-icons/cg", "react-icons/ci", "react-icons/di", "react-icons/fa", "react-icons/fa6", "react-icons/fc", "react-icons/fi", "react-icons/gi", "react-icons/go", "react-icons/gr", "react-icons/hi", "react-icons/hi2", "react-icons/im", "react-icons/io", "react-icons/io5", "react-icons/lia", "react-icons/lib", "react-icons/lu", "react-icons/md", "react-icons/pi", "react-icons/ri", "react-icons/rx", "react-icons/si", "react-icons/sl", "react-icons/tb", "react-icons/tfi", "react-icons/ti", "react-icons/vsc", "react-icons/wi"], "trustHostHeader": false, "isExperimentalCompile": false }, "htmlLimitedBots": "Mediapartners-Google|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti", "bundlePagesRouterDependencies": false, "configFileName": "next.config.mjs", "transpilePackages": ["fumadocs-ui", "fumadocs-core"], "turbopack": { "root": "/Users/nick/Sites/charlotteUDO/directus/frontend-fumadocs/fuma" } };
+var BuildId = "LjGV6UAoGcX-Z2STpEkZV";
 var HtmlPages = ["/404"];
-var RoutesManifest = { "basePath": "/articles", "rewrites": { "beforeFiles": [], "afterFiles": [], "fallback": [] }, "redirects": [{ "source": "/articles/", "destination": "/articles", "basePath": false, "internal": true, "statusCode": 308, "regex": "^/articles/$" }, { "source": "/:path+/", "destination": "/:path+", "internal": true, "statusCode": 308, "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$" }], "routes": { "static": [{ "page": "/", "regex": "^/(?:/)?$", "routeKeys": {}, "namedRegex": "^/(?:/)?$" }, { "page": "/_not-found", "regex": "^/_not\\-found(?:/)?$", "routeKeys": {}, "namedRegex": "^/_not\\-found(?:/)?$" }, { "page": "/advisory-committee", "regex": "^/advisory\\-committee(?:/)?$", "routeKeys": {}, "namedRegex": "^/advisory\\-committee(?:/)?$" }, { "page": "/articles-enhanced", "regex": "^/articles\\-enhanced(?:/)?$", "routeKeys": {}, "namedRegex": "^/articles\\-enhanced(?:/)?$" }, { "page": "/articles-listing", "regex": "^/articles\\-listing(?:/)?$", "routeKeys": {}, "namedRegex": "^/articles\\-listing(?:/)?$" }, { "page": "/overlay-districts", "regex": "^/overlay\\-districts(?:/)?$", "routeKeys": {}, "namedRegex": "^/overlay\\-districts(?:/)?$" }, { "page": "/text-amendments", "regex": "^/text\\-amendments(?:/)?$", "routeKeys": {}, "namedRegex": "^/text\\-amendments(?:/)?$" }, { "page": "/versions", "regex": "^/versions(?:/)?$", "routeKeys": {}, "namedRegex": "^/versions(?:/)?$" }, { "page": "/what-is-udo", "regex": "^/what\\-is\\-udo(?:/)?$", "routeKeys": {}, "namedRegex": "^/what\\-is\\-udo(?:/)?$" }, { "page": "/zoning-at-a-glance", "regex": "^/zoning\\-at\\-a\\-glance(?:/)?$", "routeKeys": {}, "namedRegex": "^/zoning\\-at\\-a\\-glance(?:/)?$" }], "dynamic": [{ "page": "/api/articles/[slug]/pdf", "regex": "^/api/articles/([^/]+?)/pdf(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/pdf(?:/)?$" }, { "page": "/articles/[[...slug]]", "regex": "^/articles(?:/(.+?))?(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/articles(?:/(?<nxtPslug>.+?))?(?:/)?$" }], "data": { "static": [], "dynamic": [] } }, "locales": [] };
-var ConfigHeaders = [];
-var PrerenderManifest = { "version": 4, "routes": { "/": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/", "dataRoute": "/index.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/what-is-udo": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/what-is-udo", "dataRoute": "/what-is-udo.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/versions": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/versions", "dataRoute": "/versions.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/overlay-districts": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/overlay-districts", "dataRoute": "/overlay-districts.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/text-amendments": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/text-amendments", "dataRoute": "/text-amendments.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/advisory-committee": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/advisory-committee", "dataRoute": "/advisory-committee.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/zoning-at-a-glance": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/zoning-at-a-glance", "dataRoute": "/zoning-at-a-glance.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/articles-listing": { "experimentalBypassFor": [{ "type": "header", "key": "Next-Action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/articles-listing", "dataRoute": "/articles-listing.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] } }, "dynamicRoutes": {}, "notFoundRoutes": [], "preview": { "previewModeId": "7ae975dec56f727d7adf09ea431eeeac", "previewModeSigningKey": "c405449f67d0e910db65fc5197b44790faca35f7fa76f149a37e7b697e146bb2", "previewModeEncryptionKey": "87ec919a5749ccf905fe82973a2250de027616dd7c621ba52d4d4465a621be0d" } };
+var RoutesManifest = { "basePath": "/articles", "rewrites": { "beforeFiles": [], "afterFiles": [], "fallback": [] }, "redirects": [{ "source": "/articles/", "destination": "/articles", "basePath": false, "internal": true, "statusCode": 308, "regex": "^/articles/$" }, { "source": "/:path+/", "destination": "/:path+", "internal": true, "statusCode": 308, "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$" }], "routes": { "static": [{ "page": "/", "regex": "^/(?:/)?$", "routeKeys": {}, "namedRegex": "^/(?:/)?$" }, { "page": "/_not-found", "regex": "^/_not\\-found(?:/)?$", "routeKeys": {}, "namedRegex": "^/_not\\-found(?:/)?$" }, { "page": "/advisory-committee", "regex": "^/advisory\\-committee(?:/)?$", "routeKeys": {}, "namedRegex": "^/advisory\\-committee(?:/)?$" }, { "page": "/articles-enhanced", "regex": "^/articles\\-enhanced(?:/)?$", "routeKeys": {}, "namedRegex": "^/articles\\-enhanced(?:/)?$" }, { "page": "/articles-listing", "regex": "^/articles\\-listing(?:/)?$", "routeKeys": {}, "namedRegex": "^/articles\\-listing(?:/)?$" }, { "page": "/overlay-districts", "regex": "^/overlay\\-districts(?:/)?$", "routeKeys": {}, "namedRegex": "^/overlay\\-districts(?:/)?$" }, { "page": "/text-amendments", "regex": "^/text\\-amendments(?:/)?$", "routeKeys": {}, "namedRegex": "^/text\\-amendments(?:/)?$" }, { "page": "/versions", "regex": "^/versions(?:/)?$", "routeKeys": {}, "namedRegex": "^/versions(?:/)?$" }, { "page": "/zoning-at-a-glance", "regex": "^/zoning\\-at\\-a\\-glance(?:/)?$", "routeKeys": {}, "namedRegex": "^/zoning\\-at\\-a\\-glance(?:/)?$" }], "dynamic": [{ "page": "/api/articles/[slug]/pdf", "regex": "^/api/articles/([^/]+?)/pdf(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/api/articles/(?<nxtPslug>[^/]+?)/pdf(?:/)?$" }, { "page": "/articles/[[...slug]]", "regex": "^/articles(?:/(.+?))?(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/articles(?:/(?<nxtPslug>.+?))?(?:/)?$" }], "data": { "static": [], "dynamic": [] } }, "locales": [] };
 var MiddlewareManifest = { "version": 3, "middleware": {}, "functions": {}, "sortedMiddleware": [] };
-var AppPathRoutesManifest = { "/_not-found/page": "/_not-found", "/api/debug-env/route": "/api/debug-env", "/api/articles/[slug]/pdf/route": "/api/articles/[slug]/pdf", "/api/search-articles/route": "/api/search-articles", "/api/search/route": "/api/search", "/api/test-article/route": "/api/test-article", "/api/test-directus-auth/route": "/api/test-directus-auth", "/advisory-committee/page": "/advisory-committee", "/(home)/page": "/", "/articles-listing/page": "/articles-listing", "/articles-enhanced/page": "/articles-enhanced", "/overlay-districts/page": "/overlay-districts", "/zoning-at-a-glance/page": "/zoning-at-a-glance", "/text-amendments/page": "/text-amendments", "/what-is-udo/page": "/what-is-udo", "/versions/page": "/versions", "/articles/[[...slug]]/page": "/articles/[[...slug]]" };
+var AppPathRoutesManifest = { "/api/articles/[slug]/pdf/route": "/api/articles/[slug]/pdf", "/_not-found/page": "/_not-found", "/api/debug-env/route": "/api/debug-env", "/api/search-articles/route": "/api/search-articles", "/api/test-directus-auth/route": "/api/test-directus-auth", "/api/test-article/route": "/api/test-article", "/api/search/route": "/api/search", "/articles-listing/page": "/articles-listing", "/articles-enhanced/page": "/articles-enhanced", "/advisory-committee/page": "/advisory-committee", "/zoning-at-a-glance/page": "/zoning-at-a-glance", "/(home)/page": "/", "/text-amendments/page": "/text-amendments", "/versions/page": "/versions", "/overlay-districts/page": "/overlay-districts", "/articles/[[...slug]]/page": "/articles/[[...slug]]" };
 var FunctionsConfigManifest = { "version": 1, "functions": {} };
+var PagesManifest = { "/_app": "pages/_app.js", "/_error": "pages/_error.js", "/_document": "pages/_document.js", "/404": "pages/404.html" };
 process.env.NEXT_BUILD_ID = BuildId;
 
-// node_modules/@opennextjs/aws/dist/core/createMainHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/createMainHandler.js
 init_logger();
 
-// node_modules/@opennextjs/aws/dist/adapters/util.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/util.js
 function setNodeEnv() {
   const processEnv = process.env;
   processEnv.NODE_ENV = process.env.NODE_ENV ?? "production";
@@ -488,10 +690,10 @@ function generateUniqueId() {
   return Math.random().toString(36).slice(2, 8);
 }
 
-// node_modules/@opennextjs/aws/dist/core/requestHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/requestHandler.js
 import { AsyncLocalStorage } from "node:async_hooks";
 
-// node_modules/@opennextjs/aws/dist/http/openNextResponse.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/http/openNextResponse.js
 init_logger();
 init_util();
 import { Transform } from "node:stream";
@@ -544,12 +746,15 @@ var OpenNextNodeResponse = class extends Transform {
   addTrailers(_headers) {
     throw new Error(CANNOT_BE_USED);
   }
-  constructor(fixHeaders, onEnd, streamCreator, initialHeaders) {
+  constructor(fixHeaders, onEnd, streamCreator, initialHeaders, statusCode) {
     super();
     this.fixHeaders = fixHeaders;
     this.onEnd = onEnd;
     this.streamCreator = streamCreator;
     this.initialHeaders = initialHeaders;
+    if (statusCode && Number.isInteger(statusCode) && statusCode >= 100 && statusCode <= 599) {
+      this.statusCode = statusCode;
+    }
   }
   // Necessary for next 12
   // We might have to implement all the methods here
@@ -608,7 +813,7 @@ var OpenNextNodeResponse = class extends Transform {
         ...this.initialHeaders,
         ...this.headers
       };
-      const initialCookies = parseCookies(this.initialHeaders[SET_COOKIE_HEADER]?.toString());
+      const initialCookies = parseSetCookieHeader(this.initialHeaders[SET_COOKIE_HEADER]?.toString());
       this._cookies = mergeHeadersPriority === "middleware" ? [...this._cookies, ...initialCookies] : [...initialCookies, ...this._cookies];
     }
     this.fixHeaders(this.headers);
@@ -756,7 +961,7 @@ var OpenNextNodeResponse = class extends Transform {
   }
 };
 
-// node_modules/@opennextjs/aws/dist/http/request.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/http/request.js
 import http from "node:http";
 var IncomingMessage = class extends http.IncomingMessage {
   constructor({ method, url, headers, body, remoteAddress }) {
@@ -789,7 +994,7 @@ var IncomingMessage = class extends http.IncomingMessage {
   }
 };
 
-// node_modules/@opennextjs/aws/dist/utils/promise.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/promise.js
 init_logger();
 var DetachedPromise = class {
   resolve;
@@ -851,12 +1056,13 @@ function provideNextAfterProvider() {
     globalThis[VERCEL_REQUEST_CONTEXT_SYMBOL] = nextAfterContext;
   }
 }
-function runWithOpenNextRequestContext({ isISRRevalidation, waitUntil }, fn) {
+function runWithOpenNextRequestContext({ isISRRevalidation, waitUntil, requestId = Math.random().toString(36) }, fn) {
   return globalThis.__openNextAls.run({
-    requestId: Math.random().toString(36),
+    requestId,
     pendingPromiseRunner: new DetachedPromiseRunner(),
     isISRRevalidation,
-    waitUntil
+    waitUntil,
+    writtenTags: /* @__PURE__ */ new Set()
   }, async () => {
     provideNextAfterProvider();
     let result;
@@ -869,20 +1075,20 @@ function runWithOpenNextRequestContext({ isISRRevalidation, waitUntil }, fn) {
   });
 }
 
-// node_modules/@opennextjs/aws/dist/core/requestHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/requestHandler.js
 init_logger();
 
-// node_modules/@opennextjs/aws/dist/core/patchAsyncStorage.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/patchAsyncStorage.js
 var mod = (init_node_module(), __toCommonJS(node_module_exports));
 var resolveFilename = mod._resolveFilename;
 
-// node_modules/@opennextjs/aws/dist/core/routing/util.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/util.js
 import crypto from "node:crypto";
 import { Readable as Readable2 } from "node:stream";
 init_util();
 init_logger();
 
-// node_modules/@opennextjs/aws/dist/utils/binary.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/binary.js
 var commonBinaryMimeTypes = /* @__PURE__ */ new Set([
   "application/octet-stream",
   // Docs
@@ -950,11 +1156,11 @@ function isBinaryContentType(contentType) {
   return commonBinaryMimeTypes.has(value);
 }
 
-// node_modules/@opennextjs/aws/dist/core/routing/i18n/index.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/i18n/index.js
 init_stream();
 init_logger();
 
-// node_modules/@opennextjs/aws/dist/core/routing/i18n/accept-header.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/i18n/accept-header.js
 function parse(raw, preferences, options) {
   const lowers = /* @__PURE__ */ new Map();
   const header = raw.replace(/[ \t]/g, "");
@@ -1054,7 +1260,7 @@ function acceptLanguage(header = "", preferences) {
   })[0] || void 0;
 }
 
-// node_modules/@opennextjs/aws/dist/core/routing/i18n/index.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/i18n/index.js
 function isLocalizedPath(path2) {
   return NextConfig.i18n?.locales.includes(path2.split("/")[1].toLowerCase()) ?? false;
 }
@@ -1105,52 +1311,8 @@ function localizePath(internalEvent) {
   const detectedLocale = detectLocale(internalEvent, i18n);
   return `/${detectedLocale}${internalEvent.rawPath}`;
 }
-function handleLocaleRedirect(internalEvent) {
-  const i18n = NextConfig.i18n;
-  if (!i18n || i18n.localeDetection === false || internalEvent.rawPath !== "/") {
-    return false;
-  }
-  const preferredLocale = acceptLanguage(internalEvent.headers["accept-language"], i18n?.locales);
-  const detectedLocale = detectLocale(internalEvent, i18n);
-  const domainLocale = detectDomainLocale({
-    hostname: internalEvent.headers.host
-  });
-  const preferredDomain = detectDomainLocale({
-    detectedLocale: preferredLocale
-  });
-  if (domainLocale && preferredDomain) {
-    const isPDomain = preferredDomain.domain === domainLocale.domain;
-    const isPLocale = preferredDomain.defaultLocale === preferredLocale;
-    if (!isPDomain || !isPLocale) {
-      const scheme = `http${preferredDomain.http ? "" : "s"}`;
-      const rlocale = isPLocale ? "" : preferredLocale;
-      return {
-        type: "core",
-        statusCode: 307,
-        headers: {
-          Location: `${scheme}://${preferredDomain.domain}/${rlocale}`
-        },
-        body: emptyReadableStream(),
-        isBase64Encoded: false
-      };
-    }
-  }
-  const defaultLocale = domainLocale?.defaultLocale ?? i18n.defaultLocale;
-  if (detectedLocale.toLowerCase() !== defaultLocale.toLowerCase()) {
-    return {
-      type: "core",
-      statusCode: 307,
-      headers: {
-        Location: constructNextUrl(internalEvent.url, `/${detectedLocale}`)
-      },
-      body: emptyReadableStream(),
-      isBase64Encoded: false
-    };
-  }
-  return false;
-}
 
-// node_modules/@opennextjs/aws/dist/core/routing/queue.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/queue.js
 function generateShardId(rawPath, maxConcurrency, prefix) {
   let a = cyrb128(rawPath);
   let t = a += 1831565813;
@@ -1184,48 +1346,7 @@ function cyrb128(str) {
   return h1 >>> 0;
 }
 
-// node_modules/@opennextjs/aws/dist/core/routing/util.js
-function isExternal(url, host) {
-  if (!url)
-    return false;
-  const pattern = /^https?:\/\//;
-  if (host) {
-    return pattern.test(url) && !url.includes(host);
-  }
-  return pattern.test(url);
-}
-function convertFromQueryString(query) {
-  if (query === "")
-    return {};
-  const queryParts = query.split("&");
-  return getQueryFromIterator(queryParts.map((p) => {
-    const [key, value] = p.split("=");
-    return [key, value];
-  }));
-}
-function getUrlParts(url, isExternal2) {
-  if (!isExternal2) {
-    const regex2 = /\/([^?]*)\??(.*)/;
-    const match3 = url.match(regex2);
-    return {
-      hostname: "",
-      pathname: match3?.[1] ? `/${match3[1]}` : url,
-      protocol: "",
-      queryString: match3?.[2] ?? ""
-    };
-  }
-  const regex = /^(https?:)\/\/?([^\/\s]+)(\/[^?]*)?(\?.*)?/;
-  const match2 = url.match(regex);
-  if (!match2) {
-    throw new Error(`Invalid external URL: ${url}`);
-  }
-  return {
-    protocol: match2[1] ?? "https:",
-    hostname: match2[2],
-    pathname: match2[3] ?? "",
-    queryString: match2[4]?.slice(1) ?? ""
-  };
-}
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/util.js
 function constructNextUrl(baseUrl, path2) {
   const nextBasePath = NextConfig.basePath ?? "";
   const url = new URL(`${nextBasePath}${path2}`, baseUrl);
@@ -1244,17 +1365,6 @@ function convertRes(res) {
     isBase64Encoded
   };
 }
-function convertToQueryString(query) {
-  const queryStrings = [];
-  Object.entries(query).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((entry) => queryStrings.push(`${key}=${entry}`));
-    } else {
-      queryStrings.push(`${key}=${value}`);
-    }
-  });
-  return queryStrings.length > 0 ? `?${queryStrings.join("&")}` : "";
-}
 function convertToQuery(querystring) {
   const query = new URLSearchParams(querystring);
   const queryObject = {};
@@ -1272,26 +1382,6 @@ function getMiddlewareMatch(middlewareManifest2, functionsManifest) {
   if (!rootMiddleware?.matchers)
     return [];
   return rootMiddleware.matchers.map(({ regexp }) => new RegExp(regexp));
-}
-function escapeRegex(str, { isPath } = {}) {
-  const result = str.replaceAll("(.)", "_\xB51_").replaceAll("(..)", "_\xB52_").replaceAll("(...)", "_\xB53_");
-  return isPath ? result : result.replaceAll("+", "_\xB54_");
-}
-function unescapeRegex(str) {
-  return str.replaceAll("_\xB51_", "(.)").replaceAll("_\xB52_", "(..)").replaceAll("_\xB53_", "(...)").replaceAll("_\xB54_", "+");
-}
-function convertBodyToReadableStream(method, body) {
-  if (method === "GET" || method === "HEAD")
-    return void 0;
-  if (!body)
-    return void 0;
-  const readable = new ReadableStream({
-    start(controller) {
-      controller.enqueue(body);
-      controller.close();
-    }
-  });
-  return readable;
 }
 var CommonHeaders;
 (function(CommonHeaders2) {
@@ -1328,6 +1418,8 @@ function addOpenNextHeader(headers) {
   }
   if (globalThis.openNextDebug) {
     headers["X-OpenNext-Version"] = globalThis.openNextVersion;
+  }
+  if (process.env.OPEN_NEXT_REQUEST_ID_HEADER || globalThis.openNextDebug) {
     headers["X-OpenNext-RequestId"] = globalThis.__openNextAls.getStore()?.requestId;
   }
 }
@@ -1362,8 +1454,8 @@ function fixISRHeaders(headers) {
     debug("cache-control", cacheControl, _lastModified, Date.now());
     if (typeof cacheControl !== "string")
       return;
-    const match2 = cacheControl.match(regex);
-    const sMaxAge = match2 ? Number.parseInt(match2[1]) : void 0;
+    const match = cacheControl.match(regex);
+    const sMaxAge = match ? Number.parseInt(match[1]) : void 0;
     if (sMaxAge && sMaxAge !== 31536e3) {
       const remainingTtl = Math.max(sMaxAge - age, 1);
       headers[CommonHeaders.CACHE_CONTROL] = `s-maxage=${remainingTtl}, stale-while-revalidate=2592000`;
@@ -1383,7 +1475,7 @@ function createServerResponse(routingResult, headers, responseStream) {
   }, async (_headers) => {
     await revalidateIfRequired(internalEvent.headers.host, internalEvent.rawPath, _headers);
     await invalidateCDNOnRequest(routingResult, _headers);
-  }, responseStream, headers);
+  }, responseStream, headers, routingResult.rewriteStatusCode);
 }
 async function invalidateCDNOnRequest(params, headers) {
   const { internalEvent, resolvedRoutes, initialURL } = params;
@@ -1400,942 +1492,27 @@ async function invalidateCDNOnRequest(params, headers) {
   }
 }
 
-// node_modules/@opennextjs/aws/dist/core/routingHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routingHandler.js
 init_logger();
 
-// node_modules/@opennextjs/aws/dist/core/routing/cacheInterceptor.js
-import { createHash } from "node:crypto";
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/cacheInterceptor.js
 init_stream();
 
-// node_modules/@opennextjs/aws/dist/utils/cache.js
-async function hasBeenRevalidated(key, tags, cacheEntry) {
-  if (globalThis.openNextConfig.dangerous?.disableTagCache) {
-    return false;
-  }
-  const value = cacheEntry.value;
-  if (!value) {
-    return true;
-  }
-  if ("type" in cacheEntry && cacheEntry.type === "page") {
-    return false;
-  }
-  const lastModified = cacheEntry.lastModified ?? Date.now();
-  if (globalThis.tagCache.mode === "nextMode") {
-    return await globalThis.tagCache.hasBeenRevalidated(tags, lastModified);
-  }
-  const _lastModified = await globalThis.tagCache.getLastModified(key, lastModified);
-  return _lastModified === -1;
-}
-function getTagsFromValue(value) {
-  if (!value) {
-    return [];
-  }
-  try {
-    return value.meta?.headers?.["x-next-cache-tags"]?.split(",") ?? [];
-  } catch (e) {
-    return [];
-  }
-}
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/utils/cache.js
+init_logger();
 
-// node_modules/@opennextjs/aws/dist/core/routing/cacheInterceptor.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/cacheInterceptor.js
 init_logger();
 var CACHE_ONE_YEAR = 60 * 60 * 24 * 365;
 var CACHE_ONE_MONTH = 60 * 60 * 24 * 30;
-async function computeCacheControl(path2, body, host, revalidate, lastModified) {
-  let finalRevalidate = CACHE_ONE_YEAR;
-  const existingRoute = Object.entries(PrerenderManifest.routes).find((p) => p[0] === path2)?.[1];
-  if (revalidate === void 0 && existingRoute) {
-    finalRevalidate = existingRoute.initialRevalidateSeconds === false ? CACHE_ONE_YEAR : existingRoute.initialRevalidateSeconds;
-  } else if (revalidate !== void 0) {
-    finalRevalidate = revalidate === false ? CACHE_ONE_YEAR : revalidate;
-  }
-  const age = Math.round((Date.now() - (lastModified ?? 0)) / 1e3);
-  const hash = (str) => createHash("md5").update(str).digest("hex");
-  const etag = hash(body);
-  if (revalidate === 0) {
-    return {
-      "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
-      "x-opennext-cache": "ERROR",
-      etag
-    };
-  }
-  if (finalRevalidate !== CACHE_ONE_YEAR) {
-    const sMaxAge = Math.max(finalRevalidate - age, 1);
-    debug("sMaxAge", {
-      finalRevalidate,
-      age,
-      lastModified,
-      revalidate
-    });
-    const isStale = sMaxAge === 1;
-    if (isStale) {
-      let url = NextConfig.trailingSlash ? `${path2}/` : path2;
-      if (NextConfig.basePath) {
-        url = `${NextConfig.basePath}${url}`;
-      }
-      await globalThis.queue.send({
-        MessageBody: {
-          host,
-          url,
-          eTag: etag,
-          lastModified: lastModified ?? Date.now()
-        },
-        MessageDeduplicationId: hash(`${path2}-${lastModified}-${etag}`),
-        MessageGroupId: generateMessageGroupId(path2)
-      });
-    }
-    return {
-      "cache-control": `s-maxage=${sMaxAge}, stale-while-revalidate=${CACHE_ONE_MONTH}`,
-      "x-opennext-cache": isStale ? "STALE" : "HIT",
-      etag
-    };
-  }
-  return {
-    "cache-control": `s-maxage=${CACHE_ONE_YEAR}, stale-while-revalidate=${CACHE_ONE_MONTH}`,
-    "x-opennext-cache": "HIT",
-    etag
-  };
-}
-async function generateResult(event, localizedPath, cachedValue, lastModified) {
-  debug("Returning result from experimental cache");
-  let body = "";
-  let type = "application/octet-stream";
-  let isDataRequest = false;
-  switch (cachedValue.type) {
-    case "app":
-      isDataRequest = Boolean(event.headers.rsc);
-      body = isDataRequest ? cachedValue.rsc : cachedValue.html;
-      type = isDataRequest ? "text/x-component" : "text/html; charset=utf-8";
-      break;
-    case "page":
-      isDataRequest = Boolean(event.query.__nextDataReq);
-      body = isDataRequest ? JSON.stringify(cachedValue.json) : cachedValue.html;
-      type = isDataRequest ? "application/json" : "text/html; charset=utf-8";
-      break;
-  }
-  const cacheControl = await computeCacheControl(localizedPath, body, event.headers.host, cachedValue.revalidate, lastModified);
-  return {
-    type: "core",
-    statusCode: 200,
-    body: toReadableStream(body, false),
-    isBase64Encoded: false,
-    headers: {
-      ...cacheControl,
-      "content-type": type,
-      ...cachedValue.meta?.headers
-    }
-  };
-}
-async function cacheInterceptor(event) {
-  if (Boolean(event.headers["next-action"]) || Boolean(event.headers["x-prerender-revalidate"]))
-    return event;
-  let localizedPath = localizePath(event);
-  if (NextConfig.basePath) {
-    localizedPath = localizedPath.replace(NextConfig.basePath, "");
-  }
-  localizedPath = localizedPath.replace(/\/$/, "");
-  if (localizedPath === "") {
-    localizedPath = "index";
-  }
-  debug("Checking cache for", localizedPath, PrerenderManifest);
-  const isISR = Object.keys(PrerenderManifest.routes).includes(localizedPath) || Object.values(PrerenderManifest.dynamicRoutes).some((dr) => new RegExp(dr.routeRegex).test(localizedPath));
-  debug("isISR", isISR);
-  if (isISR) {
-    try {
-      const cachedData = await globalThis.incrementalCache.get(localizedPath);
-      debug("cached data in interceptor", cachedData);
-      if (!cachedData?.value) {
-        return event;
-      }
-      if (cachedData.value?.type === "app") {
-        const tags = getTagsFromValue(cachedData.value);
-        const _hasBeenRevalidated = await hasBeenRevalidated(localizedPath, tags, cachedData);
-        if (_hasBeenRevalidated) {
-          return event;
-        }
-      }
-      const host = event.headers.host;
-      switch (cachedData?.value?.type) {
-        case "app":
-        case "page":
-          return generateResult(event, localizedPath, cachedData.value, cachedData.lastModified);
-        case "redirect": {
-          const cacheControl = await computeCacheControl(localizedPath, "", host, cachedData.value.revalidate, cachedData.lastModified);
-          return {
-            type: "core",
-            statusCode: cachedData.value.meta?.status ?? 307,
-            body: emptyReadableStream(),
-            headers: {
-              ...cachedData.value.meta?.headers ?? {},
-              ...cacheControl
-            },
-            isBase64Encoded: false
-          };
-        }
-        default:
-          return event;
-      }
-    } catch (e) {
-      debug("Error while fetching cache", e);
-      return event;
-    }
-  }
-  return event;
-}
 
-// node_modules/path-to-regexp/dist.es2015/index.js
-function lexer(str) {
-  var tokens = [];
-  var i = 0;
-  while (i < str.length) {
-    var char = str[i];
-    if (char === "*" || char === "+" || char === "?") {
-      tokens.push({ type: "MODIFIER", index: i, value: str[i++] });
-      continue;
-    }
-    if (char === "\\") {
-      tokens.push({ type: "ESCAPED_CHAR", index: i++, value: str[i++] });
-      continue;
-    }
-    if (char === "{") {
-      tokens.push({ type: "OPEN", index: i, value: str[i++] });
-      continue;
-    }
-    if (char === "}") {
-      tokens.push({ type: "CLOSE", index: i, value: str[i++] });
-      continue;
-    }
-    if (char === ":") {
-      var name = "";
-      var j = i + 1;
-      while (j < str.length) {
-        var code = str.charCodeAt(j);
-        if (
-          // `0-9`
-          code >= 48 && code <= 57 || // `A-Z`
-          code >= 65 && code <= 90 || // `a-z`
-          code >= 97 && code <= 122 || // `_`
-          code === 95
-        ) {
-          name += str[j++];
-          continue;
-        }
-        break;
-      }
-      if (!name)
-        throw new TypeError("Missing parameter name at ".concat(i));
-      tokens.push({ type: "NAME", index: i, value: name });
-      i = j;
-      continue;
-    }
-    if (char === "(") {
-      var count = 1;
-      var pattern = "";
-      var j = i + 1;
-      if (str[j] === "?") {
-        throw new TypeError('Pattern cannot start with "?" at '.concat(j));
-      }
-      while (j < str.length) {
-        if (str[j] === "\\") {
-          pattern += str[j++] + str[j++];
-          continue;
-        }
-        if (str[j] === ")") {
-          count--;
-          if (count === 0) {
-            j++;
-            break;
-          }
-        } else if (str[j] === "(") {
-          count++;
-          if (str[j + 1] !== "?") {
-            throw new TypeError("Capturing groups are not allowed at ".concat(j));
-          }
-        }
-        pattern += str[j++];
-      }
-      if (count)
-        throw new TypeError("Unbalanced pattern at ".concat(i));
-      if (!pattern)
-        throw new TypeError("Missing pattern at ".concat(i));
-      tokens.push({ type: "PATTERN", index: i, value: pattern });
-      i = j;
-      continue;
-    }
-    tokens.push({ type: "CHAR", index: i, value: str[i++] });
-  }
-  tokens.push({ type: "END", index: i, value: "" });
-  return tokens;
-}
-function parse2(str, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  var tokens = lexer(str);
-  var _a = options.prefixes, prefixes = _a === void 0 ? "./" : _a, _b = options.delimiter, delimiter = _b === void 0 ? "/#?" : _b;
-  var result = [];
-  var key = 0;
-  var i = 0;
-  var path2 = "";
-  var tryConsume = function(type) {
-    if (i < tokens.length && tokens[i].type === type)
-      return tokens[i++].value;
-  };
-  var mustConsume = function(type) {
-    var value2 = tryConsume(type);
-    if (value2 !== void 0)
-      return value2;
-    var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
-    throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
-  };
-  var consumeText = function() {
-    var result2 = "";
-    var value2;
-    while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
-      result2 += value2;
-    }
-    return result2;
-  };
-  var isSafe = function(value2) {
-    for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
-      var char2 = delimiter_1[_i];
-      if (value2.indexOf(char2) > -1)
-        return true;
-    }
-    return false;
-  };
-  var safePattern = function(prefix2) {
-    var prev = result[result.length - 1];
-    var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
-    if (prev && !prevText) {
-      throw new TypeError('Must have text between two parameters, missing text after "'.concat(prev.name, '"'));
-    }
-    if (!prevText || isSafe(prevText))
-      return "[^".concat(escapeString(delimiter), "]+?");
-    return "(?:(?!".concat(escapeString(prevText), ")[^").concat(escapeString(delimiter), "])+?");
-  };
-  while (i < tokens.length) {
-    var char = tryConsume("CHAR");
-    var name = tryConsume("NAME");
-    var pattern = tryConsume("PATTERN");
-    if (name || pattern) {
-      var prefix = char || "";
-      if (prefixes.indexOf(prefix) === -1) {
-        path2 += prefix;
-        prefix = "";
-      }
-      if (path2) {
-        result.push(path2);
-        path2 = "";
-      }
-      result.push({
-        name: name || key++,
-        prefix,
-        suffix: "",
-        pattern: pattern || safePattern(prefix),
-        modifier: tryConsume("MODIFIER") || ""
-      });
-      continue;
-    }
-    var value = char || tryConsume("ESCAPED_CHAR");
-    if (value) {
-      path2 += value;
-      continue;
-    }
-    if (path2) {
-      result.push(path2);
-      path2 = "";
-    }
-    var open = tryConsume("OPEN");
-    if (open) {
-      var prefix = consumeText();
-      var name_1 = tryConsume("NAME") || "";
-      var pattern_1 = tryConsume("PATTERN") || "";
-      var suffix = consumeText();
-      mustConsume("CLOSE");
-      result.push({
-        name: name_1 || (pattern_1 ? key++ : ""),
-        pattern: name_1 && !pattern_1 ? safePattern(prefix) : pattern_1,
-        prefix,
-        suffix,
-        modifier: tryConsume("MODIFIER") || ""
-      });
-      continue;
-    }
-    mustConsume("END");
-  }
-  return result;
-}
-function compile(str, options) {
-  return tokensToFunction(parse2(str, options), options);
-}
-function tokensToFunction(tokens, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  var reFlags = flags(options);
-  var _a = options.encode, encode = _a === void 0 ? function(x) {
-    return x;
-  } : _a, _b = options.validate, validate = _b === void 0 ? true : _b;
-  var matches = tokens.map(function(token) {
-    if (typeof token === "object") {
-      return new RegExp("^(?:".concat(token.pattern, ")$"), reFlags);
-    }
-  });
-  return function(data) {
-    var path2 = "";
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i];
-      if (typeof token === "string") {
-        path2 += token;
-        continue;
-      }
-      var value = data ? data[token.name] : void 0;
-      var optional = token.modifier === "?" || token.modifier === "*";
-      var repeat = token.modifier === "*" || token.modifier === "+";
-      if (Array.isArray(value)) {
-        if (!repeat) {
-          throw new TypeError('Expected "'.concat(token.name, '" to not repeat, but got an array'));
-        }
-        if (value.length === 0) {
-          if (optional)
-            continue;
-          throw new TypeError('Expected "'.concat(token.name, '" to not be empty'));
-        }
-        for (var j = 0; j < value.length; j++) {
-          var segment = encode(value[j], token);
-          if (validate && !matches[i].test(segment)) {
-            throw new TypeError('Expected all "'.concat(token.name, '" to match "').concat(token.pattern, '", but got "').concat(segment, '"'));
-          }
-          path2 += token.prefix + segment + token.suffix;
-        }
-        continue;
-      }
-      if (typeof value === "string" || typeof value === "number") {
-        var segment = encode(String(value), token);
-        if (validate && !matches[i].test(segment)) {
-          throw new TypeError('Expected "'.concat(token.name, '" to match "').concat(token.pattern, '", but got "').concat(segment, '"'));
-        }
-        path2 += token.prefix + segment + token.suffix;
-        continue;
-      }
-      if (optional)
-        continue;
-      var typeOfMessage = repeat ? "an array" : "a string";
-      throw new TypeError('Expected "'.concat(token.name, '" to be ').concat(typeOfMessage));
-    }
-    return path2;
-  };
-}
-function match(str, options) {
-  var keys = [];
-  var re = pathToRegexp(str, keys, options);
-  return regexpToFunction(re, keys, options);
-}
-function regexpToFunction(re, keys, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  var _a = options.decode, decode = _a === void 0 ? function(x) {
-    return x;
-  } : _a;
-  return function(pathname) {
-    var m = re.exec(pathname);
-    if (!m)
-      return false;
-    var path2 = m[0], index = m.index;
-    var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = function(i2) {
-      if (m[i2] === void 0)
-        return "continue";
-      var key = keys[i2 - 1];
-      if (key.modifier === "*" || key.modifier === "+") {
-        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function(value) {
-          return decode(value, key);
-        });
-      } else {
-        params[key.name] = decode(m[i2], key);
-      }
-    };
-    for (var i = 1; i < m.length; i++) {
-      _loop_1(i);
-    }
-    return { path: path2, index, params };
-  };
-}
-function escapeString(str) {
-  return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
-}
-function flags(options) {
-  return options && options.sensitive ? "" : "i";
-}
-function regexpToRegexp(path2, keys) {
-  if (!keys)
-    return path2;
-  var groupsRegex = /\((?:\?<(.*?)>)?(?!\?)/g;
-  var index = 0;
-  var execResult = groupsRegex.exec(path2.source);
-  while (execResult) {
-    keys.push({
-      // Use parenthesized substring match if available, index otherwise
-      name: execResult[1] || index++,
-      prefix: "",
-      suffix: "",
-      modifier: "",
-      pattern: ""
-    });
-    execResult = groupsRegex.exec(path2.source);
-  }
-  return path2;
-}
-function arrayToRegexp(paths, keys, options) {
-  var parts = paths.map(function(path2) {
-    return pathToRegexp(path2, keys, options).source;
-  });
-  return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
-}
-function stringToRegexp(path2, keys, options) {
-  return tokensToRegexp(parse2(path2, options), keys, options);
-}
-function tokensToRegexp(tokens, keys, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function(x) {
-    return x;
-  } : _d, _e = options.delimiter, delimiter = _e === void 0 ? "/#?" : _e, _f = options.endsWith, endsWith = _f === void 0 ? "" : _f;
-  var endsWithRe = "[".concat(escapeString(endsWith), "]|$");
-  var delimiterRe = "[".concat(escapeString(delimiter), "]");
-  var route = start ? "^" : "";
-  for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
-    var token = tokens_1[_i];
-    if (typeof token === "string") {
-      route += escapeString(encode(token));
-    } else {
-      var prefix = escapeString(encode(token.prefix));
-      var suffix = escapeString(encode(token.suffix));
-      if (token.pattern) {
-        if (keys)
-          keys.push(token);
-        if (prefix || suffix) {
-          if (token.modifier === "+" || token.modifier === "*") {
-            var mod3 = token.modifier === "*" ? "?" : "";
-            route += "(?:".concat(prefix, "((?:").concat(token.pattern, ")(?:").concat(suffix).concat(prefix, "(?:").concat(token.pattern, "))*)").concat(suffix, ")").concat(mod3);
-          } else {
-            route += "(?:".concat(prefix, "(").concat(token.pattern, ")").concat(suffix, ")").concat(token.modifier);
-          }
-        } else {
-          if (token.modifier === "+" || token.modifier === "*") {
-            throw new TypeError('Can not repeat "'.concat(token.name, '" without a prefix and suffix'));
-          }
-          route += "(".concat(token.pattern, ")").concat(token.modifier);
-        }
-      } else {
-        route += "(?:".concat(prefix).concat(suffix, ")").concat(token.modifier);
-      }
-    }
-  }
-  if (end) {
-    if (!strict)
-      route += "".concat(delimiterRe, "?");
-    route += !options.endsWith ? "$" : "(?=".concat(endsWithRe, ")");
-  } else {
-    var endToken = tokens[tokens.length - 1];
-    var isEndDelimited = typeof endToken === "string" ? delimiterRe.indexOf(endToken[endToken.length - 1]) > -1 : endToken === void 0;
-    if (!strict) {
-      route += "(?:".concat(delimiterRe, "(?=").concat(endsWithRe, "))?");
-    }
-    if (!isEndDelimited) {
-      route += "(?=".concat(delimiterRe, "|").concat(endsWithRe, ")");
-    }
-  }
-  return new RegExp(route, flags(options));
-}
-function pathToRegexp(path2, keys, options) {
-  if (path2 instanceof RegExp)
-    return regexpToRegexp(path2, keys);
-  if (Array.isArray(path2))
-    return arrayToRegexp(path2, keys, options);
-  return stringToRegexp(path2, keys, options);
-}
-
-// node_modules/@opennextjs/aws/dist/core/routing/matcher.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/matcher.js
 init_stream();
 init_logger();
-var routeHasMatcher = (headers, cookies, query) => (redirect) => {
-  switch (redirect.type) {
-    case "header":
-      return !!headers?.[redirect.key.toLowerCase()] && new RegExp(redirect.value ?? "").test(headers[redirect.key.toLowerCase()] ?? "");
-    case "cookie":
-      return !!cookies?.[redirect.key] && new RegExp(redirect.value ?? "").test(cookies[redirect.key] ?? "");
-    case "query":
-      return query[redirect.key] && Array.isArray(redirect.value) ? redirect.value.reduce((prev, current) => prev || new RegExp(current).test(query[redirect.key]), false) : new RegExp(redirect.value ?? "").test(query[redirect.key] ?? "");
-    case "host":
-      return headers?.host !== "" && new RegExp(redirect.value ?? "").test(headers.host);
-    default:
-      return false;
-  }
-};
-function checkHas(matcher, has, inverted = false) {
-  return has ? has.reduce((acc, cur) => {
-    if (acc === false)
-      return false;
-    return inverted ? !matcher(cur) : matcher(cur);
-  }, true) : true;
-}
-var getParamsFromSource = (source) => (value) => {
-  debug("value", value);
-  const _match = source(value);
-  return _match ? _match.params : {};
-};
-var computeParamHas = (headers, cookies, query) => (has) => {
-  if (!has.value)
-    return {};
-  const matcher = new RegExp(`^${has.value}$`);
-  const fromSource = (value) => {
-    const matches = value.match(matcher);
-    return matches?.groups ?? {};
-  };
-  switch (has.type) {
-    case "header":
-      return fromSource(headers[has.key.toLowerCase()] ?? "");
-    case "cookie":
-      return fromSource(cookies[has.key] ?? "");
-    case "query":
-      return Array.isArray(query[has.key]) ? fromSource(query[has.key].join(",")) : fromSource(query[has.key] ?? "");
-    case "host":
-      return fromSource(headers.host ?? "");
-  }
-};
-function convertMatch(match2, toDestination, destination) {
-  if (!match2) {
-    return destination;
-  }
-  const { params } = match2;
-  const isUsingParams = Object.keys(params).length > 0;
-  return isUsingParams ? toDestination(params) : destination;
-}
-function getNextConfigHeaders(event, configHeaders) {
-  if (!configHeaders) {
-    return {};
-  }
-  const matcher = routeHasMatcher(event.headers, event.cookies, event.query);
-  const requestHeaders = {};
-  const localizedRawPath = localizePath(event);
-  for (const { headers, has, missing, regex, source, locale } of configHeaders) {
-    const path2 = locale === false ? event.rawPath : localizedRawPath;
-    if (new RegExp(regex).test(path2) && checkHas(matcher, has) && checkHas(matcher, missing, true)) {
-      const fromSource = match(source);
-      const _match = fromSource(path2);
-      headers.forEach((h) => {
-        try {
-          const key = convertMatch(_match, compile(h.key), h.key);
-          const value = convertMatch(_match, compile(h.value), h.value);
-          requestHeaders[key] = value;
-        } catch {
-          debug(`Error matching header ${h.key} with value ${h.value}`);
-          requestHeaders[h.key] = h.value;
-        }
-      });
-    }
-  }
-  return requestHeaders;
-}
-function handleRewrites(event, rewrites) {
-  const { rawPath, headers, query, cookies, url } = event;
-  const localizedRawPath = localizePath(event);
-  const matcher = routeHasMatcher(headers, cookies, query);
-  const computeHas = computeParamHas(headers, cookies, query);
-  const rewrite = rewrites.find((route) => {
-    const path2 = route.locale === false ? rawPath : localizedRawPath;
-    return new RegExp(route.regex).test(path2) && checkHas(matcher, route.has) && checkHas(matcher, route.missing, true);
-  });
-  let finalQuery = query;
-  let rewrittenUrl = url;
-  const isExternalRewrite = isExternal(rewrite?.destination);
-  debug("isExternalRewrite", isExternalRewrite);
-  if (rewrite) {
-    const { pathname, protocol, hostname, queryString } = getUrlParts(rewrite.destination, isExternalRewrite);
-    const pathToUse = rewrite.locale === false ? rawPath : localizedRawPath;
-    debug("urlParts", { pathname, protocol, hostname, queryString });
-    const toDestinationPath = compile(escapeRegex(pathname, { isPath: true }));
-    const toDestinationHost = compile(escapeRegex(hostname));
-    const toDestinationQuery = compile(escapeRegex(queryString));
-    const params = {
-      // params for the source
-      ...getParamsFromSource(match(escapeRegex(rewrite.source, { isPath: true })))(pathToUse),
-      // params for the has
-      ...rewrite.has?.reduce((acc, cur) => {
-        return Object.assign(acc, computeHas(cur));
-      }, {}),
-      // params for the missing
-      ...rewrite.missing?.reduce((acc, cur) => {
-        return Object.assign(acc, computeHas(cur));
-      }, {})
-    };
-    const isUsingParams = Object.keys(params).length > 0;
-    let rewrittenQuery = queryString;
-    let rewrittenHost = hostname;
-    let rewrittenPath = pathname;
-    if (isUsingParams) {
-      rewrittenPath = unescapeRegex(toDestinationPath(params));
-      rewrittenHost = unescapeRegex(toDestinationHost(params));
-      rewrittenQuery = unescapeRegex(toDestinationQuery(params));
-    }
-    if (NextConfig.i18n && !isExternalRewrite) {
-      const strippedPathLocale = rewrittenPath.replace(new RegExp(`^/(${NextConfig.i18n.locales.join("|")})`), "");
-      if (strippedPathLocale.startsWith("/api/")) {
-        rewrittenPath = strippedPathLocale;
-      }
-    }
-    rewrittenUrl = isExternalRewrite ? `${protocol}//${rewrittenHost}${rewrittenPath}` : new URL(rewrittenPath, event.url).href;
-    finalQuery = {
-      ...query,
-      ...convertFromQueryString(rewrittenQuery)
-    };
-    rewrittenUrl += convertToQueryString(finalQuery);
-    debug("rewrittenUrl", { rewrittenUrl, finalQuery, isUsingParams });
-  }
-  return {
-    internalEvent: {
-      ...event,
-      query: finalQuery,
-      rawPath: new URL(rewrittenUrl).pathname,
-      url: rewrittenUrl
-    },
-    __rewrite: rewrite,
-    isExternalRewrite
-  };
-}
-function handleTrailingSlashRedirect(event) {
-  const url = new URL(event.rawPath, "http://localhost");
-  if (
-    // Someone is trying to redirect to a different origin, let's not do that
-    url.host !== "localhost" || NextConfig.skipTrailingSlashRedirect || // We should not apply trailing slash redirect to API routes
-    event.rawPath.startsWith("/api/")
-  ) {
-    return false;
-  }
-  const emptyBody = emptyReadableStream();
-  if (NextConfig.trailingSlash && !event.headers["x-nextjs-data"] && !event.rawPath.endsWith("/") && !event.rawPath.match(/[\w-]+\.[\w]+$/g)) {
-    const headersLocation = event.url.split("?");
-    return {
-      type: event.type,
-      statusCode: 308,
-      headers: {
-        Location: `${headersLocation[0]}/${headersLocation[1] ? `?${headersLocation[1]}` : ""}`
-      },
-      body: emptyBody,
-      isBase64Encoded: false
-    };
-  }
-  if (!NextConfig.trailingSlash && event.rawPath.endsWith("/") && event.rawPath !== "/") {
-    const headersLocation = event.url.split("?");
-    return {
-      type: event.type,
-      statusCode: 308,
-      headers: {
-        Location: `${headersLocation[0].replace(/\/$/, "")}${headersLocation[1] ? `?${headersLocation[1]}` : ""}`
-      },
-      body: emptyBody,
-      isBase64Encoded: false
-    };
-  }
-  return false;
-}
-function handleRedirects(event, redirects) {
-  const trailingSlashRedirect = handleTrailingSlashRedirect(event);
-  if (trailingSlashRedirect)
-    return trailingSlashRedirect;
-  const localeRedirect = handleLocaleRedirect(event);
-  if (localeRedirect)
-    return localeRedirect;
-  const { internalEvent, __rewrite } = handleRewrites(event, redirects.filter((r) => !r.internal));
-  if (__rewrite && !__rewrite.internal) {
-    return {
-      type: event.type,
-      statusCode: __rewrite.statusCode ?? 308,
-      headers: {
-        Location: internalEvent.url
-      },
-      body: emptyReadableStream(),
-      isBase64Encoded: false
-    };
-  }
-}
-function fixDataPage(internalEvent, buildId) {
-  const { rawPath, query } = internalEvent;
-  const dataPattern = `${NextConfig.basePath ?? ""}/_next/data/${buildId}`;
-  if (rawPath.startsWith("/_next/data") && !rawPath.startsWith(dataPattern)) {
-    return {
-      type: internalEvent.type,
-      statusCode: 404,
-      body: toReadableStream("{}"),
-      headers: {
-        "Content-Type": "application/json"
-      },
-      isBase64Encoded: false
-    };
-  }
-  if (rawPath.startsWith(dataPattern) && rawPath.endsWith(".json")) {
-    const newPath = rawPath.slice(dataPattern.length, -".json".length).replace(/^\/index$/, "/");
-    query.__nextDataReq = "1";
-    return {
-      ...internalEvent,
-      rawPath: newPath,
-      query,
-      url: new URL(`${newPath}${convertToQueryString(query)}`, internalEvent.url).href
-    };
-  }
-  return internalEvent;
-}
-function handleFallbackFalse(internalEvent, prerenderManifest) {
-  const { rawPath } = internalEvent;
-  const { dynamicRoutes, routes } = prerenderManifest;
-  const routeFallback = Object.entries(dynamicRoutes).filter(([, { fallback }]) => fallback === false).some(([, { routeRegex }]) => {
-    const routeRegexExp = new RegExp(routeRegex);
-    return routeRegexExp.test(rawPath);
-  });
-  const locales = NextConfig.i18n?.locales;
-  const routesAlreadyHaveLocale = locales?.includes(rawPath.split("/")[1]) || // If we don't use locales, we don't need to add the default locale
-  locales === void 0;
-  const localizedPath = routesAlreadyHaveLocale ? rawPath : `/${NextConfig.i18n?.defaultLocale}${rawPath}`;
-  const isPregenerated = Object.keys(routes).includes(localizedPath);
-  if (routeFallback && !isPregenerated) {
-    return {
-      event: {
-        ...internalEvent,
-        rawPath: "/404",
-        url: constructNextUrl(internalEvent.url, "/404"),
-        headers: {
-          ...internalEvent.headers,
-          "x-invoke-status": "404"
-        }
-      },
-      isISR: false
-    };
-  }
-  return {
-    event: internalEvent,
-    isISR: routeFallback || isPregenerated
-  };
-}
 
-// node_modules/@opennextjs/aws/dist/core/routing/middleware.js
-init_stream();
-var middlewareManifest = MiddlewareManifest;
-var functionsConfigManifest = FunctionsConfigManifest;
-var middleMatch = getMiddlewareMatch(middlewareManifest, functionsConfigManifest);
-function defaultMiddlewareLoader() {
-  return import("./middleware.mjs");
-}
-async function handleMiddleware(internalEvent, initialSearch, middlewareLoader = defaultMiddlewareLoader) {
-  const headers = internalEvent.headers;
-  if (headers["x-isr"] && headers["x-prerender-revalidate"] === PrerenderManifest.preview.previewModeId)
-    return internalEvent;
-  const normalizedPath = localizePath(internalEvent);
-  const hasMatch = middleMatch.some((r) => r.test(normalizedPath));
-  if (!hasMatch)
-    return internalEvent;
-  const initialUrl = new URL(normalizedPath, internalEvent.url);
-  initialUrl.search = initialSearch;
-  const url = initialUrl.href;
-  const middleware = await middlewareLoader();
-  const result = await middleware.default({
-    // `geo` is pre Next 15.
-    geo: {
-      // The city name is percent-encoded.
-      // See https://github.com/vercel/vercel/blob/4cb6143/packages/functions/src/headers.ts#L94C19-L94C37
-      city: decodeURIComponent(headers["x-open-next-city"]),
-      country: headers["x-open-next-country"],
-      region: headers["x-open-next-region"],
-      latitude: headers["x-open-next-latitude"],
-      longitude: headers["x-open-next-longitude"]
-    },
-    headers,
-    method: internalEvent.method || "GET",
-    nextConfig: {
-      basePath: NextConfig.basePath,
-      i18n: NextConfig.i18n,
-      trailingSlash: NextConfig.trailingSlash
-    },
-    url,
-    body: convertBodyToReadableStream(internalEvent.method, internalEvent.body)
-  });
-  const statusCode = result.status;
-  const responseHeaders = result.headers;
-  const reqHeaders = {};
-  const resHeaders = {};
-  const filteredHeaders = [
-    "x-middleware-override-headers",
-    "x-middleware-set-cookie",
-    "x-middleware-next",
-    "x-middleware-rewrite",
-    // We need to drop `content-encoding` because it will be decoded
-    "content-encoding"
-  ];
-  const xMiddlewareKey = "x-middleware-request-";
-  responseHeaders.forEach((value, key) => {
-    if (key.startsWith(xMiddlewareKey)) {
-      const k = key.substring(xMiddlewareKey.length);
-      reqHeaders[k] = value;
-    } else {
-      if (filteredHeaders.includes(key.toLowerCase()))
-        return;
-      if (key.toLowerCase() === "set-cookie") {
-        resHeaders[key] = resHeaders[key] ? [...resHeaders[key], value] : [value];
-      } else {
-        resHeaders[key] = value;
-      }
-    }
-  });
-  const rewriteUrl = responseHeaders.get("x-middleware-rewrite");
-  let isExternalRewrite = false;
-  let middlewareQueryString = internalEvent.query;
-  let newUrl = internalEvent.url;
-  if (rewriteUrl) {
-    newUrl = rewriteUrl;
-    if (isExternal(newUrl, internalEvent.headers.host)) {
-      isExternalRewrite = true;
-    } else {
-      const rewriteUrlObject = new URL(rewriteUrl);
-      middlewareQueryString = middlewareQueryString.__nextDataReq ? {
-        __nextDataReq: middlewareQueryString.__nextDataReq
-      } : {};
-      rewriteUrlObject.searchParams.forEach((v, k) => {
-        middlewareQueryString[k] = v;
-      });
-    }
-  }
-  if (!rewriteUrl && !responseHeaders.get("x-middleware-next")) {
-    const body = result.body ?? emptyReadableStream();
-    return {
-      type: internalEvent.type,
-      statusCode,
-      headers: resHeaders,
-      body,
-      isBase64Encoded: false
-    };
-  }
-  return {
-    responseHeaders: resHeaders,
-    url: newUrl,
-    rawPath: new URL(newUrl).pathname,
-    type: internalEvent.type,
-    headers: { ...internalEvent.headers, ...reqHeaders },
-    body: internalEvent.body,
-    method: internalEvent.method,
-    query: middlewareQueryString,
-    cookies: internalEvent.cookies,
-    remoteAddress: internalEvent.remoteAddress,
-    isExternalRewrite
-  };
-}
-
-// node_modules/@opennextjs/aws/dist/core/routing/routeMatcher.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/routeMatcher.js
 var optionalLocalePrefixRegex = `^/(?:${RoutesManifest.locales.map((locale) => `${locale}/?`).join("|")})?`;
 var optionalBasepathPrefixRegex = RoutesManifest.basePath ? `^${RoutesManifest.basePath}/?` : "^/";
-var apiPrefix = `${RoutesManifest.basePath ?? ""}/api`;
 var optionalPrefix = optionalLocalePrefixRegex.replace("^/", optionalBasepathPrefixRegex);
 function routeMatcher(routeDefinitions) {
   const regexp = routeDefinitions.map((route) => ({
@@ -2367,169 +1544,51 @@ function routeMatcher(routeDefinitions) {
     });
   };
 }
-var staticRouteMatcher = routeMatcher(RoutesManifest.routes.static);
+var staticRouteMatcher = routeMatcher([
+  ...RoutesManifest.routes.static,
+  ...getStaticAPIRoutes()
+]);
 var dynamicRouteMatcher = routeMatcher(RoutesManifest.routes.dynamic);
+function getStaticAPIRoutes() {
+  const createRouteDefinition = (route) => ({
+    page: route,
+    regex: `^${route}(?:/)?$`
+  });
+  const dynamicRoutePages = new Set(RoutesManifest.routes.dynamic.map(({ page }) => page));
+  const pagesStaticAPIRoutes = Object.keys(PagesManifest).filter((route) => route.startsWith("/api/") && !dynamicRoutePages.has(route)).map(createRouteDefinition);
+  const appPathsStaticAPIRoutes = Object.values(AppPathRoutesManifest).filter((route) => route.startsWith("/api/") || route === "/api" && !dynamicRoutePages.has(route)).map(createRouteDefinition);
+  return [...pagesStaticAPIRoutes, ...appPathsStaticAPIRoutes];
+}
 
-// node_modules/@opennextjs/aws/dist/core/routingHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routing/middleware.js
+init_stream();
+init_utils();
+var middlewareManifest = MiddlewareManifest;
+var functionsConfigManifest = FunctionsConfigManifest;
+var middleMatch = getMiddlewareMatch(middlewareManifest, functionsConfigManifest);
+
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/routingHandler.js
 var MIDDLEWARE_HEADER_PREFIX = "x-middleware-response-";
 var MIDDLEWARE_HEADER_PREFIX_LEN = MIDDLEWARE_HEADER_PREFIX.length;
 var INTERNAL_HEADER_PREFIX = "x-opennext-";
 var INTERNAL_HEADER_INITIAL_URL = `${INTERNAL_HEADER_PREFIX}initial-url`;
 var INTERNAL_HEADER_LOCALE = `${INTERNAL_HEADER_PREFIX}locale`;
 var INTERNAL_HEADER_RESOLVED_ROUTES = `${INTERNAL_HEADER_PREFIX}resolved-routes`;
-var geoHeaderToNextHeader = {
-  "x-open-next-city": "x-vercel-ip-city",
-  "x-open-next-country": "x-vercel-ip-country",
-  "x-open-next-region": "x-vercel-ip-country-region",
-  "x-open-next-latitude": "x-vercel-ip-latitude",
-  "x-open-next-longitude": "x-vercel-ip-longitude"
-};
-function applyMiddlewareHeaders(eventHeaders, middlewareHeaders, setPrefix = true) {
-  const keyPrefix = setPrefix ? MIDDLEWARE_HEADER_PREFIX : "";
-  Object.entries(middlewareHeaders).forEach(([key, value]) => {
-    if (value) {
-      eventHeaders[keyPrefix + key] = Array.isArray(value) ? value.join(",") : value;
-    }
-  });
-}
-async function routingHandler(event) {
-  try {
-    for (const [openNextGeoName, nextGeoName] of Object.entries(geoHeaderToNextHeader)) {
-      const value = event.headers[openNextGeoName];
-      if (value) {
-        event.headers[nextGeoName] = value;
-      }
-    }
-    for (const key of Object.keys(event.headers)) {
-      if (key.startsWith(INTERNAL_HEADER_PREFIX) || key.startsWith(MIDDLEWARE_HEADER_PREFIX)) {
-        delete event.headers[key];
-      }
-    }
-    const nextHeaders = getNextConfigHeaders(event, ConfigHeaders);
-    let internalEvent = fixDataPage(event, BuildId);
-    if ("statusCode" in internalEvent) {
-      return internalEvent;
-    }
-    const redirect = handleRedirects(internalEvent, RoutesManifest.redirects);
-    if (redirect) {
-      debug("redirect", redirect);
-      return redirect;
-    }
-    const eventOrResult = await handleMiddleware(
-      internalEvent,
-      // We need to pass the initial search without any decoding
-      // TODO: we'd need to refactor InternalEvent to include the initial querystring directly
-      // Should be done in another PR because it is a breaking change
-      new URL(event.url).search
-    );
-    const isResult = "statusCode" in eventOrResult;
-    if (isResult) {
-      return eventOrResult;
-    }
-    const middlewareResponseHeaders = eventOrResult.responseHeaders;
-    let isExternalRewrite = eventOrResult.isExternalRewrite ?? false;
-    internalEvent = eventOrResult;
-    if (!isExternalRewrite) {
-      const beforeRewrites = handleRewrites(internalEvent, RoutesManifest.rewrites.beforeFiles);
-      internalEvent = beforeRewrites.internalEvent;
-      isExternalRewrite = beforeRewrites.isExternalRewrite;
-    }
-    const foundStaticRoute = staticRouteMatcher(internalEvent.rawPath);
-    const isStaticRoute = !isExternalRewrite && foundStaticRoute.length > 0;
-    if (!(isStaticRoute || isExternalRewrite)) {
-      const afterRewrites = handleRewrites(internalEvent, RoutesManifest.rewrites.afterFiles);
-      internalEvent = afterRewrites.internalEvent;
-      isExternalRewrite = afterRewrites.isExternalRewrite;
-    }
-    const { event: fallbackEvent, isISR } = handleFallbackFalse(internalEvent, PrerenderManifest);
-    internalEvent = fallbackEvent;
-    const foundDynamicRoute = dynamicRouteMatcher(internalEvent.rawPath);
-    const isDynamicRoute = !isExternalRewrite && foundDynamicRoute.length > 0;
-    if (!(isDynamicRoute || isStaticRoute || isExternalRewrite)) {
-      const fallbackRewrites = handleRewrites(internalEvent, RoutesManifest.rewrites.fallback);
-      internalEvent = fallbackRewrites.internalEvent;
-      isExternalRewrite = fallbackRewrites.isExternalRewrite;
-    }
-    const isApiRoute = internalEvent.rawPath === apiPrefix || internalEvent.rawPath.startsWith(`${apiPrefix}/`);
-    const isNextImageRoute = internalEvent.rawPath.startsWith("/_next/image");
-    const isRouteFoundBeforeAllRewrites = isStaticRoute || isDynamicRoute || isExternalRewrite;
-    if (!(isRouteFoundBeforeAllRewrites || isApiRoute || isNextImageRoute || // We need to check again once all rewrites have been applied
-    staticRouteMatcher(internalEvent.rawPath).length > 0 || dynamicRouteMatcher(internalEvent.rawPath).length > 0)) {
-      internalEvent = {
-        ...internalEvent,
-        rawPath: "/404",
-        url: constructNextUrl(internalEvent.url, "/404"),
-        headers: {
-          ...internalEvent.headers,
-          "x-middleware-response-cache-control": "private, no-cache, no-store, max-age=0, must-revalidate"
-        }
-      };
-    }
-    if (globalThis.openNextConfig.dangerous?.enableCacheInterception && !("statusCode" in internalEvent)) {
-      debug("Cache interception enabled");
-      internalEvent = await cacheInterceptor(internalEvent);
-      if ("statusCode" in internalEvent) {
-        applyMiddlewareHeaders(internalEvent.headers, {
-          ...middlewareResponseHeaders,
-          ...nextHeaders
-        }, false);
-        return internalEvent;
-      }
-    }
-    applyMiddlewareHeaders(internalEvent.headers, {
-      ...middlewareResponseHeaders,
-      ...nextHeaders
-    });
-    const resolvedRoutes = [
-      ...foundStaticRoute,
-      ...foundDynamicRoute
-    ];
-    debug("resolvedRoutes", resolvedRoutes);
-    return {
-      internalEvent,
-      isExternalRewrite,
-      origin: false,
-      isISR,
-      resolvedRoutes,
-      initialURL: event.url,
-      locale: NextConfig.i18n ? detectLocale(internalEvent, NextConfig.i18n) : void 0
-    };
-  } catch (e) {
-    error("Error in routingHandler", e);
-    return {
-      internalEvent: {
-        type: "core",
-        method: "GET",
-        rawPath: "/500",
-        url: constructNextUrl(event.url, "/500"),
-        headers: {
-          ...event.headers
-        },
-        query: event.query,
-        cookies: event.cookies,
-        remoteAddress: event.remoteAddress
-      },
-      isExternalRewrite: false,
-      origin: false,
-      isISR: false,
-      resolvedRoutes: [],
-      initialURL: event.url,
-      locale: NextConfig.i18n ? detectLocale(event, NextConfig.i18n) : void 0
-    };
-  }
-}
+var INTERNAL_HEADER_REWRITE_STATUS_CODE = `${INTERNAL_HEADER_PREFIX}rewrite-status-code`;
+var INTERNAL_EVENT_REQUEST_ID = `${INTERNAL_HEADER_PREFIX}request-id`;
 
-// node_modules/@opennextjs/aws/dist/core/util.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/util.js
 init_logger();
 import NextServer from "next/dist/server/next-server.js";
 
-// node_modules/@opennextjs/aws/dist/core/require-hooks.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/require-hooks.js
 init_logger();
 var mod2 = (init_node_module(), __toCommonJS(node_module_exports));
 var resolveFilename2 = mod2._resolveFilename;
 
-// node_modules/@opennextjs/aws/dist/core/util.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/util.js
 var cacheHandlerPath = __require.resolve("./cache.cjs");
+var composableCacheHandlerPath = __require.resolve("./composable-cache.cjs");
 var nextServer = new NextServer.default({
   conf: {
     ...NextConfig,
@@ -2548,7 +1607,12 @@ var nextServer = new NextServer.default({
       // This uses the request.headers.host as the URL
       // https://github.com/vercel/next.js/blob/canary/packages/next/src/server/next-server.ts#L1749-L1754
       //#override trustHostHeader
-      trustHostHeader: true
+      trustHostHeader: true,
+      //#endOverride
+      //#override composableCache
+      cacheHandlers: {
+        default: composableCacheHandlerPath
+      }
       //#endOverride
     }
   },
@@ -2592,13 +1656,15 @@ globalThis.__next_route_preloader = async (stage) => {
 };
 var requestHandler = (metadata) => "getRequestHandlerWithMetadata" in nextServer ? nextServer.getRequestHandlerWithMetadata(metadata) : nextServer.getRequestHandler();
 
-// node_modules/@opennextjs/aws/dist/core/requestHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/requestHandler.js
 globalThis.__openNextAls = new AsyncLocalStorage();
 async function openNextHandler(internalEvent, options) {
   const initialHeaders = internalEvent.headers;
+  const requestId = globalThis.openNextConfig.middleware?.external ? internalEvent.headers[INTERNAL_EVENT_REQUEST_ID] : Math.random().toString(36);
   return runWithOpenNextRequestContext({
     isISRRevalidation: initialHeaders["x-isr"] === "1",
-    waitUntil: options?.waitUntil
+    waitUntil: options?.waitUntil,
+    requestId
   }, async () => {
     await globalThis.__next_route_preloader("waitUntil");
     if (initialHeaders["x-forwarded-host"]) {
@@ -2607,7 +1673,8 @@ async function openNextHandler(internalEvent, options) {
     debug("internalEvent", internalEvent);
     const internalHeaders = {
       initialPath: initialHeaders[INTERNAL_HEADER_INITIAL_URL] ?? internalEvent.rawPath,
-      resolvedRoutes: initialHeaders[INTERNAL_HEADER_RESOLVED_ROUTES] ? JSON.parse(initialHeaders[INTERNAL_HEADER_RESOLVED_ROUTES]) : []
+      resolvedRoutes: initialHeaders[INTERNAL_HEADER_RESOLVED_ROUTES] ? JSON.parse(initialHeaders[INTERNAL_HEADER_RESOLVED_ROUTES]) : [],
+      rewriteStatusCode: Number.parseInt(initialHeaders[INTERNAL_HEADER_REWRITE_STATUS_CODE])
     };
     let routingResult = {
       internalEvent,
@@ -2617,7 +1684,6 @@ async function openNextHandler(internalEvent, options) {
       initialURL: internalEvent.url,
       ...internalHeaders
     };
-    routingResult = await routingHandler(internalEvent);
     const headers = "type" in routingResult ? routingResult.headers : routingResult.internalEvent.headers;
     const overwrittenResponseHeaders = {};
     for (const [rawKey, value] of Object.entries(headers)) {
@@ -2625,7 +1691,9 @@ async function openNextHandler(internalEvent, options) {
         continue;
       }
       const key = rawKey.slice(MIDDLEWARE_HEADER_PREFIX_LEN);
-      overwrittenResponseHeaders[key] = value;
+      if (key !== "x-middleware-set-cookie") {
+        overwrittenResponseHeaders[key] = value;
+      }
       headers[key] = value;
       delete headers[rawKey];
     }
@@ -2713,32 +1781,59 @@ async function openNextHandler(internalEvent, options) {
 }
 async function processRequest(req, res, routingResult) {
   delete req.body;
+  const initialURL = new URL(
+    // We always assume that only the routing layer can set this header.
+    routingResult.internalEvent.headers[INTERNAL_HEADER_INITIAL_URL] ?? routingResult.initialURL
+  );
+  let invokeStatus;
+  if (routingResult.internalEvent.rawPath === "/500") {
+    invokeStatus = 500;
+  } else if (routingResult.internalEvent.rawPath === "/404") {
+    invokeStatus = 404;
+  }
+  const requestMetadata = {
+    isNextDataReq: routingResult.internalEvent.query.__nextDataReq === "1",
+    initURL: routingResult.initialURL,
+    initQuery: convertToQuery(initialURL.search),
+    initProtocol: initialURL.protocol,
+    defaultLocale: NextConfig.i18n?.defaultLocale,
+    locale: routingResult.locale,
+    middlewareInvoke: false,
+    // By setting invokePath and invokeQuery we can bypass some of the routing logic in Next.js
+    invokePath: routingResult.internalEvent.rawPath,
+    invokeQuery: routingResult.internalEvent.query,
+    // invokeStatus is only used for error pages
+    invokeStatus
+  };
   try {
-    const initialURL = new URL(routingResult.initialURL);
-    let invokeStatus;
-    if (routingResult.internalEvent.rawPath === "/500") {
-      invokeStatus = 500;
-    } else if (routingResult.internalEvent.rawPath === "/404") {
-      invokeStatus = 404;
-    }
-    const requestMetadata = {
-      isNextDataReq: routingResult.internalEvent.query.__nextDataReq === "1",
-      initURL: routingResult.initialURL,
-      initQuery: convertToQuery(initialURL.search),
-      initProtocol: initialURL.protocol,
-      defaultLocale: NextConfig.i18n?.defaultLocale,
-      locale: routingResult.locale,
-      middlewareInvoke: false,
-      // By setting invokePath and invokeQuery we can bypass some of the routing logic in Next.js
-      invokePath: routingResult.internalEvent.rawPath,
-      invokeQuery: routingResult.internalEvent.query,
-      // invokeStatus is only used for error pages
-      invokeStatus
-    };
     await requestHandler(requestMetadata)(req, res);
   } catch (e) {
     if (e.constructor.name === "NoFallbackError") {
-      await tryRenderError("404", res, routingResult.internalEvent);
+      await handleNoFallbackError(req, res, routingResult, requestMetadata);
+    } else {
+      error("NextJS request failed.", e);
+      await tryRenderError("500", res, routingResult.internalEvent);
+    }
+  }
+}
+async function handleNoFallbackError(req, res, routingResult, metadata, index = 1) {
+  if (index >= 5) {
+    await tryRenderError("500", res, routingResult.internalEvent);
+    return;
+  }
+  if (index >= routingResult.resolvedRoutes.length) {
+    await tryRenderError("404", res, routingResult.internalEvent);
+    return;
+  }
+  try {
+    await requestHandler({
+      ...routingResult,
+      invokeOutput: routingResult.resolvedRoutes[index].route,
+      ...metadata
+    })(req, res);
+  } catch (e) {
+    if (e.constructor.name === "NoFallbackError") {
+      await handleNoFallbackError(req, res, routingResult, metadata, index + 1);
     } else {
       error("NextJS request failed.", e);
       await tryRenderError("500", res, routingResult.internalEvent);
@@ -2763,6 +1858,7 @@ async function tryRenderError(type, res, internalEvent) {
     await requestHandler(requestMetadata)(_req, res);
   } catch (e) {
     error("NextJS request failed.", e);
+    res.statusCode = 500;
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify({
       message: "Server failed to respond.",
@@ -2771,7 +1867,7 @@ async function tryRenderError(type, res, internalEvent) {
   }
 }
 
-// node_modules/@opennextjs/aws/dist/core/resolve.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/resolve.js
 async function resolveConverter(converter2) {
   if (typeof converter2 === "function") {
     return converter2();
@@ -2807,6 +1903,13 @@ async function resolveIncrementalCache(incrementalCache) {
   const m_1 = await Promise.resolve().then(() => (init_dummy3(), dummy_exports3));
   return m_1.default;
 }
+async function resolveAssetResolver(assetResolver) {
+  if (typeof assetResolver === "function") {
+    return assetResolver();
+  }
+  const m_1 = await Promise.resolve().then(() => (init_dummy4(), dummy_exports4));
+  return m_1.default;
+}
 async function resolveProxyRequest(proxyRequest) {
   if (typeof proxyRequest === "function") {
     return proxyRequest();
@@ -2818,11 +1921,11 @@ async function resolveCdnInvalidation(cdnInvalidation) {
   if (typeof cdnInvalidation === "function") {
     return cdnInvalidation();
   }
-  const m_1 = await Promise.resolve().then(() => (init_dummy4(), dummy_exports4));
+  const m_1 = await Promise.resolve().then(() => (init_dummy5(), dummy_exports5));
   return m_1.default;
 }
 
-// node_modules/@opennextjs/aws/dist/core/createMainHandler.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/core/createMainHandler.js
 async function createMainHandler() {
   const config = await import("./open-next.config.mjs").then((m) => m.default);
   const thisFunction = globalThis.fnName ? config.functions[globalThis.fnName] : config.default;
@@ -2832,6 +1935,9 @@ async function createMainHandler() {
   globalThis.queue = await resolveQueue(thisFunction.override?.queue);
   globalThis.incrementalCache = await resolveIncrementalCache(thisFunction.override?.incrementalCache);
   globalThis.tagCache = await resolveTagCache(thisFunction.override?.tagCache);
+  if (config.middleware?.external !== true) {
+    globalThis.assetResolver = await resolveAssetResolver(globalThis.openNextConfig.middleware?.assetResolver);
+  }
   globalThis.proxyExternalRequest = await resolveProxyRequest(thisFunction.override?.proxyExternalRequest);
   globalThis.cdnInvalidationHandler = await resolveCdnInvalidation(thisFunction.override?.cdnInvalidation);
   const converter2 = await resolveConverter(thisFunction.override?.converter);
@@ -2840,7 +1946,7 @@ async function createMainHandler() {
   return wrapper(openNextHandler, converter2);
 }
 
-// node_modules/@opennextjs/aws/dist/adapters/server-adapter.js
+// node_modules/.pnpm/@opennextjs+aws@3.7.4/node_modules/@opennextjs/aws/dist/adapters/server-adapter.js
 setNodeEnv();
 setBuildIdEnv();
 setNextjsServerWorkingDirectory();

@@ -3,7 +3,7 @@
   "config": {
     "env": {
       "DIRECTUS_URL": "https://admin.charlotteudo.org",
-      "DIRECTUS_TOKEN": "H8AAfXMOVHZc7Bicu1JVsaNdF0ZXIYoM",
+      "DIRECTUS_TOKEN": "Z71kmsJQS6dANzfg1PQkLtWhbwo5UUHZ",
       "DIRECTUS_EMAIL": "nick@stump.works",
       "DIRECTUS_PASSWORD": "admin"
     },
@@ -325,6 +325,6 @@
     ".next/server/next-font-manifest.json"
   ],
   "ignore": [
-    "node_modules/next/dist/compiled/@ampproject/toolbox-optimizer/**/*"
+    "node_modules/.pnpm/next@15.3.2_@babel+core@7.28.0_react-dom@19.1.1_react@19.1.1__react@19.1.1/node_modules/next/dist/compiled/@ampproject/toolbox-optimizer/**/*"
   ]
 }

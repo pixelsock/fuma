@@ -89,12 +89,6 @@
       "namedRegex": "^/versions(?:/)?$"
     },
     {
-      "page": "/what-is-udo",
-      "regex": "^/what\\-is\\-udo(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/what\\-is\\-udo(?:/)?$"
-    },
-    {
       "page": "/zoning-at-a-glance",
       "regex": "^/zoning\\-at\\-a\\-glance(?:/)?$",
       "routeKeys": {},
