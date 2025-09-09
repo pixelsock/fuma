@@ -1,9 +1,28 @@
 
+/**
+ * Determines if we're in Webflow production environment
+ */
+function isWebflowProduction() {
+  // Check if explicitly set to production deployment
+  const explicitEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
+  if (explicitEnv === 'production') {
+    return true;
+  }
+  
+  // In production builds, default to Webflow unless explicitly set to local
+  if (process.env.NODE_ENV === 'production') {
+    // Only skip Webflow paths if explicitly set to local
+    return explicitEnv !== 'local';
+  }
+  
+  return false;
+}
+
 /** @type {import('next').NextConfig} */
 const config = {
   // Configure the base path and asset prefix for Webflow Cloud deployment
-  basePath: process.env.NODE_ENV === 'production' ? '/articles' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/articles' : '',
+  basePath: isWebflowProduction() ? '/articles' : '',
+  assetPrefix: isWebflowProduction() ? '/articles' : '',
   reactStrictMode: true,
   transpilePackages: ['fumadocs-ui', 'fumadocs-core'],
   images: {
