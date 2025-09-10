@@ -2,16 +2,8 @@
   "version": 3,
   "pages404": true,
   "caseSensitive": false,
-  "basePath": "/articles",
+  "basePath": "",
   "redirects": [
-    {
-      "source": "/articles/",
-      "destination": "/articles",
-      "basePath": false,
-      "internal": true,
-      "statusCode": 308,
-      "regex": "^/articles/$"
-    },
     {
       "source": "/:path+/",
       "destination": "/:path+",
@@ -87,6 +79,12 @@
       "regex": "^/versions(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/versions(?:/)?$"
+    },
+    {
+      "page": "/what-is-udo",
+      "regex": "^/what\\-is\\-udo(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/what\\-is\\-udo(?:/)?$"
     },
     {
       "page": "/zoning-at-a-glance",

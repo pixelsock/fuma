@@ -1,5 +1,6 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { BookIcon } from 'lucide-react';
+import { DynamicLogo } from '@/components/dynamic-logo';
 
 /**
  * Shared layout configurations
@@ -11,8 +12,7 @@ import { BookIcon } from 'lucide-react';
 export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
-      <img
-        src="/assets/udo-logo-p-500.jpg"
+      <DynamicLogo
         alt="Charlotte UDO Logo"
         width="120"
         height="48"

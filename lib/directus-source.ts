@@ -578,3 +578,81 @@ function getFallbackCategories(): Category[] {
     }
   ];
 }
+
+export interface SiteSetting {
+  id: string;
+  key: string;
+  value?: string;
+  description?: string;
+  image?: string;
+}
+
+/**
+ * Fetches site settings from Directus
+ */
+export async function getSiteSettings(): Promise<SiteSetting[]> {
+  try {
+    const authenticated = await ensureAuthenticated();
+    if (!authenticated) {
+      console.log('[directus-source.ts] Not authenticated, returning empty settings');
+      return [];
+    }
+    
+    const settings = await directus.request(
+      readItems('settings', {
+        fields: ['id', 'key', 'value', 'description', 'image']
+      })
+    );
+    
+    console.log(`[directus-source.ts] Successfully fetched ${settings.length} settings from Directus`);
+    return settings;
+  } catch (error) {
+    console.error('Error fetching settings from Directus:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetches a specific site setting by key
+ */
+export async function getSiteSetting(key: string): Promise<SiteSetting | null> {
+  try {
+    const authenticated = await ensureAuthenticated();
+    if (!authenticated) {
+      console.log(`[directus-source.ts] Not authenticated, cannot fetch setting: ${key}`);
+      return null;
+    }
+    
+    const settings = await directus.request(
+      readItems('settings', {
+        filter: { key: { _eq: key } },
+        fields: ['id', 'key', 'value', 'description', 'image'],
+        limit: 1
+      })
+    );
+    
+    const setting = settings[0] || null;
+    console.log(`[directus-source.ts] Fetched setting ${key}:`, setting ? 'found' : 'not found');
+    return setting;
+  } catch (error) {
+    console.error(`Error fetching setting ${key} from Directus:`, error);
+    return null;
+  }
+}
+
+/**
+ * Gets the site logo URL from Directus settings
+ */
+export async function getSiteLogo(): Promise<string | null> {
+  try {
+    const logoSetting = await getSiteSetting('site_logo');
+    if (logoSetting && logoSetting.image) {
+      const baseUrl = getDirectusUrl();
+      return `${baseUrl}/assets/${logoSetting.image}`;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting site logo:', error);
+    return null;
+  }
+}
