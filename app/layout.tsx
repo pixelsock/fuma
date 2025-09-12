@@ -86,6 +86,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             
             // Remove Webflow badge if it appears
             function removeWebflowBadge() {
+              // Safety check - don't run if we're breaking the app
+              try {
               // Target the specific Webflow badge pattern
               const badgeSelectors = [
                 'a[href*="webflow.com"]',
@@ -147,11 +149,12 @@ export default function Layout({ children }: { children: ReactNode }) {
                 }
               });
               
-              // Nuclear option: Remove any script that creates webflow badges
-              const scripts = document.querySelectorAll('script');
+              // More selective script removal - only remove inline scripts with webflow badge code
+              const scripts = document.querySelectorAll('script:not([src])');
               scripts.forEach(function(script) {
                 if (script.textContent && 
-                    script.textContent.includes('webflow.com?utm_campaign=brandjs')) {
+                    script.textContent.includes('webflow.com?utm_campaign=brandjs') &&
+                    script.textContent.includes('d3e54v103j8qbb.cloudfront.net')) {
                   script.remove();
                 }
               });
@@ -166,10 +169,14 @@ export default function Layout({ children }: { children: ReactNode }) {
                   img.remove();
                 }
               });
+              } catch (error) {
+                // Silently fail to avoid breaking the application
+                console.warn('Badge removal failed:', error);
+              }
             }
             
-            // Run immediately
-            removeWebflowBadge();
+            // Don't run immediately - wait for app to load first
+            // removeWebflowBadge();
             
             // Run after DOM is loaded
             if (document.readyState === 'loading') {
