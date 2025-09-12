@@ -1,6 +1,6 @@
 import { readItems } from '@directus/sdk';
 import { isPublishedStatus } from './status-helpers';
-import { directus, ensureAuthenticated, type DirectusArticle } from './directus-client';
+import { directus, ensureAuthenticated, type DirectusArticle, type DirectusSiteSetting, type DirectusGlobalSettings } from './directus-client';
 import { getDirectusUrl } from './env-config';
 
 // Re-export the helper function for backward compatibility
@@ -599,20 +599,9 @@ function getFallbackCategories(): Category[] {
   ];
 }
 
-export interface SiteSetting {
-  id: string;
-  key: string;
-  value?: string;
-  description?: string;
-  image?: string;
-}
-
-export interface GlobalSettings {
-  id: number;
-  user_updated?: string | null;
-  date_updated?: string | null;
-  logo?: string;
-}
+// Re-export types for backward compatibility
+export type SiteSetting = DirectusSiteSetting;
+export type GlobalSettings = DirectusGlobalSettings;
 
 /**
  * Fetches site settings from Directus

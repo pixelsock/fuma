@@ -31,9 +31,26 @@ export interface DirectusCategory {
   color?: string;
 }
 
+export interface DirectusSiteSetting {
+  id: string;
+  key: string;
+  value?: string;
+  description?: string;
+  image?: string;
+}
+
+export interface DirectusGlobalSettings {
+  id: number;
+  user_updated?: string | null;
+  date_updated?: string | null;
+  logo?: string;
+}
+
 export interface DirectusSchema {
   articles: DirectusArticle[];
   article_categories: DirectusCategory[];
+  settings: DirectusSiteSetting[];
+  global_settings: DirectusGlobalSettings[];
 }
 
 // Get configuration using the environment utility
