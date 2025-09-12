@@ -86,31 +86,85 @@ export default function Layout({ children }: { children: ReactNode }) {
             
             // Remove Webflow badge if it appears
             function removeWebflowBadge() {
-              // Common Webflow badge selectors
+              // Target the specific Webflow badge pattern
               const badgeSelectors = [
                 'a[href*="webflow.com"]',
+                'a[href*="utm_campaign=brandjs"]',
                 '.w-webflow-badge',
                 '.webflow-badge',
                 '#webflow-badge',
                 '[class*="webflow"]',
-                '[class*="made-in-webflow"]',
-                'a[href="https://webflow.com?utm_campaign=brandjs"]',
-                'a[href*="webflow.com?utm_campaign"]',
-                '[href*="made-in-webflow"]'
+                '[class*="made-in-webflow"]'
               ];
               
+              // Remove by selectors first
               badgeSelectors.forEach(function(selector) {
                 const elements = document.querySelectorAll(selector);
                 elements.forEach(function(el) {
-                  // Check if it contains webflow-related text
-                  if (el.textContent && (
-                    el.textContent.toLowerCase().includes('made in webflow') ||
-                    el.textContent.toLowerCase().includes('webflow') ||
-                    el.href && el.href.includes('webflow.com')
-                  )) {
-                    el.remove();
-                  }
+                  el.remove();
                 });
+              });
+              
+              // More aggressive approach - find elements with Webflow images
+              const webflowImages = document.querySelectorAll('img[src*="webflow-badge"], img[alt*="Made in Webflow"], img[src*="d3e54v103j8qbb.cloudfront.net"]');
+              webflowImages.forEach(function(img) {
+                // Remove the parent anchor if it exists
+                const parentAnchor = img.closest('a');
+                if (parentAnchor && parentAnchor.href && parentAnchor.href.includes('webflow.com')) {
+                  parentAnchor.remove();
+                } else {
+                  img.remove();
+                }
+              });
+              
+              // Find all links that go to webflow.com and contain images
+              const webflowLinks = document.querySelectorAll('a[href*="webflow.com"]');
+              webflowLinks.forEach(function(link) {
+                // Check if it contains webflow badge images
+                const hasWebflowImages = link.querySelector('img[src*="webflow-badge"], img[src*="d3e54v103j8qbb.cloudfront.net"]');
+                if (hasWebflowImages) {
+                  link.remove();
+                }
+              });
+              
+              // Remove any fixed position elements that look like badges
+              const fixedElements = document.querySelectorAll('*');
+              fixedElements.forEach(function(el) {
+                const style = window.getComputedStyle(el);
+                if (style.position === 'fixed' && 
+                    (style.bottom === '12px' || style.right === '12px') &&
+                    el.querySelector('img[src*="webflow"]')) {
+                  el.remove();
+                }
+              });
+              
+              // Remove any style tags that contain webflow badge styles
+              const styleTags = document.querySelectorAll('style');
+              styleTags.forEach(function(styleTag) {
+                if (styleTag.textContent && 
+                    styleTag.textContent.includes('webflow.com?utm_campaign=brandjs')) {
+                  styleTag.remove();
+                }
+              });
+              
+              // Nuclear option: Remove any script that creates webflow badges
+              const scripts = document.querySelectorAll('script');
+              scripts.forEach(function(script) {
+                if (script.textContent && 
+                    script.textContent.includes('webflow.com?utm_campaign=brandjs')) {
+                  script.remove();
+                }
+              });
+              
+              // Remove elements by CloudFront CDN source (Webflow's CDN)
+              const cloudFrontImages = document.querySelectorAll('img[src*="d3e54v103j8qbb.cloudfront.net"]');
+              cloudFrontImages.forEach(function(img) {
+                const parentLink = img.closest('a');
+                if (parentLink) {
+                  parentLink.remove();
+                } else {
+                  img.remove();
+                }
               });
             }
             
