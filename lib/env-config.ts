@@ -70,7 +70,7 @@ export function getDirectusConfig(): DirectusConfig {
   } else {
     const config = {
       url: process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org',
-      token: process.env.PRODUCTION_DIRECTUS_TOKEN,
+      token: process.env.DIRECTUS_TOKEN || process.env.PRODUCTION_DIRECTUS_TOKEN,
       email: process.env.PRODUCTION_DIRECTUS_EMAIL,
       password: process.env.PRODUCTION_DIRECTUS_PASSWORD,
     };
