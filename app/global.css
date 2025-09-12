@@ -583,3 +583,27 @@ div[role="navigation"] a[data-active="true"],
     @apply bg-background text-foreground;
   }
 }
+
+/* Hide any Webflow badges */
+a[href*="webflow.com"],
+[class*="webflow"],
+[class*="made-in-webflow"],
+[id*="webflow"],
+[data-wf-page],
+[data-wf-site],
+.w-webflow-badge,
+.webflow-badge,
+#webflow-badge,
+a[href="https://webflow.com?utm_campaign=brandjs"],
+a[href*="webflow.com?utm_campaign"],
+[href*="made-in-webflow"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}

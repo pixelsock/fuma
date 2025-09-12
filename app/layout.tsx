@@ -24,8 +24,129 @@ export default function Layout({ children }: { children: ReactNode }) {
           {children}
           {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
         </Provider>
-        <script defer dangerouslySetInnerHTML={{
-          __html: `document.addEventListener('load', function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "https://widget.prod.equally.ai/equally-widget.min.js";fjs.parentNode.insertBefore(js, fjs);}(document, 'script', 'equallyWidget'));!window.EQUALLY_AI_API_KEY&&(window.EQUALLY_AI_API_KEY="racqlctj3uwloxn2prgc3bi8jt90sovk",intervalId=setInterval(function(){window.EquallyAi&&(clearInterval(intervalId),window.EquallyAi=new EquallyAi)},500));`
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            // Cloudflare Workers optimized Equally AI widget loader
+            window.EQUALLY_AI_API_KEY = "racqlctj3uwloxn2prgc3bi8jt90sovk";
+            
+            // Only load if not in Cloudflare Workers context or if specifically allowed
+            if (typeof caches === 'undefined' || typeof window !== 'undefined') {
+              // Defer loading to avoid blocking
+              setTimeout(function() {
+                try {
+                  var script = document.createElement('script');
+                  script.id = 'equallyWidget';
+                  script.src = 'https://widget.prod.equally.ai/equally-widget.min.js';
+                  script.async = true;
+                  script.defer = true;
+                  
+                  // Add timeout to prevent indefinite loading
+                  var loadTimeout = setTimeout(function() {
+                    console.warn('Equally AI widget failed to load within timeout');
+                  }, 15000);
+                  
+                  script.onload = function() {
+                    clearTimeout(loadTimeout);
+                    console.log('Equally AI widget loaded successfully');
+                    
+                    // Initialize with retry logic and timeout
+                    var initAttempts = 0;
+                    var maxAttempts = 20;
+                    
+                    function initWidget() {
+                      initAttempts++;
+                      if (typeof window.EquallyAi !== 'undefined') {
+                        try {
+                          window.EquallyAi = new window.EquallyAi();
+                          console.log('Equally AI widget initialized');
+                        } catch (e) {
+                          console.error('Error initializing Equally AI widget:', e);
+                        }
+                      } else if (initAttempts < maxAttempts) {
+                        setTimeout(initWidget, 250);
+                      } else {
+                        console.warn('Equally AI widget initialization timeout after', maxAttempts, 'attempts');
+                      }
+                    }
+                    
+                    initWidget();
+                  };
+                  
+                  script.onerror = function() {
+                    clearTimeout(loadTimeout);
+                    console.error('Failed to load Equally AI widget script');
+                  };
+                  
+                  document.head.appendChild(script);
+                } catch (e) {
+                  console.error('Error setting up Equally AI widget:', e);
+                }
+              }, 1000); // Delay initial load by 1 second
+            }
+            
+            // Remove Webflow badge if it appears
+            function removeWebflowBadge() {
+              // Common Webflow badge selectors
+              const badgeSelectors = [
+                'a[href*="webflow.com"]',
+                '.w-webflow-badge',
+                '.webflow-badge',
+                '#webflow-badge',
+                '[class*="webflow"]',
+                '[class*="made-in-webflow"]',
+                'a[href="https://webflow.com?utm_campaign=brandjs"]',
+                'a[href*="webflow.com?utm_campaign"]',
+                '[href*="made-in-webflow"]'
+              ];
+              
+              badgeSelectors.forEach(function(selector) {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(function(el) {
+                  // Check if it contains webflow-related text
+                  if (el.textContent && (
+                    el.textContent.toLowerCase().includes('made in webflow') ||
+                    el.textContent.toLowerCase().includes('webflow') ||
+                    el.href && el.href.includes('webflow.com')
+                  )) {
+                    el.remove();
+                  }
+                });
+              });
+            }
+            
+            // Run immediately
+            removeWebflowBadge();
+            
+            // Run after DOM is loaded
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', removeWebflowBadge);
+            }
+            
+            // Run after page is fully loaded (in case badge is injected later)
+            window.addEventListener('load', function() {
+              removeWebflowBadge();
+              // Keep checking for a few seconds in case badge loads async
+              setTimeout(removeWebflowBadge, 1000);
+              setTimeout(removeWebflowBadge, 3000);
+              setTimeout(removeWebflowBadge, 5000);
+            });
+            
+            // Use MutationObserver to catch dynamically added badges
+            if (typeof MutationObserver !== 'undefined') {
+              const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    removeWebflowBadge();
+                  }
+                });
+              });
+              
+              observer.observe(document.body, {
+                childList: true,
+                subtree: true
+              });
+            }
+          `
         }} />
       </body>
     </html>
