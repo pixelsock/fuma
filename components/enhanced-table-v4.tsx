@@ -519,3 +519,5 @@ export function EnhancedTableV4({ html, title: initialTitle }: EnhancedTableProp
 
   return tableContent;
 }
+
+

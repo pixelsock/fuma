@@ -344,22 +344,42 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
       pdfValue = article.pdf;
     }
     
-    // Handle category - it's a JSON field with key and collection
+    // Handle category - can be either a string ID or an object with key
     let categoryData: Category | undefined;
-    if (article.category && typeof article.category === 'object' && 'key' in article.category) {
-      const categoryId = article.category.key;
-      if (categoriesMap && categoriesMap.has(categoryId)) {
-        categoryData = categoriesMap.get(categoryId);
+    let categoryId: string | undefined;
+    
+    if (article.category) {
+      // Handle both string UUID and object with key
+      if (typeof article.category === 'string') {
+        categoryId = article.category;
+        console.log(`[processArticle] Found category ID (string): ${categoryId}`);
+      } else if (typeof article.category === 'object' && 'key' in article.category) {
+        categoryId = article.category.key;
+        console.log(`[processArticle] Found category ID (object key): ${categoryId}`);
       } else {
-        // If we don't have a categories map, we need to fetch the category
-        try {
-          const categories = await getCategories();
-          const foundCategory = categories.find(cat => cat.id === categoryId);
-          categoryData = foundCategory;
-        } catch (error) {
-          console.error('Error fetching category:', error);
+        console.log(`[processArticle] Unexpected category type:`, typeof article.category, article.category);
+      }
+      
+      if (categoryId) {
+        if (categoriesMap && categoriesMap.has(categoryId)) {
+          categoryData = categoriesMap.get(categoryId);
+          console.log(`[processArticle] Found category in map: ${categoryData?.name}`);
+        } else {
+          // If we don't have a categories map, we need to fetch the category
+          try {
+            const categories = await getCategories();
+            const foundCategory = categories.find(cat => cat.id === categoryId);
+            categoryData = foundCategory;
+            console.log(`[processArticle] Found category via fetch: ${categoryData?.name}`);
+          } catch (error) {
+            console.error('Error fetching category:', error);
+          }
         }
       }
+    }
+    
+    if (!categoryData) {
+      console.log(`[processArticle] Article "${title}" has no valid category`);
     }
     
     return {
@@ -587,6 +607,13 @@ export interface SiteSetting {
   image?: string;
 }
 
+export interface GlobalSettings {
+  id: number;
+  user_updated?: string | null;
+  date_updated?: string | null;
+  logo?: string;
+}
+
 /**
  * Fetches site settings from Directus
  */
@@ -641,18 +668,37 @@ export async function getSiteSetting(key: string): Promise<SiteSetting | null> {
 }
 
 /**
- * Gets the site logo URL from Directus settings
+ * Gets the site logo URL from Directus global settings
  */
 export async function getSiteLogo(): Promise<string | null> {
   try {
-    const logoSetting = await getSiteSetting('site_logo');
-    if (logoSetting && logoSetting.image) {
-      const baseUrl = getDirectusUrl();
-      return `${baseUrl}/assets/${logoSetting.image}`;
+    const baseUrl = getDirectusUrl();
+    
+    // Use the public API since global_settings is publicly accessible
+    const response = await fetch(`${baseUrl}/items/global_settings`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      console.error('[getSiteLogo] Failed to fetch global settings:', response.status, response.statusText);
+      return null;
     }
+    
+    const result = await response.json();
+    const globalSettings = result.data as GlobalSettings;
+    
+    if (globalSettings && globalSettings.logo) {
+      const logoUrl = `${baseUrl}/assets/${globalSettings.logo}`;
+      console.log('[getSiteLogo] Logo URL:', logoUrl);
+      return logoUrl;
+    }
+    
+    console.log('[getSiteLogo] No logo found in global settings');
     return null;
   } catch (error) {
-    console.error('Error getting site logo:', error);
+    console.error('[getSiteLogo] Error getting site logo:', error);
     return null;
   }
 }

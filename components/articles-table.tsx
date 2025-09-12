@@ -20,6 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card';
 import { 
   Search, 
   ArrowUpDown, 
@@ -28,7 +35,9 @@ import {
   FileText,
   ExternalLink,
   Filter,
-  X
+  X,
+  Grid3X3,
+  List
 } from 'lucide-react';
 
 interface Article {
@@ -58,12 +67,14 @@ interface ArticlesTableProps {
 
 type SortKey = 'name' | 'category';
 type SortDirection = 'asc' | 'desc';
+type ViewMode = 'grid' | 'list';
 
 export default function ArticlesTable({ articles, categories }: ArticlesTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   // Extract article number from slug
   const getArticleNumber = (slug: string): number => {
@@ -179,6 +190,45 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
     return filtered;
   }, [articles, searchTerm, sortKey, sortDirection, selectedCategories]);
 
+  // Group articles by category for grid view
+  const groupedArticles = useMemo(() => {
+    const grouped = new Map<string, { category: Category | null; articles: Article[] }>();
+    
+    filteredAndSortedArticles.forEach(article => {
+      const categoryId = article.category?.id || 'uncategorized';
+      const categoryData = article.category || null;
+
+      if (!grouped.has(categoryId)) {
+        grouped.set(categoryId, {
+          category: categoryData,
+          articles: []
+        });
+      }
+
+      grouped.get(categoryId)!.articles.push(article);
+    });
+
+    // Sort articles within each category by article number
+    grouped.forEach(group => {
+      group.articles.sort((a, b) => getArticleNumber(a.slug) - getArticleNumber(b.slug));
+    });
+
+    // Convert to array and sort categories
+    return Array.from(grouped.entries()).map(([id, data]) => ({
+      id,
+      ...data
+    })).sort((a, b) => {
+      // Put "Uncategorized" last
+      if (a.id === 'uncategorized') return 1;
+      if (b.id === 'uncategorized') return -1;
+      
+      // Sort by category name
+      const nameA = a.category?.name || 'Uncategorized';
+      const nameB = b.category?.name || 'Uncategorized';
+      return nameA.localeCompare(nameB);
+    });
+  }, [filteredAndSortedArticles]);
+
   const SortIcon = ({ column }: { column: SortKey }) => {
     if (sortKey !== column) return <ArrowUpDown className="w-4 h-4" />;
     return sortDirection === 'asc' 
@@ -202,7 +252,7 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
         <div className="p-4 border-b">
           <div className="flex flex-col gap-4">
             {/* Search and Filter Row */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
@@ -213,44 +263,56 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                 />
               </div>
               
-              <Select value="" onValueChange={handleCategorySelect}>
-                <SelectTrigger className="w-full sm:w-[200px]">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Add category filter" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Clear all filters</SelectItem>
-                  {categories.map(category => (
+              <div className="flex gap-2">
+                <Select value="" onValueChange={handleCategorySelect}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <Filter className="w-4 h-4 mr-2" />
+                    <SelectValue placeholder={selectedCategories.length > 0 ? "Add filter" : "Filter by category"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Clear all filters</SelectItem>
+                    {categories.map(category => (
+                      <SelectItem 
+                        key={category.id} 
+                        value={category.id}
+                        disabled={selectedCategories.includes(category.id)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: category.color || '#6B7280' }}
+                          />
+                          {category.name}
+                        </div>
+                      </SelectItem>
+                    ))}
                     <SelectItem 
-                      key={category.id} 
-                      value={category.id}
-                      disabled={selectedCategories.includes(category.id)}
+                      value="uncategorized"
+                      disabled={selectedCategories.includes('uncategorized')}
                     >
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: category.color || '#6B7280' }}
-                        />
-                        {category.name}
-                      </div>
+                      Uncategorized
                     </SelectItem>
-                  ))}
-                  <SelectItem 
-                    value="uncategorized"
-                    disabled={selectedCategories.includes('uncategorized')}
-                  >
-                    Uncategorized
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                  </SelectContent>
+                </Select>
+                
+                <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as ViewMode)} variant="outline">
+                  <ToggleGroupItem value="grid" aria-label="Grid view">
+                    <Grid3X3 className="h-4 w-4" />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="list" aria-label="List view">
+                    <List className="h-4 w-4" />
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
             </div>
             
-            {/* Category Tags */}
+            {/* Filter Pills */}
             {selectedCategories.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm text-muted-foreground">Filtered by:</span>
                 {selectedCategories.map(categoryId => {
                   const category = categoryId === 'uncategorized' 
-                    ? { id: 'uncategorized', name: 'Uncategorized', color: null }
+                    ? { id: 'uncategorized', name: 'Uncategorized', color: '#6B7280' }
                     : categories.find(c => c.id === categoryId);
                   
                   if (!category) return null;
@@ -259,34 +321,46 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                     <Badge
                       key={categoryId}
                       variant="secondary"
-                      className="pl-2 pr-1 py-1 flex items-center gap-1"
+                      className="px-2 py-1 text-xs font-medium flex items-center gap-1.5 border"
                       style={{
-                        backgroundColor: category.color ? `${category.color}20` : undefined,
-                        borderColor: category.color || undefined,
+                        backgroundColor: category.color ? `${category.color}15` : undefined,
+                        borderColor: category.color ? `${category.color}40` : undefined,
+                        color: category.color || undefined
                       }}
                     >
-                      <span style={{ color: category.color || undefined }}>
-                        {category.name}
-                      </span>
+                      <div 
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: category.color || '#6B7280' }}
+                      />
+                      {category.name}
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-4 w-4 p-0 hover:bg-transparent"
+                        className="h-auto w-auto p-0 hover:bg-transparent ml-1"
                         onClick={() => handleCategoryRemove(categoryId)}
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-3 w-3 opacity-70 hover:opacity-100" />
                       </Button>
                     </Badge>
                   );
                 })}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+                  onClick={() => setSelectedCategories([])}
+                >
+                  Clear all
+                </Button>
               </div>
             )}
           </div>
         </div>
         
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <Table>
+        {/* Content */}
+        {viewMode === 'list' ? (
+          <div className="overflow-x-auto">
+            <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-[200px]">
@@ -395,7 +469,48 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
             )}
           </TableBody>
         </Table>
-        </div>
+          </div>
+        ) : (
+          <div className="p-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              {groupedArticles.map(({ id, category, articles: categoryArticles }) => (
+                <Card key={id} className="h-full gap-2">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: category?.color || '#6B7280' }}
+                      />
+                      <CardTitle className="text-base font-semibold">
+                        {category?.name || 'Uncategorized'}
+                      </CardTitle>
+                      <Badge variant="secondary" className="ml-auto text-xs px-2 py-0.5">
+                        {categoryArticles.length}
+                      </Badge>
+                    </div>
+                    <div className="mt-2 border-b-2 border-dashed border-orange-300"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-0">
+                    {categoryArticles.map((article) => (
+                      <Link 
+                        key={article.id}
+                        href={getArticleUrl(article)}
+                        className="block py-1 px-3 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <p className="text-sm font-medium leading-tight truncate">
+                            {article.name}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Results Summary */}
@@ -405,6 +520,9 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
           <span>
             {' '}filtered by {selectedCategories.length} categor{selectedCategories.length === 1 ? 'y' : 'ies'}
           </span>
+        )}
+        {viewMode === 'grid' && (
+          <span> grouped by {groupedArticles.length} categories</span>
         )}
       </div>
     </div>
