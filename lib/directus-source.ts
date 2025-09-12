@@ -2,6 +2,7 @@ import { readItems } from '@directus/sdk';
 import { isPublishedStatus } from './status-helpers';
 import { directus, ensureAuthenticated, type DirectusArticle, type DirectusSiteSetting, type DirectusGlobalSettings } from './directus-client';
 import { getDirectusUrl } from './env-config';
+import { enhanceTablesServer, rewriteAssetUrls } from './server-content-processor';
 
 // Re-export the helper function for backward compatibility
 export { isPublishedStatus } from './status-helpers';
@@ -327,8 +328,18 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
     // Provide fallback for older records: name ?? title ?? 'Untitled'
     const title = article.name ?? article.title ?? 'Untitled';
     
-    // Use the raw HTML content directly - no conversion needed
-    const htmlContent = article.content || '';
+    // Process HTML content: rewrite asset URLs and enhance tables server-side
+    let htmlContent = article.content || '';
+    
+    // Apply server-side processing for build-time enhancement
+    if (htmlContent) {
+      console.log(`[processArticle] Processing content for article: ${article.slug}`);
+      // First rewrite asset URLs to correct environment
+      htmlContent = rewriteAssetUrls(htmlContent);
+      // Then enhance tables server-side for static generation
+      htmlContent = enhanceTablesServer(htmlContent);
+      console.log(`[processArticle] Server-side processing complete for: ${article.slug}`);
+    }
     
     // Handle PDF field - can be uppercase from Directus
     let pdfValue: string | undefined;

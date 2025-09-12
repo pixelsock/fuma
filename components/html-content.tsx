@@ -7,7 +7,7 @@ interface HtmlContentProps {
 }
 
 export function HtmlContent({ html }: HtmlContentProps) {
-  // Process HTML to extract headings and enhance tables
+  // Process HTML to extract headings and enhance tables (if not already enhanced server-side)
   const processedHtml = useMemo(() => {
     // Parse the HTML to extract headings
     const parser = new DOMParser();
@@ -29,6 +29,19 @@ export function HtmlContent({ html }: HtmlContentProps) {
         level: parseInt(heading.tagName[1])
       };
     });
+
+    // Check if tables have already been enhanced server-side
+    const existingEnhancedTables = doc.querySelectorAll('.enhanced-table-container');
+    const hasServerSideEnhancement = existingEnhancedTables.length > 0;
+    
+    console.log(`[HtmlContent] Found ${existingEnhancedTables.length} server-side enhanced tables`);
+    
+    if (hasServerSideEnhancement) {
+      console.log('[HtmlContent] Tables already enhanced server-side, skipping client-side enhancement');
+      return doc.body.innerHTML;
+    }
+    
+    console.log('[HtmlContent] No server-side enhancement detected, applying client-side enhancement');
 
     // First, let's see what .table-title-row elements exist in the document
     const allTitleRows = doc.querySelectorAll('.table-title-row');
