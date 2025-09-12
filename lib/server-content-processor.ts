@@ -7,22 +7,35 @@ interface ProcessedContent {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 export function rewriteAssetUrls(html: string): string {
-  // Check deployment environment instead of just NODE_ENV
+  // Check deployment environment with better debugging
   const deploymentEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
-  const isProduction = deploymentEnv === 'production' || process.env.NODE_ENV === 'production';
+  const nodeEnv = process.env.NODE_ENV;
+  const isProduction = deploymentEnv === 'production' || nodeEnv === 'production';
+  
+  // Debug logging for environment detection
+  console.log('[server-content-processor] Environment detection:', {
+    DEPLOYMENT_ENV: deploymentEnv,
+    NODE_ENV: nodeEnv,
+    isProduction,
+    typeof_window: typeof window
+  });
   
   if (isProduction) {
     // In production, replace localhost URLs with production URLs
-    return html.replace(
+    const result = html.replace(
       /http:\/\/localhost:8056\/assets\//g,
       'https://admin.charlotteudo.org/assets/'
     );
+    console.log('[server-content-processor] Applied production URL rewrite');
+    return result;
   } else {
     // In development, replace production URLs with localhost URLs
-    return html.replace(
+    const result = html.replace(
       /https:\/\/admin\.charlotteudo\.org\/assets\//g,
       'http://localhost:8056/assets/'
     );
+    console.log('[server-content-processor] Applied development URL rewrite');
+    return result;
   }
 }
 
