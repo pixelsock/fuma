@@ -91,7 +91,7 @@ function setCachedDefinitions(definitions: DefinitionCache) {
 
 // Batch fetch multiple definitions in a single request
 async function fetchDefinitionsBatch(ids: string[]): Promise<Definition[]> {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
   
   // Build filter query for multiple IDs
   const filter = {

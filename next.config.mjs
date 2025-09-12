@@ -41,10 +41,12 @@ const config = {
     ],
   },
   env: {
-    DIRECTUS_URL: process.env.DIRECTUS_URL,
+    DIRECTUS_URL: process.env.DIRECTUS_URL || process.env.DIRECTUS_API_URL || process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org',
     DIRECTUS_TOKEN: process.env.DIRECTUS_TOKEN,
     DIRECTUS_EMAIL: process.env.DIRECTUS_EMAIL,
     DIRECTUS_PASSWORD: process.env.DIRECTUS_PASSWORD,
+    // Expose Directus URL to client-side for components that need it
+    NEXT_PUBLIC_DIRECTUS_URL: process.env.DIRECTUS_API_URL || process.env.PRODUCTION_DIRECTUS_URL || process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org',
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

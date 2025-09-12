@@ -31,7 +31,7 @@ export function useDefinitionData() {
 }
 
 async function fetchDefinitionAPI(id: string): Promise<Definition> {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
   const response = await fetch(`${directusUrl}/items/definitions/${id}`, {
     headers: { 'Content-Type': 'application/json' },
     cache: 'force-cache',

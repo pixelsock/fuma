@@ -14,7 +14,7 @@ interface UDOContentRendererV6TabulatorSimpleProps {
 
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
   
   const patterns = [
     /http:\/\/localhost:8056\/assets\//g,

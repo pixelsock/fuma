@@ -24,7 +24,7 @@ function rewriteAssetUrls(html: string): string {
     // In development, replace production URLs with localhost URLs
     return html.replace(
       /https:\/\/admin\.charlotteudo\.org\/assets\//g,
-      'http://localhost:8056/assets/'
+      'https://admin.charlotteudo.org/assets/'
     );
   }
 }

@@ -17,7 +17,7 @@ interface UDOContentRendererV3OptimizedProps {
 // Function to rewrite asset URLs to use the correct Directus instance
 function rewriteAssetUrls(html: string): string {
   // Use NEXT_PUBLIC_ env var so it's available on both server and client
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
+  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
   
   // Replace any existing Directus URLs with the current one
   const patterns = [
