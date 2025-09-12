@@ -5,6 +5,9 @@
     "buildCommand": "npm run build:cloudflare",
     "buildDir": ".open-next",
     "mountPath": "/articles",
+    "environmentVariables": {
+      "DEPLOYMENT_ENV": "production"
+    },
     "project_id": "e560f168-661f-4924-a16e-20f9b2733348"
   },
   "telemetry": {
