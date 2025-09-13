@@ -333,12 +333,19 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
     
     // Apply server-side processing for build-time enhancement
     if (htmlContent) {
-      console.log(`[processArticle] Processing content for article: ${article.slug}`);
-      // First rewrite asset URLs to correct environment
-      htmlContent = rewriteAssetUrls(htmlContent);
-      // Then enhance tables server-side for static generation
-      htmlContent = enhanceTablesServer(htmlContent);
-      console.log(`[processArticle] Server-side processing complete for: ${article.slug}`);
+      try {
+        console.log(`[processArticle] Processing content for article: ${article.slug}`);
+        // First rewrite asset URLs to correct environment
+        htmlContent = rewriteAssetUrls(htmlContent);
+        // Then enhance tables server-side for static generation
+        htmlContent = enhanceTablesServer(htmlContent);
+        console.log(`[processArticle] Server-side processing complete for: ${article.slug}`);
+      } catch (error) {
+        console.error(`[processArticle] Error processing content for article ${article.slug}:`, error);
+        console.log(`[processArticle] Using original content for: ${article.slug}`);
+        // Keep original content if processing fails
+        htmlContent = article.content || '';
+      }
     }
     
     // Handle PDF field - can be uppercase from Directus

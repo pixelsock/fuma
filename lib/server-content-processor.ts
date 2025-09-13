@@ -105,8 +105,14 @@ export function extractTablesServer(html: string): ProcessedContent {
 
 // Server-side table enhancement - same logic as HtmlContent component
 export function enhanceTablesServer(html: string): string {
-  const dom = new JSDOM(html);
-  const doc = dom.window.document;
+  try {
+    if (!html || html.trim() === '') {
+      console.log('[server-content-processor] Empty HTML, returning as-is');
+      return html;
+    }
+    
+    const dom = new JSDOM(html);
+    const doc = dom.window.document;
   
   console.log('[server-content-processor] Enhancing tables server-side');
   
@@ -265,7 +271,12 @@ export function enhanceTablesServer(html: string): string {
     }
   });
 
-  return doc.body.innerHTML;
+    return doc.body.innerHTML;
+  } catch (error) {
+    console.error('[server-content-processor] Error enhancing tables server-side:', error);
+    console.log('[server-content-processor] Returning original HTML due to error');
+    return html; // Return original HTML if processing fails
+  }
 }
 
 // Pre-process content on the server
