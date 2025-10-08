@@ -66,9 +66,13 @@ const config = {
       },
     ],
   },
-  // Note: Do NOT use the `env` config option as it exposes all variables to the client.
-  // Next.js automatically makes NEXT_PUBLIC_* variables available to the browser,
-  // while keeping other environment variables server-side only.
+  // Expose environment detection to client-side code via NEXT_PUBLIC_ variables
+  // These are set here to ensure they're available during both build and runtime
+  env: {
+    NEXT_PUBLIC_NETLIFY: process.env.NETLIFY || 'false',
+    NEXT_PUBLIC_DEPLOYMENT_TARGET: process.env.DEPLOYMENT_TARGET || '',
+    NEXT_PUBLIC_DEPLOYMENT_ENV: process.env.DEPLOYMENT_ENV || '',
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { 

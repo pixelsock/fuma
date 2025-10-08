@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
   SECRETS_SCAN_OMIT_PATHS = ".netlify/**,.wrangler/**,node_modules/**,*.log"
+  # Netlify automatically sets NETLIFY=true, but we expose it as NEXT_PUBLIC_ for client-side
+  NEXT_PUBLIC_NETLIFY = "true"
+  NEXT_PUBLIC_DEPLOYMENT_TARGET = "netlify"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

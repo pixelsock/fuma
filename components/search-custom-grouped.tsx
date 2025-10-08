@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, FileText, X, ChevronDown } from 'lucide-react';
+import { getApiUrl } from '@/lib/base-path-config';
 // Using standard HTML button instead of fumadocs button component
 
 interface SearchResult {
@@ -100,10 +101,10 @@ export function SearchCustomGrouped({ open, onOpenChange }: CustomSearchProps) {
       searchParams.set('tag', currentArticleTag);
     }
 
-    // Get base path from config for API calls
-    const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
-    
-    fetch(`${basePath}/api/search?${searchParams.toString()}`, {
+    // Get API URL with correct basePath
+    const apiUrl = getApiUrl(`/api/search?${searchParams.toString()}`);
+
+    fetch(apiUrl, {
       signal: controller.signal,
     })
       .then((res) => res.json())

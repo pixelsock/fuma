@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Download, ChevronDown, ExternalLink } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { getApiUrl } from '@/lib/base-path-config';
 
 interface ArticleTitleHeaderProps {
   category?: string;
@@ -67,9 +68,9 @@ export function ArticleTitleHeader({
         document.body.removeChild(a);
       } else {
         // Fallback to API endpoint
-        // Get base path from config for API calls
-        const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
-        const response = await fetch(`${basePath}/api/articles/${slug}/pdf`);
+        // Get API URL with correct basePath
+        const apiUrl = getApiUrl(`/api/articles/${slug}/pdf`);
+        const response = await fetch(apiUrl);
         if (response.ok) {
           const blob = await response.blob();
           const url = window.URL.createObjectURL(blob);

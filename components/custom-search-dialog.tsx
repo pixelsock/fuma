@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Search, FileText, X, ChevronDown } from 'lucide-react';
 import type { SharedProps } from 'fumadocs-ui/components/dialog/search';
 import { highlightSearchTerms } from '@/lib/search-highlight';
+import { getApiUrl } from '@/lib/base-path-config';
 
 interface SearchResult {
   id: string;
@@ -118,8 +119,10 @@ export default function CustomSearchDialog(props: SharedProps) {
         searchParams.set('tag', currentArticleTag);
       }
 
-      const basePath = process.env.NODE_ENV === 'production' ? '/articles' : '';
-      fetch(`${basePath}/api/search?${searchParams.toString()}`, {
+      // Get API URL with correct basePath
+      const apiUrl = getApiUrl(`/api/search?${searchParams.toString()}`);
+
+      fetch(apiUrl, {
         signal: controller.signal,
       })
         .then((res) => res.json())
