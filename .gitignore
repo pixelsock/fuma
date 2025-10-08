@@ -34,5 +34,9 @@ yarn-error.log*
 # others
 .env
 .env*.local
+.env.backup
 .vercel
 next-env.d.ts
+
+# documentation with sensitive info
+DIRECTUS_RENDER_CONFIG.md
