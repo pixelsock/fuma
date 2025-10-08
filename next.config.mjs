@@ -48,16 +48,16 @@ const config = {
         hostname: 'admin.charlotteudo.org',
         pathname: '/assets/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'udo-backend-y1w0.onrender.com',
+        pathname: '/assets/**',
+      },
     ],
   },
-  env: {
-    DIRECTUS_URL: process.env.DIRECTUS_URL || process.env.DIRECTUS_API_URL || process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org',
-    DIRECTUS_TOKEN: process.env.DIRECTUS_TOKEN,
-    DIRECTUS_EMAIL: process.env.DIRECTUS_EMAIL,
-    DIRECTUS_PASSWORD: process.env.DIRECTUS_PASSWORD,
-    // Expose Directus URL to client-side for components that need it
-    NEXT_PUBLIC_DIRECTUS_URL: process.env.DIRECTUS_API_URL || process.env.PRODUCTION_DIRECTUS_URL || process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org',
-  },
+  // Note: Do NOT use the `env` config option as it exposes all variables to the client.
+  // Next.js automatically makes NEXT_PUBLIC_* variables available to the browser,
+  // while keeping other environment variables server-side only.
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { 
