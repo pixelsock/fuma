@@ -8,3 +8,9 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors 'self' https://admin.charlotteudo.org https://app.netlify.com;"
+    X-Frame-Options = "ALLOW-FROM https://admin.charlotteudo.org"
