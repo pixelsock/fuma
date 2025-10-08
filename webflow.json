@@ -16,5 +16,12 @@
       "lastPrompted": 1753901933501,
       "version": "1.8.28"
     }
+  },
+  "library": {
+    "components": [
+      "**/*.webflow.@(js|jsx|mjs|ts|tsx)"
+    ],
+    "name": "Matrix",
+    "description": "Matrix Compomenets "
   }
 }

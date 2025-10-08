@@ -1,0 +1,6 @@
+{
+  "library": {
+    "name": "Charlotte UDO Components",
+    "components": ["./src/**/*.webflow.@(js|jsx|mjs|ts|tsx)"]
+  }
+}

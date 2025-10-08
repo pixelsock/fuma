@@ -1,0 +1,37 @@
+{
+  "name": "charlotte-udo-webflow-components",
+  "version": "1.0.0",
+  "description": "React components for Charlotte UDO articles page in Webflow",
+  "main": "index.ts",
+  "scripts": {
+    "build": "npx webflow library build",
+    "share": "npx webflow library share",
+    "dev": "npm run build && npm run share"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@webflow/webflow-cli": "^1.0.0",
+    "@webflow/data-types": "^1.0.0",
+    "@webflow/react": "^1.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "keywords": [
+    "webflow",
+    "react",
+    "components",
+    "charlotte",
+    "udo",
+    "articles"
+  ],
+  "author": "Charlotte UDO Team",
+  "license": "MIT"
+}
