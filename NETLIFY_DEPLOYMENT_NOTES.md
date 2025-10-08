@@ -46,7 +46,7 @@ Ensure Directus CORS settings allow API requests:
 Verify that the token we're using has the correct permissions:
 1. Log into Directus admin
 2. Go to Settings → Access Tokens
-3. Find the token being used (starts with `rHa0ZdV_...`)
+3. Find the token being used (check your environment variables)
 4. Ensure it has `read` permissions for:
    - `articles` collection
    - `article_categories` collection
@@ -74,15 +74,15 @@ This would require modifying the build process to use local content files instea
 ```
 DEPLOYMENT_ENV=production
 PRODUCTION_DIRECTUS_URL=https://admin.charlotteudo.org
-DIRECTUS_TOKEN=rHa0ZdV_t7ZJMHZHs2ANtXzHHOkS-AB7
-PRODUCTION_DIRECTUS_EMAIL=nick@stump.works
-PRODUCTION_DIRECTUS_PASSWORD=admin
+DIRECTUS_TOKEN=[REDACTED - Set in Netlify Environment Variables]
+PRODUCTION_DIRECTUS_EMAIL=[REDACTED - Set in Netlify Environment Variables]
+PRODUCTION_DIRECTUS_PASSWORD=[REDACTED - Set in Netlify Environment Variables]
 WEBFLOW_SITE_ID=6882658c808a4019ebb9aeb7
-WEBFLOW_SITE_API_TOKEN=[hidden]
-WEBFLOW_WORKSPACE_API_TOKEN=[hidden]
+WEBFLOW_SITE_API_TOKEN=[REDACTED - Set in Netlify Environment Variables]
+WEBFLOW_WORKSPACE_API_TOKEN=[REDACTED - Set in Netlify Environment Variables]
 NEXT_PUBLIC_DIRECTUS_URL=https://admin.charlotteudo.org
 NEXT_PUBLIC_ORAMA_ENDPOINT=https://cloud.orama.run/v1/indexes/articles-dw8k5s
-NEXT_PUBLIC_ORAMA_API_KEY=[hidden]
+NEXT_PUBLIC_ORAMA_API_KEY=[REDACTED - Set in Netlify Environment Variables]
 ```
 
 ## Files Modified
