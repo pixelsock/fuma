@@ -3,16 +3,26 @@
  * Determines if we're in Webflow production environment
  */
 function isWebflowProduction() {
+  // Check deployment target - Netlify should NOT use Webflow paths
+  const deploymentTarget = process.env.DEPLOYMENT_TARGET?.toLowerCase();
+  if (deploymentTarget === 'netlify') {
+    return false;
+  }
+  
   // Check if explicitly set to production deployment
   const explicitEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
-  if (explicitEnv === 'production') {
+  if (explicitEnv === 'production' && deploymentTarget === 'webflow') {
     return true;
   }
   
-  // In production builds, default to Webflow unless explicitly set to local
+  // In production builds, default to Webflow unless explicitly set to local or netlify
   if (process.env.NODE_ENV === 'production') {
-    // Only skip Webflow paths if explicitly set to local
-    return explicitEnv !== 'local';
+    // Skip Webflow paths for local or netlify deployments
+    if (explicitEnv === 'local' || deploymentTarget === 'netlify') {
+      return false;
+    }
+    // Default to Webflow for production builds
+    return true;
   }
   
   return false;
