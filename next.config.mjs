@@ -3,15 +3,23 @@
  * Determines if we're in Webflow production environment
  */
 function isWebflowProduction() {
+  // Netlify automatically sets NETLIFY=true during builds
+  if (process.env.NETLIFY === 'true') {
+    console.log('[next.config.mjs] Detected Netlify environment - disabling Webflow basePath');
+    return false;
+  }
+  
   // Check deployment target - Netlify should NOT use Webflow paths
   const deploymentTarget = process.env.DEPLOYMENT_TARGET?.toLowerCase();
   if (deploymentTarget === 'netlify') {
+    console.log('[next.config.mjs] DEPLOYMENT_TARGET=netlify - disabling Webflow basePath');
     return false;
   }
   
   // Check if explicitly set to production deployment
   const explicitEnv = process.env.DEPLOYMENT_ENV?.toLowerCase();
   if (explicitEnv === 'production' && deploymentTarget === 'webflow') {
+    console.log('[next.config.mjs] Webflow production mode enabled');
     return true;
   }
   
@@ -19,12 +27,15 @@ function isWebflowProduction() {
   if (process.env.NODE_ENV === 'production') {
     // Skip Webflow paths for local or netlify deployments
     if (explicitEnv === 'local' || deploymentTarget === 'netlify') {
+      console.log('[next.config.mjs] Production build with local/netlify target - disabling Webflow basePath');
       return false;
     }
     // Default to Webflow for production builds
+    console.log('[next.config.mjs] Production build defaulting to Webflow mode');
     return true;
   }
   
+  console.log('[next.config.mjs] Development mode - disabling Webflow basePath');
   return false;
 }
 
