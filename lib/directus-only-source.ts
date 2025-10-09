@@ -426,9 +426,9 @@ export const directusOnlySource = {
   _pageTreeCacheTime: 0,
   
   async getPageTree() {
-    // Return cached tree if it's less than 30 seconds old
+    // Return cached tree if it's less than 5 minutes old (matches Next.js revalidate)
     const now = Date.now();
-    if (this._pageTreeCache && (now - this._pageTreeCacheTime) < 30 * 1000) {
+    if (this._pageTreeCache && (now - this._pageTreeCacheTime) < 5 * 60 * 1000) {
       return this._pageTreeCache;
     }
     

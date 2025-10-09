@@ -15,9 +15,9 @@ interface SharedDocsLayoutProps {
   config?: SharedDocsLayoutConfig;
 }
 
-// Force dynamic rendering to ensure fresh data
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable static generation with revalidation for better performance
+// Revalidate every 5 minutes (300 seconds)
+export const revalidate = 300;
 
 export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayoutProps) {
   // Default configuration - show sidebar by default

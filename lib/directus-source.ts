@@ -89,6 +89,9 @@ export async function getArticles(): Promise<ProcessedArticle[]> {
     return processedArticles;
   } catch (error) {
     console.error('Error fetching articles from Directus:', error);
+    if (error && typeof error === 'object' && 'errors' in error) {
+      console.error('[directus-source.ts] Directus error details:', JSON.stringify((error as any).errors, null, 2));
+    }
     console.log('[directus-source.ts] Returning fallback data due to error');
     return getFallbackArticles();
   }
@@ -461,6 +464,9 @@ export async function getCategories(): Promise<Category[]> {
     }));
   } catch (error) {
     console.error('Error fetching categories from Directus:', error);
+    if (error && typeof error === 'object' && 'errors' in error) {
+      console.error('[directus-source.ts] Directus error details:', JSON.stringify((error as any).errors, null, 2));
+    }
     return getFallbackCategories();
   }
 }
