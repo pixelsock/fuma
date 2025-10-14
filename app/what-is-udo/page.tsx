@@ -183,7 +183,7 @@ export default function WhatIsUDOPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Virtual training opportunities and educational resources
+                    Virtual training sessions on the UDO
                   </p>
                 </CardContent>
               </Card>
