@@ -242,7 +242,7 @@ export default function VersionsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button variant="outline" className="w-full justify-start" asChild>
                 <a href="/text-amendments">
                   <FileText className="h-4 w-4 mr-2" />
@@ -253,6 +253,12 @@ export default function VersionsPage() {
                 <a href="/articles-listing">
                   <Eye className="h-4 w-4 mr-2" />
                   Browse All Articles
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View Legacy Zoning Ordinance
                 </a>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
