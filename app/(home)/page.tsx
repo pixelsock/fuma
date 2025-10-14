@@ -248,7 +248,7 @@ export default function HomePage() {
               <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white shadow-xl hover:shadow-2xl transition-all" asChild>
                 <Link href="/articles/zoning-map">
                   <MapPin className="mr-2 w-4 h-4" />
-                  View Zoning Map
+                  View Charlotte's zoning map through Charlotte Explorer
                 </Link>
               </Button>
             </div>
