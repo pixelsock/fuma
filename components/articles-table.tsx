@@ -484,9 +484,6 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                       <CardTitle className="text-base font-semibold">
                         {category?.name || 'Uncategorized'}
                       </CardTitle>
-                      <Badge variant="secondary" className="ml-auto text-xs px-2 py-0.5">
-                        {categoryArticles.length}
-                      </Badge>
                     </div>
                     <div className="mt-2 border-b-2 border-dashed border-orange-300"></div>
                   </CardHeader>
