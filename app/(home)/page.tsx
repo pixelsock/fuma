@@ -146,16 +146,16 @@ export default function HomePage() {
 
   const recentUpdates = [
     {
-      date: "December 15, 2024",
-      title: "New Text Amendment Approved",
-      description: "City Council approved updates to residential density standards in urban core districts.",
-      href: "/text-amendments"
-    },
-    {
       date: "November 28, 2024", 
       title: "UDO University Session Scheduled",
       description: "Join us for a virtual training on overlay district regulations and procedures.",
       href: "/articles/udo-university"
+    },
+    {
+      date: "June 16, 2025",
+      title: "New Text Amendment Approved",
+      description: "City Council approved a text amendment to make clarifying changes to the UDO.",
+      href: "/text-amendments"
     },
     {
       date: "November 10, 2024",
