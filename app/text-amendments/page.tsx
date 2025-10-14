@@ -425,24 +425,22 @@ export default function TextAmendmentsPage() {
                     </div>
                     <Badge variant="outline">Virtual Session</Badge>
                   </div>
-                  <CardTitle>Spring 2025 UDO Maintenance Text Amendment</CardTitle>
+                  <CardTitle>May 13, 2025 - Petition #2025-047</CardTitle>
                   <CardDescription>
-                    Virtual information session covering the latest maintenance amendments
+                    Virtual information session for UDO text amendment petition #2025-047
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      <span>April 15, 2025</span>
+                      <span>May 13, 2025, 6:00 PM</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>Duration: 1 hour 30 minutes</span>
-                    </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/watch?v=k_bXitKZUwk" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
@@ -459,28 +457,26 @@ export default function TextAmendmentsPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-foreground to-accent-foreground/80 flex items-center justify-center text-white">
-                      <Users className="w-6 h-6" />
+                      <Play className="w-6 h-6" />
                     </div>
-                    <Badge variant="outline">Community Forum</Badge>
+                    <Badge variant="outline">Virtual Session</Badge>
                   </div>
-                  <CardTitle>UDO Text Amendment Process Overview</CardTitle>
+                  <CardTitle>November 7, 2024 - Petition #2024-121</CardTitle>
                   <CardDescription>
-                    Learn about how text amendments are proposed, reviewed, and adopted
+                    Virtual information session for UDO text amendment petition #2024-121
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      <span>March 20, 2025</span>
+                      <span>November 7, 2024, 12:00 PM</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>Duration: 45 minutes</span>
-                    </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/watch?v=Fznw4YZCW28" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
