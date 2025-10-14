@@ -270,7 +270,7 @@ export default function WhatIsUDOPage() {
             <p className="text-sm text-muted-foreground">Effective Date</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">700+</div>
+            <div className="text-3xl font-bold text-primary mb-2">600+</div>
             <p className="text-sm text-muted-foreground">Pages of Regulations</p>
           </div>
           <div className="text-center">
