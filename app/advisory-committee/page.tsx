@@ -242,12 +242,6 @@ export default function AdvisoryCommitteePage() {
                 </a>
               </Button>
               <Button variant="outline" className="flex-1 justify-start" asChild>
-                <a href="/articles-listing">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Browse UDO Articles
-                </a>
-              </Button>
-              <Button variant="outline" className="flex-1 justify-start" asChild>
                 <a href="https://charlotteudo.org" target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Visit Legacy Site
