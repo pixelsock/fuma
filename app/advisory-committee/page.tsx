@@ -1,21 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
+import {
   Users,
-  Calendar,
   Video,
-  MapPin,
-  Building,
-  Briefcase,
-  Home,
-  Trees,
-  Car,
   Mail,
   ExternalLink,
   Clock,
-  AlertCircle
 } from 'lucide-react';
 import {
   Card,
@@ -24,206 +16,117 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 // UAC Member data structure
 interface UACMember {
   name: string;
-  title: string;
-  organization?: string;
-  category: string;
+  organization: string;
+  additionalDetails?: string;
   image?: string;
 }
 
 const uacMembers: UACMember[] = [
-  // Neighborhood Representatives
   {
     name: "Angela Ambroise",
-    title: "Urban Roots Real Estate Advisors",
-    category: "Neighborhood Equity and Stabilization",
+    organization: "Urban Roots Real Estate Advisors",
   },
   {
     name: "Brenda Campbell",
-    title: "Westside Network",
-    category: "Neighborhood",
+    organization: "Westside Network",
   },
   {
     name: "Padra Campbell",
-    title: "Charlotte Regional Transportation Coalition (FCAC)",
-    category: "Transportation",
+    organization: "Charlotte Regional Transportation Coalition (FCAC)",
   },
   {
     name: "Nate Doolittle",
-    title: "Live/Design",
-    category: "Design",
+    organization: "Live/Design",
   },
   {
     name: "John Poidevant",
-    title: "Former Planning Commissioner",
-    organization: "Retired Architect",
-    category: "Architecture",
+    organization: "Former Planning Commissioner",
+    additionalDetails: "Retired Architect",
   },
   {
     name: "Drew Gaertner",
-    title: "University City Partners",
-    category: "Planning",
+    organization: "University City Partners",
   },
   {
     name: "Shanique Haynes",
-    title: "Greater Elderly Park Neighborhood Association",
-    category: "Neighborhood",
+    organization: "Greater Elderly Park Neighborhood Association",
   },
   {
     name: "Matt Langston",
-    title: "PLA, FASLA Landworks Design Group, PA",
-    category: "Landscape Design",
+    organization: "PLA, FASLA Landworks Design Group, PA",
   },
   {
     name: "Tony Lathrop",
-    title: "NCDOT",
-    category: "Transportation",
+    organization: "NCDOT",
   },
   {
     name: "Mark Loflin",
-    title: "Former Planning Commissioner",
-    organization: "Keep Charlotte Beautiful",
-    category: "Planning",
+    organization: "Former Planning Commissioner",
+    additionalDetails: "Keep Charlotte Beautiful",
   },
-  // Development Representatives
   {
     name: "Roger Morley",
-    title: "BBA-M Architecture",
-    category: "Architecture",
+    organization: "BBA-M Architecture",
   },
   {
     name: "Joseph Margolis",
-    title: "Denia Community",
-    category: "Development",
+    organization: "Denia Community",
   },
   {
     name: "Jon L. Morris",
-    title: "Beacon Partners",
-    category: "Development",
+    organization: "Beacon Partners",
   },
   {
     name: "Cheryl Myers",
-    title: "Charlotte Center City Partners",
-    category: "Urban Development",
+    organization: "Charlotte Center City Partners",
   },
   {
     name: "Julie Porter",
-    title: "Greenway Partners",
-    category: "Environmental",
+    organization: "Greenway Partners",
   },
   {
     name: "Adam Rhew",
-    title: "SouthPark Community Partners",
-    category: "Community Development",
+    organization: "SouthPark Community Partners",
   },
   {
     name: "Dennis Rorie",
-    title: "Montage Homes",
-    category: "Housing",
+    organization: "Montage Homes",
   },
   {
     name: "Shad Spencer",
-    title: "Moore & VanAllen",
-    organization: "Former Zoning Administrator",
-    category: "Legal/Planning",
+    organization: "Moore & VanAllen",
+    additionalDetails: "Former Zoning Administrator",
   },
   {
     name: "Michael Sullivan",
-    title: "The Nichols Company",
-    category: "Development",
+    organization: "The Nichols Company",
   },
   {
     name: "Andrea Ufer",
-    title: "Steele Creek Residents Association",
-    organization: "Former planning professional",
-    category: "Planning",
+    organization: "Steele Creek Residents Association",
+    additionalDetails: "Former planning professional",
   },
   {
     name: "Eric Zaverl",
-    title: "Sustain Charlotte",
-    category: "Sustainability",
+    organization: "Sustain Charlotte",
   },
 ];
 
-const getCategoryIcon = (category: string) => {
-  switch (category.toLowerCase()) {
-    case 'neighborhood':
-    case 'neighborhood equity and stabilization':
-      return <Home className="h-4 w-4" />;
-    case 'transportation':
-      return <Car className="h-4 w-4" />;
-    case 'design':
-    case 'landscape design':
-    case 'architecture':
-      return <Building className="h-4 w-4" />;
-    case 'development':
-    case 'urban development':
-    case 'community development':
-    case 'housing':
-      return <Briefcase className="h-4 w-4" />;
-    case 'planning':
-    case 'legal/planning':
-      return <MapPin className="h-4 w-4" />;
-    case 'environmental':
-    case 'sustainability':
-      return <Trees className="h-4 w-4" />;
-    default:
-      return <Users className="h-4 w-4" />;
-  }
-};
-
-const getCategoryColor = (category: string) => {
-  switch (category.toLowerCase()) {
-    case 'neighborhood':
-    case 'neighborhood equity and stabilization':
-      return 'bg-blue-600';
-    case 'transportation':
-      return 'bg-purple-600';
-    case 'design':
-    case 'landscape design':
-    case 'architecture':
-      return 'bg-pink-600';
-    case 'development':
-    case 'urban development':
-    case 'community development':
-    case 'housing':
-      return 'bg-orange-600';
-    case 'planning':
-    case 'legal/planning':
-      return 'bg-green-600';
-    case 'environmental':
-    case 'sustainability':
-      return 'bg-teal-600';
-    default:
-      return 'bg-gray-600';
-  }
-};
-
 export default function AdvisoryCommitteePage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-
-  const categories = ["all", ...Array.from(new Set(uacMembers.map(member => member.category)))];
-  
-  const filteredMembers = selectedCategory === "all" 
-    ? uacMembers 
-    : uacMembers.filter(member => member.category === selectedCategory);
-
-  // Group members by category for display
-  const groupedMembers = filteredMembers.reduce((acc, member) => {
-    if (!acc[member.category]) {
-      acc[member.category] = [];
-    }
-    acc[member.category].push(member);
-    return acc;
-  }, {} as Record<string, UACMember[]>);
-
   return (
     <DocsPage>
       <DocsBody className="max-w-6xl mx-auto">
@@ -296,72 +199,29 @@ export default function AdvisoryCommitteePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Category Filter */}
-            <div className="mb-6">
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category)}
-                    className="capitalize"
-                  >
-                    {category === "all" ? "All Members" : category}
-                    {category !== "all" && (
-                      <span className="ml-2 text-xs">
-                        ({uacMembers.filter(m => m.category === category).length})
-                      </span>
-                    )}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            <Separator className="my-6" />
-
-            {/* Members Grid */}
-            <div className="space-y-8">
-              {Object.entries(groupedMembers).map(([category, members]) => (
-                <div key={category}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`p-2 rounded-lg ${getCategoryColor(category)} text-white`}>
-                      {getCategoryIcon(category)}
-                    </div>
-                    <h3 className="text-lg font-semibold">{category}</h3>
-                    <Badge variant="secondary">{members.length} members</Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {members.map((member, index) => (
-                      <div 
-                        key={`${member.name}-${index}`}
-                        className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0">
-                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                              <span className="text-sm font-medium">
-                                {member.name.split(' ').map(n => n[0]).join('')}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm">{member.name}</h4>
-                            <p className="text-sm text-muted-foreground truncate">{member.title}</p>
-                            {member.organization && (
-                              <p className="text-xs text-muted-foreground italic mt-1">
-                                {member.organization}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Organization</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {uacMembers.map((member) => (
+                  <TableRow key={member.name}>
+                    <TableCell className="font-medium">{member.name}</TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <p>{member.organization}</p>
+                        {member.additionalDetails && (
+                          <p className="text-sm text-muted-foreground">{member.additionalDetails}</p>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
 
