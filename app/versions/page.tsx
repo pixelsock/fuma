@@ -226,10 +226,6 @@ export default function VersionsPage() {
               <span className="font-semibold">•</span>
               <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only.</span>
             </div>
-            <div className="flex items-start gap-2">
-              <span className="font-semibold">•</span>
-              <span><strong>Text Amendments:</strong> Check the Text Amendments section for the latest updates and modifications.</span>
-            </div>
           </AlertDescription>
         </Alert>
 
