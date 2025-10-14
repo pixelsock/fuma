@@ -57,7 +57,7 @@ const keyFeatures: KeyFeature[] = [
   {
     icon: <Home className="h-6 w-6" />,
     title: "Neighborhood Protection",
-    description: "Protects the character of established neighborhoods while allowing appropriate infill development."
+    description: "Provides options for protection of existing neighborhood character while also allowing for needed housing supply."
   },
   {
     icon: <Shield className="h-6 w-6" />,
