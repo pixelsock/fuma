@@ -283,7 +283,7 @@ export default function HomePage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Resources</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to understand and navigate the Charlotte UDO
+              Jump into the UDO and the resources to help you understand it
             </p>
           </motion.div>
           
