@@ -35,8 +35,18 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+// Type for UDO version entries
+type UdoVersion = {
+  id: number;
+  title: string;
+  amendedDate: string;
+  status: string;
+  pdfUrl?: string;
+  externalUrl?: string;
+};
+
 // Sample data for UDO versions
-const udoVersions = [
+const udoVersions: UdoVersion[] = [
   {
     id: 1,
     title: "Unified Development Ordinance v2.0 (Current)",
@@ -63,14 +73,14 @@ const udoVersions = [
     title: "Zoning Ordinance v1.1 (Legacy)",
     amendedDate: "2019-03-15",
     status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.1.pdf"
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   },
   {
     id: 5,
     title: "Zoning Ordinance v1.0 (Legacy)",
     amendedDate: "2015-01-20",
     status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.0.pdf"
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   },
   {
     id: 6,
@@ -148,29 +158,51 @@ export default function VersionsPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="inline-flex items-center justify-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedPdf({ title: version.title, url: version.pdfUrl })}
-                            className="h-8 w-8 p-0"
-                            title="View PDF"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                            className="h-8 w-8 p-0"
-                          >
-                            <a
-                              href={version.pdfUrl}
-                              download
-                              title="Download"
+                          {version.externalUrl ? (
+                            // External link for superseded versions
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              asChild
+                              className="h-8 w-8 p-0"
                             >
-                              <Download className="h-4 w-4" />
-                            </a>
-                          </Button>
+                              <a
+                                href={version.externalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="View on Charlotte NC Website"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          ) : (
+                            // PDF view and download for other versions
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => version.pdfUrl && setSelectedPdf({ title: version.title, url: version.pdfUrl })}
+                                className="h-8 w-8 p-0"
+                                title="View PDF"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="h-8 w-8 p-0"
+                              >
+                                <a
+                                  href={version.pdfUrl}
+                                  download
+                                  title="Download"
+                                >
+                                  <Download className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
