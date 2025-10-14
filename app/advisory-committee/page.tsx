@@ -233,8 +233,8 @@ export default function AdvisoryCommitteePage() {
             Unified Development Ordinance Advisory Committee (UAC)
           </h1>
           <p className="text-muted-foreground">
-            The Unified Development Ordinance Advisory Committee (UAC) is a volunteer committee of neighborhoods, environmental groups, designers, and 
-            development professionals. The committee, with a wide range of expertise, reviews potential amendments to the UDO as we learn more through 
+            The UAC meets on an as-needed basis in advance of text amendment petitions being filed.
+            The committee, with a wide range of expertise, reviews potential amendments to the UDO as we learn more through
             implementation and want to consider any changes.
           </p>
         </div>
