@@ -124,7 +124,7 @@ export default function HomePage() {
       title: "UDO University",
       description: "Virtual training opportunities and resources to learn about the UDO.",
       href: "/articles/udo-university",
-      badge: "Educational",
+      badge: "Learn",
       badgeVariant: "outline" as const
     },
     {
