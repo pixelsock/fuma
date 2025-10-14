@@ -84,7 +84,7 @@ const udoVersions = [
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'active':
-      return <Badge className="bg-green-600 hover:bg-green-700">Active</Badge>;
+      return null;
     case 'archived':
       return <Badge variant="secondary">Archived</Badge>;
     case 'superseded':
