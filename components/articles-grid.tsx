@@ -154,7 +154,7 @@ export default function ArticlesGrid({ articles, categories }: ArticlesGridProps
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Charlotte UDO Articles</h1>
         <p className="text-muted-foreground mt-2">
-          Browse and search through all {articles.length} articles of the Charlotte Unified Development Ordinance
+          Browse and search {articles.length} articles of the Charlotte Unified Development Ordinance
         </p>
       </div>
 
