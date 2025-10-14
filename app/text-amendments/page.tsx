@@ -123,41 +123,44 @@ export default function TextAmendmentsPage() {
 
   const amendments: Amendment[] = [
     {
-      id: '2024-001',
-      name: 'Unified Development Ordinance',
-      description: 'General amendments to various sections',
+      id: '2025-047',
+      name: 'Spring 2025 UDO Maintenance Text Amendment',
+      description: 'Maintenance text amendment affecting 26 of the 39 UDO Articles, making updates to improve clarity, address implementation challenges, and correct errors',
       status: 'approved',
-      date: '07-19-2022',
-      ordinance: '07-19-2022',
-      caseNumber: '06-01-2024'
+      date: '06-16-2025',
+      petition: '2025-047',
+      ordinance: 'Ordinance #676-Z',
+      caseNumber: '2025-047'
     },
     {
-      id: '2023-008',
-      name: 'Land Clearing and Inert Debris Landfill',
-      description: 'Use adjustments for C2 & C3 Zoning in Catawba Place Types',
+      id: '2024-033',
+      name: 'UDO Text Amendment',
+      description: 'Updates to language, graphics, definitions, use permissions, and standards to enhance the UDO',
       status: 'approved',
-      date: '04-17-2023',
-      petition: '2023-008',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
+      date: '06-17-2024',
+      petition: '2024-033',
+      ordinance: 'Ordinance #676-Z',
+      caseNumber: '2024-033'
     },
     {
-      id: '2023-007',
-      name: 'Multi-Family Residential for C2 & C3 Zoning',
-      description: 'Amendments for residential development standards',
+      id: '2023-130',
+      name: 'UDO Text Amendment',
+      description: 'Various updates to reflect best practices and address new and emerging trends',
       status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
+      date: '05-15-2023',
+      petition: '2023-130',
+      ordinance: 'Ordinance #676-Z',
+      caseNumber: '2023-130'
+    },
+    {
+      id: '2022-001',
+      name: 'Unified Development Ordinance - Original Adoption',
+      description: 'Original adoption of the Charlotte Unified Development Ordinance',
+      status: 'approved',
+      date: '08-22-2022',
+      petition: 'N/A',
+      ordinance: 'Ordinance #676',
       caseNumber: 'N/A'
-    },
-    {
-      id: '2023-006',
-      name: 'UDO General Clean Up Text Amendment',
-      description: 'Various technical corrections and clarifications',
-      status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
     }
   ]
 
