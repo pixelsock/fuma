@@ -194,9 +194,6 @@ export default function ArticlesGrid({ articles, categories }: ArticlesGridProps
                   <CardTitle className="text-lg">
                     {category?.name || 'Uncategorized'}
                   </CardTitle>
-                  <Badge variant="secondary" className="ml-auto">
-                    {categoryArticles.length}
-                  </Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 flex-1">
