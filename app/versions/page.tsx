@@ -63,14 +63,14 @@ const udoVersions = [
     title: "Zoning Ordinance v1.1 (Legacy)",
     amendedDate: "2019-03-15",
     status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.1.pdf"
+    pdfUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   },
   {
     id: 5,
     title: "Zoning Ordinance v1.0 (Legacy)",
     amendedDate: "2015-01-20",
     status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.0.pdf"
+    pdfUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   },
   {
     id: 6,
@@ -115,7 +115,7 @@ export default function VersionsPage() {
               Available Versions
             </CardTitle>
             <CardDescription>
-              Click the eye icon to view documents in the PDF viewer
+              Click the eye icon to view documents in the PDF viewer, or the external link icon for legacy versions
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -148,29 +148,49 @@ export default function VersionsPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="inline-flex items-center justify-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedPdf({ title: version.title, url: version.pdfUrl })}
-                            className="h-8 w-8 p-0"
-                            title="View PDF"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                            className="h-8 w-8 p-0"
-                          >
-                            <a
-                              href={version.pdfUrl}
-                              download
-                              title="Download"
+                          {version.status === 'superseded' ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              asChild
+                              className="h-8 w-8 p-0"
                             >
-                              <Download className="h-4 w-4" />
-                            </a>
-                          </Button>
+                              <a
+                                href={version.pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="View on Charlotte.gov"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          ) : (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedPdf({ title: version.title, url: version.pdfUrl })}
+                                className="h-8 w-8 p-0"
+                                title="View PDF"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="h-8 w-8 p-0"
+                              >
+                                <a
+                                  href={version.pdfUrl}
+                                  download
+                                  title="Download"
+                                >
+                                  <Download className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
