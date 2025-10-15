@@ -39,35 +39,35 @@ import {
 const udoVersions = [
   {
     id: 1,
-    title: "Unified Development Ordinance v2.0 (Current)",
+    title: "Unified Development Ordinance (Current)",
     amendedDate: "2023-06-01",
     status: "active",
     pdfUrl: "/downloads/udo-v2.0.pdf"
   },
   {
     id: 2,
-    title: "Unified Development Ordinance v1.3 (Draft)",
+    title: "Unified Development Ordinance (Draft)",
     amendedDate: "2022-12-15",
     status: "archived",
     pdfUrl: "/downloads/udo-v1.3-draft.pdf"
   },
   {
     id: 3,
-    title: "Unified Development Ordinance v1.2 (Public Review)",
+    title: "Unified Development Ordinance (Public Review)",
     amendedDate: "2022-09-30",
     status: "archived",
     pdfUrl: "/downloads/udo-v1.2-review.pdf"
   },
   {
     id: 4,
-    title: "Zoning Ordinance v1.1 (Legacy)",
+    title: "Zoning Ordinance (Legacy)",
     amendedDate: "2019-03-15",
     status: "superseded",
     pdfUrl: "/downloads/zoning-ordinance-v1.1.pdf"
   },
   {
     id: 5,
-    title: "Zoning Ordinance v1.0 (Legacy)",
+    title: "Zoning Ordinance (Legacy)",
     amendedDate: "2015-01-20",
     status: "superseded",
     pdfUrl: "/downloads/zoning-ordinance-v1.0.pdf"
