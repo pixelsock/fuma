@@ -127,6 +127,16 @@ const uacMembers: UACMember[] = [
 ];
 
 export default function AdvisoryCommitteePage() {
+  // Get video configuration from environment variables
+  const videoId = process.env.NEXT_PUBLIC_UAC_VIDEO_ID || 'XXXXXX';
+  const meetingDate = process.env.NEXT_PUBLIC_UAC_MEETING_DATE || 'TBD';
+  const slidesUrl = process.env.NEXT_PUBLIC_UAC_SLIDES_URL || '/downloads/uac-presentation.pdf';
+  
+  // Check if video is configured (not the placeholder)
+  const hasVideo = videoId && videoId !== 'XXXXXX';
+  const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
   return (
     <DocsPage>
       <DocsBody className="max-w-6xl mx-auto">
@@ -160,29 +170,46 @@ export default function AdvisoryCommitteePage() {
               Watch the Latest UAC Meeting
             </CardTitle>
             <CardDescription>
-              UDO Advisory Committee (UAC Meeting) - February 27, 2025
+              UDO Advisory Committee (UAC Meeting) - {meetingDate}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Video player placeholder</p>
-                <Button variant="outline" asChild>
-                  <a href="https://www.youtube.com/watch?v=XXXXXX" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View on YouTube
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+              {hasVideo ? (
+                <iframe
+                  src={embedUrl}
+                  title="UAC Meeting Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              ) : (
+                <div className="text-center">
+                  <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">Video will be available here</p>
+                  <p className="text-sm text-muted-foreground">
+                    Configure NEXT_PUBLIC_UAC_VIDEO_ID in .env.local
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-muted-foreground">
+              <span>View the {meetingDate} UAC presentation slides</span>
+              <div className="flex gap-2">
+                {hasVideo && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Open in YouTube
+                    </a>
+                  </Button>
+                )}
+                <Button variant="link" size="sm" asChild>
+                  <a href={slidesUrl}>
+                    Download Slides
                   </a>
                 </Button>
               </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-              <span>View the February 27, 2025 UAC presentation slides HERE.</span>
-              <Button variant="link" size="sm" asChild>
-                <a href="/downloads/uac-presentation.pdf">
-                  Download Slides
-                </a>
-              </Button>
             </div>
           </CardContent>
         </Card>
