@@ -84,7 +84,7 @@ const udoVersions = [
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'active':
-      return null;
+      return <Badge className="bg-green-600 hover:bg-green-700">Active</Badge>;
     case 'archived':
       return <Badge variant="secondary">Archived</Badge>;
     case 'superseded':
@@ -220,7 +220,7 @@ export default function VersionsPage() {
           <AlertDescription className="mt-2 space-y-2">
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
-              <span><strong>Current Version:</strong> Always use the most current active version for new development applications.</span>
+              <span><strong>Current Version:</strong> Always use the most current version for new development applications.</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
