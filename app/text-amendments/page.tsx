@@ -169,7 +169,7 @@ export default function TextAmendmentsPage() {
       status: 'info' as const
     },
     {
-      date: 'June 20, 2025',
+      date: 'June 16, 2025',
       title: 'Spring 2025 UDO Maintenance Text Amendment',
       description: 'City Council approved text amendment petition #2025-047 on June 16. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
       status: 'approved' as const
