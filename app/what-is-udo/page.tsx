@@ -274,7 +274,7 @@ export default function WhatIsUDOPage() {
             <p className="text-sm text-muted-foreground">Pages of Regulations</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">42</div>
+            <div className="text-3xl font-bold text-primary mb-2">29</div>
             <p className="text-sm text-muted-foreground">Zoning Districts</p>
           </div>
         </div>
