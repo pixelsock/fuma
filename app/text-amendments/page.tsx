@@ -412,7 +412,7 @@ export default function TextAmendmentsPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -441,44 +441,6 @@ export default function TextAmendmentsPage() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4" />
                       <span>Duration: 1 hour 30 minutes</span>
-                    </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 hover:shadow-xl">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-foreground to-accent-foreground/80 flex items-center justify-center text-white">
-                      <Users className="w-6 h-6" />
-                    </div>
-                    <Badge variant="outline">Community Forum</Badge>
-                  </div>
-                  <CardTitle>UDO Text Amendment Process Overview</CardTitle>
-                  <CardDescription>
-                    Learn about how text amendments are proposed, reviewed, and adopted
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>March 20, 2025</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>Duration: 45 minutes</span>
                     </div>
                     <Button className="w-full" variant="outline">
                       <Play className="mr-2 w-4 h-4" />
