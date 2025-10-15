@@ -280,8 +280,8 @@ export default function TextAmendmentsPage() {
           >
             <p className="text-muted-foreground mb-4">
               Questions? Email our team at{' '}
-              <a href="mailto:charlotteUDO@charlottenc.gov" className="text-primary hover:underline">
-                charlotteUDO@charlottenc.gov
+              <a href="mailto:charlotteudo@charlottenc.gov" className="text-primary hover:underline">
+                charlotteudo@charlottenc.gov
               </a>
             </p>
           </motion.div>
