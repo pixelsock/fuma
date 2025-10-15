@@ -18,8 +18,7 @@ import {
   FileText,
   GraduationCap,
   MapPin,
-  FileSearch,
-  Archive
+  FileSearch
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -102,14 +101,6 @@ export default function HomePage() {
       href: "/what-is-udo",
       badge: "Learn",
       badgeVariant: "default" as const
-    },
-    {
-      icon: <Archive className="w-6 h-6" />,
-      title: "UDO Versions",
-      description: "Access current and historical versions of the Charlotte Unified Development Ordinance.",
-      href: "/versions",
-      badge: "Archive",
-      badgeVariant: "outline" as const
     },
     {
       icon: <FileText className="w-6 h-6" />,

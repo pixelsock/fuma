@@ -207,24 +207,6 @@ export default function WhatIsUDOPage() {
               </Card>
             </Link>
 
-            <Link href="/versions">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Download className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Download UDO</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Access current and historical versions of the UDO
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
             <Link href="/text-amendments">
               <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
                 <CardHeader>

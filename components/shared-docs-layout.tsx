@@ -57,11 +57,6 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
               url: '/articles-listing',
             },
             {
-              title: 'Versions',
-              description: 'Prior UDO versions and documents',
-              url: '/versions',
-            },
-            {
               title: 'Text Amendments',
               description: 'Text Amendments',
               url: '/text-amendments',
