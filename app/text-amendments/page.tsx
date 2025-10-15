@@ -163,6 +163,12 @@ export default function TextAmendmentsPage() {
 
   const timelineItems = [
     {
+      date: 'October 8, 2025',
+      title: 'UDO Advisory Committee Meeting',
+      description: 'The Unified Development Ordinance Advisory Committee met on October 8, 2025 to discuss the upcoming text amendment to the UDO. This amendment makes clarifying changes to the ordinance to improve understanding.',
+      status: 'info' as const
+    },
+    {
       date: 'July 15, 2025',
       title: 'Suggestions for UDO Updates',
       description: 'Charlotte Planning, Design and Development would like to share an opportunity to suggest updates or recommend changes to the City\'s Unified Development Ordinance (UDO) through an online portal.',
