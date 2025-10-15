@@ -440,9 +440,11 @@ export default function TextAmendmentsPage() {
                       <Clock className="w-4 h-4" />
                       <span>Duration: 1 hour 30 minutes</span>
                     </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
@@ -478,9 +480,11 @@ export default function TextAmendmentsPage() {
                       <Clock className="w-4 h-4" />
                       <span>Duration: 45 minutes</span>
                     </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
