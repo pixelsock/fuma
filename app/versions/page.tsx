@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
-  Download, 
-  Eye,
+import {
+  Download,
   AlertCircle,
-  FileText
+  FileText,
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import {
   Table,
@@ -26,8 +27,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
+// Type for UDO version entries
+type UdoVersion = {
+  id: number;
+  title: string;
+  amendedDate: string;
+  status: string;
+  pdfUrl?: string;
+  externalUrl?: string;
+};
+
 // Sample data for UDO versions
-const udoVersions = [
+const udoVersions: UdoVersion[] = [
   {
     id: 1,
     title: "Amended June 16, 2025",
@@ -111,6 +122,20 @@ const udoVersions = [
     amendedDate: "2022-08-22",
     status: "archived",
     pdfUrl: "/downloads/udo-adopted-2022-08-22.pdf"
+  },
+  {
+    id: 13,
+    title: "Zoning Ordinance v1.1 (Legacy)",
+    amendedDate: "2019-03-15",
+    status: "superseded",
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
+  },
+  {
+    id: 14,
+    title: "Zoning Ordinance v1.0 (Legacy)",
+    amendedDate: "2015-01-20",
+    status: "superseded",
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   }
 ];
 
@@ -175,20 +200,38 @@ export default function VersionsPage() {
                         {getStatusBadge(version.status)}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                          className="h-8 w-8 p-0"
-                        >
-                          <a
-                            href={version.pdfUrl}
-                            download
-                            title="Download PDF"
+                        {version.externalUrl ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
                           >
-                            <Download className="h-4 w-4" />
-                          </a>
-                        </Button>
+                            <a
+                              href={version.externalUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="View on Charlotte NC Website"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
+                          >
+                            <a
+                              href={version.pdfUrl}
+                              download
+                              title="Download PDF"
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -211,10 +254,54 @@ export default function VersionsPage() {
               <span className="font-semibold">•</span>
               <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only. However, the legacy ordinance still applies to properties with conditional, optional, or exception zoning districts from the old ordinance.</span>
             </div>
+            <div className="flex items-start gap-2">
+              <span className="font-semibold">•</span>
+              <span><strong>Conditional/Optional/EX Districts:</strong> The legacy ordinance still applies to properties with conditional, optional, or exception (EX) zoning districts from the old ordinance. See Article 1, Section 1.4 for details.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="font-semibold">•</span>
+              <span><strong>Text Amendments:</strong> Check the Text Amendments section for the latest updates and modifications.</span>
+            </div>
           </AlertDescription>
         </Alert>
 
-
+        {/* Additional Resources */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5 text-primary" />
+              Additional Resources
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/text-amendments">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Text Amendments
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/articles-listing">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Browse All Articles
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View Legacy Zoning Ordinance
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://charlotteudo.org" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit Legacy Site
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </DocsBody>
     </DocsPage>
   );
