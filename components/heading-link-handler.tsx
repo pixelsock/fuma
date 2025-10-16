@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { createRoot } from 'react-dom/client';
 
 export function HeadingLinkHandler() {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,53 +17,73 @@ export function HeadingLinkHandler() {
     if (!isMounted) return;
 
     const setupHeadingHandlers = () => {
-      // Function to create and show tooltip
+      // Store active tooltip cleanup function
+      let activeTooltipCleanup: (() => void) | null = null;
+
+      // Function to create and show tooltip using Radix UI
       const showTooltip = (element: HTMLElement, message: string) => {
-        // Remove any existing tooltips
-        const existingTooltip = document.querySelector('.heading-link-tooltip');
-        if (existingTooltip) {
-          existingTooltip.remove();
+        // Clean up any existing tooltip first
+        if (activeTooltipCleanup) {
+          activeTooltipCleanup();
+          activeTooltipCleanup = null;
         }
 
-        // Create tooltip
-        const tooltip = document.createElement('div');
-        tooltip.className = 'heading-link-tooltip';
-        tooltip.textContent = message;
-        
-        // Style the tooltip
-        Object.assign(tooltip.style, {
-          position: 'absolute',
-          backgroundColor: '#333',
-          color: 'white',
-          padding: '6px 12px',
-          borderRadius: '6px',
-          fontSize: '12px',
-          fontWeight: '500',
-          whiteSpace: 'nowrap',
-          zIndex: '10000',
-          pointerEvents: 'none',
-          opacity: '0',
-          transition: 'opacity 0.2s',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-        });
+        // Remove any existing tooltip containers
+        document.querySelectorAll('.heading-link-tooltip-container').forEach(el => el.remove());
 
-        // Position tooltip above the element
-        document.body.appendChild(tooltip);
+        // Create a container for the tooltip
+        const container = document.createElement('div');
+        container.className = 'heading-link-tooltip-container';
+        container.style.position = 'absolute';
+        container.style.zIndex = '10000';
+        
+        // Get the position of the element
         const rect = element.getBoundingClientRect();
-        const tooltipRect = tooltip.getBoundingClientRect();
+        const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
-        tooltip.style.left = `${rect.right - tooltipRect.width / 2 - 10}px`;
-        tooltip.style.top = `${rect.top - tooltipRect.height - 8}px`;
+        // Position container near the icon (right edge of heading)
+        container.style.left = `${rect.right + scrollX - 20}px`;
+        container.style.top = `${rect.top + scrollY}px`;
         
-        // Show tooltip
-        requestAnimationFrame(() => {
-          tooltip.style.opacity = '1';
-        });
+        document.body.appendChild(container);
+        
+        // Create React root and render Radix Tooltip
+        const root = createRoot(container);
+        root.render(
+          <TooltipPrimitive.Provider delayDuration={0}>
+            <TooltipPrimitive.Root open={true}>
+              <TooltipPrimitive.Trigger asChild>
+                <div style={{ width: 1, height: 1 }} />
+              </TooltipPrimitive.Trigger>
+              <TooltipPrimitive.Portal>
+                <TooltipPrimitive.Content
+                  side="top"
+                  sideOffset={8}
+                  className="z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95"
+                >
+                  {message}
+                </TooltipPrimitive.Content>
+              </TooltipPrimitive.Portal>
+            </TooltipPrimitive.Root>
+          </TooltipPrimitive.Provider>
+        );
+
+        // Create cleanup function
+        const cleanup = () => {
+          root.unmount();
+          container.remove();
+        };
+
+        // Store cleanup function
+        activeTooltipCleanup = cleanup;
 
         // Hide and remove tooltip after 2 seconds
         setTimeout(() => {
-          tooltip.style.opacity = '0';
-          setTimeout(() => tooltip.remove(), 200);
+          cleanup();
+          if (activeTooltipCleanup === cleanup) {
+            activeTooltipCleanup = null;
+          }
         }, 2000);
       };
 
@@ -91,25 +113,12 @@ export function HeadingLinkHandler() {
           if ((h2 as any)._linkHandlerAttached) return;
           (h2 as any)._linkHandlerAttached = true;
 
-          // Make focusable for keyboard access
-          h2.setAttribute('tabindex', '0');
-          h2.setAttribute('role', 'button');
-          h2.setAttribute('aria-label', 'Copy link to section');
-
-          // Click to copy
+          // Click to copy (don't modify DOM attributes to avoid hydration mismatch)
           h2.addEventListener('click', (e) => {
             // Ignore if selecting text
             const selection = window.getSelection();
             if (selection && selection.toString()) return;
             copyLinkToClipboard(h2);
-          });
-
-          // Keyboard support
-          h2.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              copyLinkToClipboard(h2);
-            }
           });
 
           // Hover effect to show icon via CSS

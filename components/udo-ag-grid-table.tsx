@@ -180,20 +180,22 @@ function parseHtmlTable(htmlString: string): TableData {
   let dataStartIndex = 0;
 
   // Strategy 1: Look for light blue background (DDEAF6) - multi-row headers
+  // Take consecutive rows with ALL cells having header background as header rows
   for (let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
     const cells = Array.from(row.querySelectorAll('td, th'));
 
-    const hasHeaderBg = cells.some(cell => {
+    // Check if ALL cells in this row have the header background
+    const allCellsHaveHeaderBg = cells.every(cell => {
       const bgColor = (cell as HTMLElement).getAttribute('data-bg-color');
       return bgColor && bgColor.toUpperCase() === headerBgColor.replace('#', '');
     });
 
-    if (hasHeaderBg) {
+    if (allCellsHaveHeaderBg && cells.length > 0) {
       headerRows.push(cells);
       dataStartIndex = i + 1;
     } else if (headerRows.length > 0) {
-      // Stop once we hit a non-header row after finding headers
+      // Stop once we hit a row that doesn't have all cells with header background
       break;
     }
   }
@@ -411,10 +413,22 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
 
   // Process cells from the first row to build groups
   if (headerRows.length > 1) {
-    const firstRow = headerMatrix[0];
-    console.log('[First Row] Processing:', firstRow.map((cell, i) => `[${i}]="${cell?.text}"`).join(', '));
+    // Find the first row that's not a full-width title (skip title rows)
+    let groupingRowIndex = 0;
+    for (let i = 0; i < headerMatrix.length - 1; i++) {
+      const row = headerMatrix[i];
+      const firstCell = row.find(cell => cell !== null);
+      // Skip if this row has a single cell spanning all columns (title row)
+      if (firstCell && firstCell.colspan < row.filter(c => c !== null).length) {
+        groupingRowIndex = i;
+        break;
+      }
+    }
 
-    firstRow.forEach((cellInfo, colIndex) => {
+    const groupingRow = headerMatrix[groupingRowIndex];
+    console.log(`[Grouping Row ${groupingRowIndex}] Processing:`, groupingRow.map((cell, i) => `[${i}]="${cell?.text}"`).join(', '));
+
+    groupingRow.forEach((cellInfo, colIndex) => {
       if (!cellInfo) return;
 
       // Skip if we already processed this exact cellInfo object (handles colspan duplicates)

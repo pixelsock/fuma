@@ -92,12 +92,19 @@
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+  min-width: 0; /* Allow flex item to shrink below content size */
 }
 
 .udo-table-title-text {
-  font-size: 1rem;
+  font-size: 0.75rem !important;
   font-weight: 600;
   color: var(--udo-table-header-text);
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .udo-table-index {
