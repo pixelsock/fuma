@@ -4,7 +4,6 @@ import { UDOContentRendererSSR } from '@/components/udo-content-renderer-ssr';
 import { UDOContentRendererV3 } from '@/components/udo-content-renderer-v3';
 import { DefinitionDataProvider } from '@/components/definition-data-context-optimized';
 import { DefinitionPrefetcherOptimized } from '@/components/definition-prefetcher-optimized';
-import { preprocessContent } from '@/lib/server-content-processor';
 
 export default async function PerformanceTestPage() {
   // Get a sample article with tables
@@ -21,8 +20,6 @@ export default async function PerformanceTestPage() {
       </DocsPage>
     );
   }
-
-  const preprocessed = preprocessContent(directusPage.data.content || '');
 
   return (
     <DocsPage>
@@ -51,7 +48,6 @@ export default async function PerformanceTestPage() {
               <DefinitionDataProvider>
                 <UDOContentRendererSSR 
                   htmlContent={directusPage.data.content || ''}
-                  preprocessed={preprocessed}
                 />
                 <DefinitionPrefetcherOptimized />
               </DefinitionDataProvider>

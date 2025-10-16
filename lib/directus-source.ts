@@ -2,7 +2,6 @@ import { readItems } from '@directus/sdk';
 import { isPublishedStatus } from './status-helpers';
 import { directus, ensureAuthenticated, type DirectusArticle, type DirectusSiteSetting, type DirectusGlobalSettings } from './directus-client';
 import { getDirectusUrl } from './env-config';
-import { enhanceTablesServer, rewriteAssetUrls } from './server-content-processor';
 
 // Re-export the helper function for backward compatibility
 export { isPublishedStatus } from './status-helpers';
@@ -336,19 +335,7 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
     
     // Apply server-side processing for build-time enhancement
     if (htmlContent) {
-      try {
-        console.log(`[processArticle] Processing content for article: ${article.slug}`);
-        // First rewrite asset URLs to correct environment
-        htmlContent = rewriteAssetUrls(htmlContent);
-        // Then enhance tables server-side for static generation
-        htmlContent = enhanceTablesServer(htmlContent);
-        console.log(`[processArticle] Server-side processing complete for: ${article.slug}`);
-      } catch (error) {
-        console.error(`[processArticle] Error processing content for article ${article.slug}:`, error);
-        console.log(`[processArticle] Using original content for: ${article.slug}`);
-        // Keep original content if processing fails
-        htmlContent = article.content || '';
-      }
+      htmlContent = rewriteAssetUrls(htmlContent);
     }
     
     // Handle PDF field - can be uppercase from Directus
@@ -428,6 +415,21 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
       status: article.status || 'draft',
     };
   }
+}
+
+function rewriteAssetUrls(html: string): string {
+  const directusUrl =
+    process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
+
+  const replacements: Array<[RegExp, string]> = [
+    [/http:\/\/localhost:8056\/assets\//g, `${directusUrl}/assets/`],
+    [/https:\/\/admin\.charlotteudo\.org\/assets\//g, `${directusUrl}/assets/`],
+  ];
+
+  return replacements.reduce(
+    (output, [pattern, target]) => output.replace(pattern, target),
+    html,
+  );
 }
 
 /**
