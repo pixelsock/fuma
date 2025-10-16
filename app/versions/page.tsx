@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
-  Download, 
-  Eye,
+import {
+  Download,
   AlertCircle,
-  FileText
+  FileText,
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import {
   Table,
