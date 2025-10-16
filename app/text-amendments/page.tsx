@@ -465,7 +465,7 @@ export default function TextAmendmentsPage() {
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-foreground to-accent-foreground/80 flex items-center justify-center text-white">
                       <Users className="w-6 h-6" />
                     </div>
-                    <Badge variant="outline">Community Forum</Badge>
+                    <Badge variant="outline">Virtual Session</Badge>
                   </div>
                   <CardTitle>UDO Text Amendment Process Overview</CardTitle>
                   <CardDescription>
