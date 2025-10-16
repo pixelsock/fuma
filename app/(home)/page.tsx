@@ -190,7 +190,7 @@ export default function HomePage() {
     },
     {
       question: "How are text amendments processed?",
-      answer: "Text amendments follow a public process including staff review, community input, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
+      answer: "Text amendments follow a public process including staff review, public hearing, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
     }
   ]
 
