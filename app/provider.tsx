@@ -7,7 +7,6 @@ import { DefinitionDataProvider } from '@/components/definition-data-context';
 import { DefinitionPrefetcher } from '@/components/definition-prefetcher';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { HeadingLinkHandler } from '@/components/heading-link-handler';
-import { TableEnhancementProviderV2 } from '@/components/table-enhancement-provider-v2';
 
 export function Provider({ children }: { children: ReactNode }) {
   return (
@@ -28,7 +27,6 @@ export function Provider({ children }: { children: ReactNode }) {
       >
         <TooltipProvider>{children}</TooltipProvider>
         <HeadingLinkHandler />
-        <TableEnhancementProviderV2 />
       </RootProvider>
       <DefinitionPrefetcher />
     </DefinitionDataProvider>

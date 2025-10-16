@@ -107,17 +107,15 @@ import { DefinitionPrefetcher } from '@/components/definition-prefetcher';
 </DefinitionDataProvider>
 ```
 
-### Option 2: Using Server-Side Preprocessing (Current Implementation)
+### Option 2: TanStack Table Renderer (Current Implementation)
 
-The current implementation uses server-side preprocessing to avoid hydration issues:
+The production renderer now streams through the TanStack-powered implementation, which no longer requires server-side preprocessing:
 
 ```tsx
-import { UDOContentRendererSSR } from '@/components/udo-content-renderer-ssr';
-import { preprocessContent } from '@/lib/server-content-processor';
+import { UDOContentRendererV3Optimized } from '@/components/udo-content-renderer-v3-optimized';
 
-<UDOContentRendererSSR 
+<UDOContentRendererV3Optimized 
   htmlContent={directusPage.data.content || ''}
-  preprocessed={preprocessContent(directusPage.data.content || '')}
 />
 ```
 

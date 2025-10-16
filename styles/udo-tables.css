@@ -1,90 +1,310 @@
 /* UDO Table Styles */
 
+/* Design tokens */
+:root {
+  --udo-table-surface: #ffffff;
+  --udo-table-border: #d3dbe8;
+  --udo-table-header-bg: #ecf2fb;
+  --udo-table-header-text: #0f172a;
+  --udo-table-body-text: #1f2937;
+  --udo-table-stripe: #f7f9fc;
+  --udo-table-hover: rgba(37, 99, 235, 0.12);
+  --udo-table-caption: #4b5563;
+}
+
+.dark {
+  --udo-table-surface: rgba(15, 23, 42, 0.92);
+  --udo-table-border: rgba(148, 163, 184, 0.35);
+  --udo-table-header-bg: rgba(30, 41, 59, 0.75);
+  --udo-table-header-text: #f8fafc;
+  --udo-table-body-text: #e2e8f0;
+  --udo-table-stripe: rgba(30, 41, 59, 0.55);
+  --udo-table-hover: rgba(59, 130, 246, 0.24);
+  --udo-table-caption: #cbd5f5;
+}
+
+/* Table wrappers */
+.udo-table-host {
+  position: relative;
+  margin: 1.75rem 0;
+}
+
+.udo-table-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.udo-table-shell {
+  position: relative;
+  background: var(--udo-table-surface);
+  border: 1px solid var(--udo-table-border);
+  border-radius: 0.85rem;
+  box-shadow: 0 24px 48px -32px rgba(15, 23, 42, 0.28);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  overflow: hidden;
+}
+
+.dark .udo-table-shell {
+  box-shadow: 0 24px 56px -36px rgba(15, 23, 42, 0.55);
+}
+
+.udo-table-shell--fullscreen {
+  position: fixed;
+  inset: 2rem;
+  z-index: 80;
+  max-width: none;
+  max-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+}
+
+.dark .udo-table-shell--fullscreen {
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+@media (max-width: 768px) {
+  .udo-table-shell--fullscreen {
+    inset: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+.udo-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--udo-table-border);
+  background: color-mix(in srgb, var(--udo-table-surface) 90%, white 10%);
+}
+
+.dark .udo-table-toolbar {
+  background: color-mix(in srgb, var(--udo-table-surface) 90%, black 10%);
+}
+
+.udo-table-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.udo-table-title-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--udo-table-header-text);
+}
+
+.udo-table-index {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--udo-table-caption);
+  background: color-mix(in srgb, var(--udo-table-border) 30%, white 70%);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.dark .udo-table-index {
+  background: rgba(148, 163, 184, 0.2);
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.udo-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.udo-table-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, #1f2937 4%, white 96%);
+  border: 1px solid color-mix(in srgb, var(--udo-table-border) 80%, white 20%);
+  color: var(--udo-table-header-text);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.udo-table-action:hover {
+  background: color-mix(in srgb, #2563eb 12%, white 88%);
+  border-color: color-mix(in srgb, #2563eb 40%, var(--udo-table-border) 60%);
+  color: #1d4ed8;
+}
+
+.dark .udo-table-action {
+  background: rgba(30, 41, 59, 0.65);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: rgba(226, 232, 240, 0.92);
+}
+
+.dark .udo-table-action:hover {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(96, 165, 250, 0.45);
+  color: rgba(147, 197, 253, 0.85);
+}
+
+.udo-table-scroll {
+  position: relative;
+  overflow: auto;
+  padding: 0.75rem 1rem 1rem;
+  max-height: 100%;
+}
+
+.udo-table-shell--fullscreen .udo-table-scroll {
+  flex: 1;
+}
+
+.udo-table-scroll table {
+  margin: 0;
+  border: none;
+  background: transparent;
+  min-width: 100%;
+}
+
+.udo-table-scroll-buttons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5rem;
+}
+
+.udo-table-scroll-button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--udo-table-surface) 90%, white 10%);
+  border: 1px solid color-mix(in srgb, var(--udo-table-border) 85%, white 15%);
+  color: var(--udo-table-header-text);
+  box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.35);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.udo-table-scroll-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, #2563eb 16%, white 84%);
+  border-color: color-mix(in srgb, #2563eb 40%, var(--udo-table-border) 60%);
+  color: #1d4ed8;
+}
+
+.udo-table-scroll-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.dark .udo-table-scroll-button {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: rgba(226, 232, 240, 0.85);
+  box-shadow: 0 18px 32px -22px rgba(15, 23, 42, 0.5);
+}
+
+.dark .udo-table-scroll-button:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(96, 165, 250, 0.45);
+  color: rgba(191, 219, 254, 0.85);
+}
+
 /* Base table styles */
 .udo-content table,
 .prose table,
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0;
-  font-size: 0.875rem;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
   table-layout: fixed; /* Important for column resizing */
-}
-
-/* Table wrapper for horizontal scroll */
-.resizable-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  position: relative;
-}
-
-.resizable-table-wrapper table {
-  min-width: 100%;
+  color: var(--udo-table-body-text);
+  background-color: var(--udo-table-surface);
+  border: 1px solid var(--udo-table-border);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 /* Header styles */
 .udo-content thead,
 .prose thead,
 thead {
-  background-color: hsl(var(--color-fd-muted));
-  border-bottom: 2px solid hsl(var(--color-fd-border));
+  background-color: var(--udo-table-header-bg);
+  border-bottom: 2px solid var(--udo-table-border);
+  color: var(--udo-table-header-text);
 }
 
 /* Table header cells */
 .udo-content th,
 .prose th,
 th {
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.1rem;
   text-align: left;
   font-weight: 600;
-  color: hsl(var(--color-fd-foreground));
-  border: 1px solid hsl(var(--color-fd-border));
+  letter-spacing: 0.01em;
+  color: inherit;
+  border: 1px solid var(--udo-table-border);
+  background-color: transparent;
   white-space: normal;
+  vertical-align: middle;
+  position: relative;
 }
 
 /* Table data cells */
 .udo-content td,
 .prose td,
 td {
-  padding: 0.75rem 1rem;
-  border: 1px solid hsl(var(--color-fd-border));
-  color: hsl(var(--color-fd-muted-foreground));
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--udo-table-border);
+  color: var(--udo-table-body-text);
+  background-color: transparent;
+  vertical-align: top;
+  word-break: break-word;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Zebra striping */
 .udo-content tbody tr:nth-child(even),
 .prose tbody tr:nth-child(even),
 tbody tr:nth-child(even) {
-  background-color: hsl(var(--color-fd-muted) / 0.3);
+  background-color: var(--udo-table-stripe);
 }
 
 /* Hover effect */
+.udo-content tbody tr,
+.prose tbody tr,
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
 .udo-content tbody tr:hover,
 .prose tbody tr:hover,
 tbody tr:hover {
-  background-color: hsl(var(--color-fd-muted) / 0.5);
+  background-color: var(--udo-table-hover);
 }
 
-/* Column resize handle styles */
-.table-resize-handle {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 5px;
-  cursor: col-resize;
-  user-select: none;
-  -webkit-user-select: none;
-  z-index: 10;
-}
-
-.table-resize-handle:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-/* Ensure th elements can contain resize handles */
-th {
-  position: relative;
+/* Caption styling */
+.udo-content caption,
+.prose caption,
+caption {
+  caption-side: top;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: var(--udo-table-caption);
+  text-align: left;
+  margin-bottom: 0.5rem;
 }
 
 /* Charlotte UDO specific header styles */
@@ -95,6 +315,31 @@ th[style*="background-color: rgb(30, 78, 121)"] {
   color: white !important;
   text-align: center !important;
   font-weight: bold !important;
+}
+
+/* AG-Grid border radius removal */
+.udo-ag-grid-no-radius .ag-theme-quartz {
+  --ag-border-radius: 0 !important;
+}
+
+.udo-ag-grid-no-radius .ag-theme-quartz .ag-root-wrapper {
+  border-radius: 0 !important;
+}
+
+.udo-ag-grid-no-radius .ag-theme-quartz .ag-header {
+  border-radius: 0 !important;
+}
+
+.udo-ag-grid-no-radius .ag-theme-quartz .ag-body-viewport {
+  border-radius: 0 !important;
+}
+
+.udo-ag-grid-no-radius .ag-theme-quartz .ag-header-row {
+  border-radius: 0 !important;
+}
+
+.udo-ag-grid-no-radius .ag-theme-quartz .ag-header-cell {
+  border-radius: 0 !important;
 }
 
 .subheader-cell,
@@ -142,16 +387,7 @@ th[style*="background-color: rgb(222, 234, 246)"] {
 }
 
 /* Responsive table wrapper */
-.table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin: 1.5rem 0;
-}
-
-.table-wrapper table {
-  min-width: 100%;
-  display: table;
-}
+/* Additional overrides handled by TanStack renderer */
 
 /* Preserve inline styles for text colors */
 td[style*="color:"],
@@ -191,7 +427,7 @@ th[style*="background-color"] {
   .udo-content table,
   .prose table,
   table {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
   }
   
   .udo-content th,
@@ -200,7 +436,13 @@ th[style*="background-color"] {
   .prose td,
   th,
   td {
-    padding: 0.5rem;
+    padding: 0.6rem 0.75rem;
+  }
+  
+  .table-wrapper,
+  .resizable-table-wrapper {
+    margin: 1.25rem 0;
+    border-radius: 0.65rem;
   }
   
   /* Hide resize handles on mobile */
