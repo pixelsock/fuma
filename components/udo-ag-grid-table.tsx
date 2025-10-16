@@ -3,7 +3,7 @@
 import React, { useMemo, useRef, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, GridOptions, ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community';
+import { ColDef, ColGroupDef, GridOptions, ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community';
 import { Search, Maximize2, Minimize2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Register AG Grid modules once
@@ -24,7 +24,7 @@ interface CellData {
 
 interface TableData {
   rows: Record<string, any>[];
-  columns: ColDef[];
+  columns: (ColDef | ColGroupDef)[];
   title?: string;
   enableSearch?: boolean;
 }
@@ -405,7 +405,7 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
   console.log('[Last Row] Column headers:', lastRow.map((cell, i) => `[${i}]="${cell?.text}"`).join(', '));
 
   // Build column definitions
-  const columns: ColDef[] = [];
+  const columns: (ColDef | ColGroupDef)[] = [];
   let processedIndices = new Set<number>();
   let processedCellInfos = new Set<CellInfo>();
 
@@ -450,7 +450,7 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
         columns.push({
           headerName: cellInfo.text,
           children: children,
-        });
+        } as ColGroupDef);
 
         // Mark this cellInfo as processed
         processedCellInfos.add(cellInfo);
