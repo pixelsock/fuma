@@ -236,7 +236,7 @@ export default function AdvisoryCommitteePage() {
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="outline" className="flex-1 justify-start" asChild>
-                <a href="mailto:CharlotteUDO@charlottenc.gov">
+                <a href="mailto:charlotteudo@charlottenc.gov">
                   <Mail className="h-4 w-4 mr-2" />
                   Email UDO Team
                 </a>
