@@ -18,7 +18,8 @@ import {
   FileText,
   GraduationCap,
   MapPin,
-  FileSearch
+  FileSearch,
+  ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -115,7 +116,7 @@ export default function HomePage() {
       title: "UDO University",
       description: "Virtual training opportunities and resources to learn about the UDO.",
       href: "/articles/udo-university",
-      badge: "Educational",
+      badge: "Learn",
       badgeVariant: "outline" as const
     },
     {
@@ -128,14 +129,20 @@ export default function HomePage() {
     {
       icon: <FileSearch className="w-6 h-6" />,
       title: "Read UDO",
-      description: "Find specific ordinances, regulations, and guidelines quickly.",
+      description: "Read the regulations and standards in the UDO",
       href: "/articles-listing",
-      badge: "Quick Access"
+      badge: "Learn"
     }
   ]
 
 
   const recentUpdates = [
+    {
+      date: "October 8, 2025",
+      title: "UDO Advisory Committee Meeting",
+      description: "The UAC met on October 8 to discuss an upcoming text amendment to the UDO",
+      href: "/advisory-committee"
+    },
     {
       date: "December 15, 2024",
       title: "New Text Amendment Approved",
@@ -145,14 +152,8 @@ export default function HomePage() {
     {
       date: "November 28, 2024", 
       title: "UDO University Session Scheduled",
-      description: "Join us for a virtual training on overlay district regulations and procedures.",
+      description: "Join us for a virtual training on UDO regulations and procedures.",
       href: "/articles/udo-university"
-    },
-    {
-      date: "November 10, 2024",
-      title: "Zoning Map Updates Released",
-      description: "Interactive zoning map now includes latest boundary adjustments and new districts.",
-      href: "/articles/zoning-map"
     }
   ]
 
@@ -163,7 +164,7 @@ export default function HomePage() {
     },
     {
       question: "When did the UDO become effective?",
-      answer: "The UDO became effective on June 1, 2023, replacing the previous zoning ordinance. All development applications submitted after this date must comply with the new regulations."
+      answer: "The UDO became effective on June 1, 2023, replacing the previous zoning ordinance. All development applications submitted after this date for properties with new zoning districts are subject to these regulations."
     },
     {
       question: "Has my property's zoning changed?",
@@ -171,11 +172,11 @@ export default function HomePage() {
     },
     {
       question: "How can I learn more about the UDO?",
-      answer: "UDO University offers virtual training sessions and resources. You can also browse our comprehensive article library, attend public workshops, or contact our planning staff for assistance."
+      answer: "Use Charlotte Explorer to learn more about your zoning and more."
     },
     {
       question: "How are text amendments processed?",
-      answer: "Text amendments follow a public process including staff review, community input, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
+      answer: "Text amendments follow a public process including staff review, public hearing, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
     }
   ]
 
@@ -226,21 +227,27 @@ export default function HomePage() {
               Charlotte Unified Development Ordinance
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-              Your comprehensive guide to development regulations, zoning districts, and land use in Charlotte.
+              Begin with the resources on this website! Access UDO University sessions, explore the "What is the UDO" tab, or check out our recent text amendments.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" asChild>
-                <Link href="/articles-listing">
-                  <BookOpen className="mr-2 w-4 h-4" />
-                  Browse Articles
+                <Link href="/text-amendments">
+                  <FileText className="mr-2 w-4 h-4" />
+                  Text Amendments
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white shadow-xl hover:shadow-2xl transition-all" asChild>
                 <Link href="/articles/zoning-map">
                   <MapPin className="mr-2 w-4 h-4" />
-                  View Zoning Map
+                  View Charlotte's zoning map through Charlotte Explorer
                 </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white shadow-xl hover:shadow-2xl transition-all" asChild>
+                <a href="https://explore.charlottenc.gov" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 w-4 h-4" />
+                  Charlotte Explorer
+                </a>
               </Button>
             </div>
           </motion.div>
@@ -274,7 +281,7 @@ export default function HomePage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Resources</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to understand and navigate the Charlotte UDO
+              Jump into the UDO and the resources to help you understand it
             </p>
           </motion.div>
           

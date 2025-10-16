@@ -61,16 +61,13 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
               description: 'Text Amendments',
               url: '/text-amendments',
             },
-            {
-              title: 'Zoning at a Glance',
-              description: 'Zoning at a Glance',
-              url: '/zoning-at-a-glance',
-            },
-            {
-              title: 'Overlay Districts',
-              description: 'Administration and enforcement',
-              url: '/overlay-districts',
-            },
+            // ARCHIVED: Zoning at a Glance page - not critical for launch
+            // Uncomment to restore to navigation when ready
+            // {
+            //   title: 'Zoning at a Glance',
+            //   description: 'Zoning at a Glance',
+            //   url: '/zoning-at-a-glance',
+            // },
             {
               title: 'Advisory Committee',
               description: 'UAC membership and meetings',
