@@ -51,7 +51,6 @@ export default async function Page(props: {
         />
         <UDOContentRendererV3Optimized 
           htmlContent={directusPage.data.content || ''} 
-          tables={directusPage.data.tables}
         />
       </DocsBody>
     </DocsPage>
