@@ -27,8 +27,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
+// Type for UDO version entries
+type UdoVersion = {
+  id: number;
+  title: string;
+  amendedDate: string;
+  status: string;
+  pdfUrl?: string;
+  externalUrl?: string;
+};
+
 // Sample data for UDO versions
-const udoVersions = [
+const udoVersions: UdoVersion[] = [
   {
     id: 1,
     title: "Amended June 16, 2025",
@@ -112,6 +122,20 @@ const udoVersions = [
     amendedDate: "2022-08-22",
     status: "archived",
     pdfUrl: "/downloads/udo-adopted-2022-08-22.pdf"
+  },
+  {
+    id: 13,
+    title: "Zoning Ordinance v1.1 (Legacy)",
+    amendedDate: "2019-03-15",
+    status: "superseded",
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
+  },
+  {
+    id: 14,
+    title: "Zoning Ordinance v1.0 (Legacy)",
+    amendedDate: "2015-01-20",
+    status: "superseded",
+    externalUrl: "https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance"
   }
 ];
 
@@ -176,20 +200,38 @@ export default function VersionsPage() {
                         {getStatusBadge(version.status)}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                          className="h-8 w-8 p-0"
-                        >
-                          <a
-                            href={version.pdfUrl}
-                            download
-                            title="Download PDF"
+                        {version.externalUrl ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
                           >
-                            <Download className="h-4 w-4" />
-                          </a>
-                        </Button>
+                            <a
+                              href={version.externalUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="View on Charlotte NC Website"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
+                          >
+                            <a
+                              href={version.pdfUrl}
+                              download
+                              title="Download PDF"
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -211,6 +253,10 @@ export default function VersionsPage() {
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
               <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only. However, the legacy ordinance still applies to properties with conditional, optional, or exception zoning districts from the old ordinance.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="font-semibold">•</span>
+              <span><strong>Text Amendments:</strong> Check the Text Amendments section for the latest updates and modifications.</span>
             </div>
           </AlertDescription>
         </Alert>
