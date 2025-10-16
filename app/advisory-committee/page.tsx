@@ -195,7 +195,7 @@ export default function AdvisoryCommitteePage() {
               UAC Membership
             </CardTitle>
             <CardDescription>
-              The UAC is made up of representatives from neighborhood, advocacy, development, and design groups. UAC members include:
+              The UAC is made up of representatives from neighborhood leaders, advocacy, development, and design groups. UAC members include:
             </CardDescription>
           </CardHeader>
           <CardContent>
