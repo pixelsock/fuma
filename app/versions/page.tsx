@@ -256,6 +256,10 @@ export default function VersionsPage() {
             </div>
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
+              <span><strong>Conditional/Optional/EX Districts:</strong> The legacy ordinance still applies to properties with conditional, optional, or exception (EX) zoning districts from the old ordinance. See Article 1, Section 1.4 for details.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="font-semibold">•</span>
               <span><strong>Text Amendments:</strong> Check the Text Amendments section for the latest updates and modifications.</span>
             </div>
           </AlertDescription>
