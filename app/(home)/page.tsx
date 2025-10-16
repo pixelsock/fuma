@@ -137,7 +137,7 @@ export default function HomePage() {
     {
       icon: <FileSearch className="w-6 h-6" />,
       title: "Read UDO",
-      description: "Find specific ordinances, regulations, and guidelines quickly.",
+      description: "Read the regulations and standards in the UDO",
       href: "/articles-listing",
       badge: "Learn"
     }
