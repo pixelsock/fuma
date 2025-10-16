@@ -77,10 +77,11 @@ export default function WhatIsUDOPage() {
             What is the Charlotte UDO?
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            The Charlotte Unified Development Ordinance (UDO) is a comprehensive update to the city's development 
-            regulations that guides how land is used and developed throughout Charlotte. Adopted on April 11, 2022, 
-            and effective June 1, 2023, the UDO replaces the previous zoning ordinance with modern, place-based 
-            regulations that support the community's vision for growth.
+            Guided by a new approach to policy that focuses on the character and form of development, the Charlotte 
+            Unified Development Ordinance (UDO) is a comprehensive update to the city's development regulations that 
+            guides how land is used and developed throughout Charlotte. Adopted on April 11, 2022, and effective 
+            June 1, 2023, the UDO replaces the previous zoning ordinance with modern, place-based regulations that 
+            support the community's vision for growth.
           </p>
         </div>
 
