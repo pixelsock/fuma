@@ -202,7 +202,7 @@ export default function WhatIsUDOPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Check property zoning and regulations interactively
+                    Use Charlotte Explorer to learn more about your zoning and more.
                   </p>
                 </CardContent>
               </Card>
