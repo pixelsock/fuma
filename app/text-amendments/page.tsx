@@ -123,41 +123,74 @@ export default function TextAmendmentsPage() {
 
   const amendments: Amendment[] = [
     {
-      id: '2024-001',
-      name: 'Unified Development Ordinance',
-      description: 'General amendments to various sections',
+      id: '2025-047',
+      name: 'Spring 2025 UDO Maintenance Text Amendment',
+      description: 'Maintenance text amendment proposing changes to 26 of the 39 UDO Articles',
       status: 'approved',
-      date: '07-19-2022',
-      ordinance: '07-19-2022',
-      caseNumber: '06-01-2024'
-    },
-    {
-      id: '2023-008',
-      name: 'Land Clearing and Inert Debris Landfill',
-      description: 'Use adjustments for C2 & C3 Zoning in Catawba Place Types',
-      status: 'approved',
-      date: '04-17-2023',
-      petition: '2023-008',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
-    },
-    {
-      id: '2023-007',
-      name: 'Multi-Family Residential for C2 & C3 Zoning',
-      description: 'Amendments for residential development standards',
-      status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
+      date: '06-16-2025',
+      petition: '2025-047',
+      ordinance: '06-16-2025',
       caseNumber: 'N/A'
     },
     {
-      id: '2023-006',
-      name: 'UDO General Clean Up Text Amendment',
+      id: '2024-033',
+      name: 'Clean-Up Text Amendment #3',
+      description: 'Minor modifications to enhance UDO functionality across 26 Articles',
+      status: 'approved',
+      date: '06-17-2024',
+      petition: '2024-033',
+      ordinance: '06-17-2024',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-130',
+      name: 'Clean-Up Text Amendment #2',
+      description: 'Updates to language, definitions, graphics, use permissions and standards',
+      status: 'approved',
+      date: '01-16-2024',
+      petition: '2023-130',
+      ordinance: '01-16-2024',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-058',
+      name: 'UDO Clean Up Text Amendment',
       description: 'Various technical corrections and clarifications',
       status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
+      date: '05-15-2023',
+      petition: '2023-058',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-057',
+      name: 'Multi-Family Residential for C2 & C3 Zoning',
+      description: 'Amendments for residential development standards',
+      status: 'approved',
+      date: '05-15-2023',
+      petition: '2023-057',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-056',
+      name: 'Landfill, Land Clearing, and Inert Debris (LCID)',
+      description: 'Use adjustments for LCID landfill operations',
+      status: 'approved',
+      date: '05-15-2023',
+      petition: '2023-056',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2022-udo',
+      name: 'Unified Development Ordinance - Original Adoption',
+      description: 'Original adoption of the UDO consolidating zoning and land development regulations',
+      status: 'approved',
+      date: '08-22-2022',
+      petition: 'N/A',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
     }
   ]
 
