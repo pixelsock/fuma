@@ -160,7 +160,7 @@ export default function HomePage() {
     {
       date: "November 28, 2024", 
       title: "UDO University Session Scheduled",
-      description: "Join us for a virtual training on overlay district regulations and procedures.",
+      description: "Join us for a virtual training on UDO regulations and procedures.",
       href: "/articles/udo-university"
     },
     {

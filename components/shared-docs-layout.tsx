@@ -72,11 +72,6 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
               url: '/zoning-at-a-glance',
             },
             {
-              title: 'Overlay Districts',
-              description: 'Administration and enforcement',
-              url: '/overlay-districts',
-            },
-            {
               title: 'Advisory Committee',
               description: 'UAC membership and meetings',
               url: '/advisory-committee',
