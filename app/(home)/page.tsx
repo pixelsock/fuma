@@ -19,7 +19,8 @@ import {
   GraduationCap,
   MapPin,
   FileSearch,
-  Archive
+  Archive,
+  ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -250,6 +251,12 @@ export default function HomePage() {
                   <MapPin className="mr-2 w-4 h-4" />
                   View Zoning Map
                 </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white shadow-xl hover:shadow-2xl transition-all" asChild>
+                <a href="https://explore.charlottenc.gov" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 w-4 h-4" />
+                  Charlotte Explorer
+                </a>
               </Button>
             </div>
           </motion.div>
