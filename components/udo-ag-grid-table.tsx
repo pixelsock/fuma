@@ -434,17 +434,27 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
       if (cellInfo.colspan > 1 && cellInfo.rowspan === 1) {
         // This is a column group
         const children: ColDef[] = [];
+        const processedChildCells = new Set<CellInfo>(); // Track processed child cells to prevent duplicates
 
         console.log(`  [Group] "${cellInfo.text}" spans cols ${colIndex}-${colIndex + cellInfo.colspan - 1}`);
 
         // Find all child columns under this group
         for (let c = colIndex; c < colIndex + cellInfo.colspan; c++) {
           const childCell = lastRow[c];
-          if (childCell && !processedIndices.has(c)) {
-            console.log(`    [Child] Col ${c}: "${childCell.text}"`);
-            children.push(createLeafColumn(c, childCell.text));
-            processedIndices.add(c);
+
+          // Skip if no cell, index already processed, or this exact cell object already processed
+          if (!childCell) continue;
+          if (processedIndices.has(c)) continue;
+          if (processedChildCells.has(childCell)) {
+            console.log(`    [Skip Child] Col ${c}: "${childCell.text}" (cell already added - colspan in last row)`);
+            processedIndices.add(c); // Still mark index as processed
+            continue;
           }
+
+          console.log(`    [Child] Col ${c}: "${childCell.text}"`);
+          children.push(createLeafColumn(c, childCell.text));
+          processedIndices.add(c);
+          processedChildCells.add(childCell); // Mark cell as processed
         }
 
         columns.push({
@@ -607,6 +617,7 @@ export function UDOAgGridTable({ htmlString, tableIndex = 0 }: UDOAgGridTablePro
     enableCellTextSelection: false,
     animateRows: false,
     pagination: false,
+    suppressRowTransform: true, // Required for rowSpan support
   }), []);
 
   const handleSearch = useCallback((value: string) => {
