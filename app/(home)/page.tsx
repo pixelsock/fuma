@@ -235,7 +235,7 @@ export default function HomePage() {
               Charlotte Unified Development Ordinance
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-              Your comprehensive guide to development regulations, zoning districts, and land use in Charlotte.
+              Begin with the resources on this website! Access UDO University sessions, explore the "What is the UDO" tab, or check out our recent text amendments.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
