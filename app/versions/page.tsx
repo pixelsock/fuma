@@ -4,7 +4,6 @@ import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
 import { 
   Download, 
-  Eye,
   AlertCircle,
   FileText
 } from 'lucide-react';
