@@ -147,7 +147,7 @@ export default function AdvisoryCommitteePage() {
           <Clock className="h-4 w-4" />
           <AlertTitle>Meeting Schedule</AlertTitle>
           <AlertDescription className="mt-2">
-            The UAC will meet on <strong>Thursdays from 11:30 a.m. – 1 p.m. via Zoom</strong> approximately once a month. 
+            The UAC meets on an as-needed basis in advance of text amendment petitions being filed. 
             Recordings of each meeting will be available within 5-7 business days.
           </AlertDescription>
         </Alert>
@@ -195,7 +195,7 @@ export default function AdvisoryCommitteePage() {
               UAC Membership
             </CardTitle>
             <CardDescription>
-              The UAC is made up of representatives from neighborhood, advocacy, development, and design groups. UAC members include:
+              The UAC is made up of representatives from neighborhood leaders, advocacy, development, and design groups. UAC members include:
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -236,15 +236,9 @@ export default function AdvisoryCommitteePage() {
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="outline" className="flex-1 justify-start" asChild>
-                <a href="mailto:CharlotteUDO@charlottenc.gov">
+                <a href="mailto:charlotteudo@charlottenc.gov">
                   <Mail className="h-4 w-4 mr-2" />
                   Email UDO Team
-                </a>
-              </Button>
-              <Button variant="outline" className="flex-1 justify-start" asChild>
-                <a href="/articles-listing">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Browse UDO Articles
                 </a>
               </Button>
               <Button variant="outline" className="flex-1 justify-start" asChild>
