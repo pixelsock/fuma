@@ -146,6 +146,12 @@ export default function HomePage() {
 
   const recentUpdates = [
     {
+      date: "October 8, 2025",
+      title: "UDO Advisory Committee Meeting",
+      description: "The UAC met on October 8 to discuss an upcoming text amendment to the UDO",
+      href: "/advisory-committee"
+    },
+    {
       date: "December 15, 2024",
       title: "New Text Amendment Approved",
       description: "City Council approved updates to residential density standards in urban core districts.",
@@ -154,7 +160,7 @@ export default function HomePage() {
     {
       date: "November 28, 2024", 
       title: "UDO University Session Scheduled",
-      description: "Join us for a virtual training on overlay district regulations and procedures.",
+      description: "Join us for a virtual training on UDO regulations and procedures.",
       href: "/articles/udo-university"
     },
     {
@@ -184,7 +190,7 @@ export default function HomePage() {
     },
     {
       question: "How are text amendments processed?",
-      answer: "Text amendments follow a public process including staff review, community input, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
+      answer: "Text amendments follow a public process including staff review, public hearing, Planning Commission recommendation, and City Council approval. Check our Text Amendments page for current proposals."
     }
   ]
 
@@ -283,7 +289,7 @@ export default function HomePage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Resources</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to understand and navigate the Charlotte UDO
+              Jump into the UDO and the resources to help you understand it
             </p>
           </motion.div>
           

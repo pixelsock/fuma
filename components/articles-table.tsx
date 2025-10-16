@@ -242,7 +242,7 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Charlotte UDO Articles</h1>
         <p className="text-muted-foreground mt-2">
-          Browse and search through all {articles.length} articles of the Charlotte Unified Development Ordinance
+          Browse and search {articles.length} articles of the Charlotte Unified Development Ordinance
         </p>
       </div>
 
@@ -484,9 +484,6 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                       <CardTitle className="text-base font-semibold">
                         {category?.name || 'Uncategorized'}
                       </CardTitle>
-                      <Badge variant="secondary" className="ml-auto text-xs px-2 py-0.5">
-                        {categoryArticles.length}
-                      </Badge>
                     </div>
                     <div className="mt-2 border-b-2 border-dashed border-orange-300"></div>
                   </CardHeader>
