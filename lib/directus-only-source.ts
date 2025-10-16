@@ -656,6 +656,13 @@ export const directusOnlySource = {
           children: [
             { type: 'page', name: 'Article 38. Nonconformities', url: '/articles/part-xii-nonconformities/article-38-nonconformities' }
           ]
+        },
+        {
+          type: 'folder',
+          name: 'Part XIII: Enforcement',
+          children: [
+            { type: 'page', name: 'Article 39. Enforcement', url: '/articles/part-xiii-enforcement/article-39-enforcement' }
+          ]
         }
       ]
     };
