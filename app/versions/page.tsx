@@ -23,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -139,19 +138,6 @@ const udoVersions: UdoVersion[] = [
   }
 ];
 
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'active':
-      return <Badge className="bg-green-600 hover:bg-green-700">Active</Badge>;
-    case 'archived':
-      return <Badge variant="secondary">Archived</Badge>;
-    case 'superseded':
-      return <Badge variant="outline" className="border-orange-300 text-orange-600">Superseded</Badge>;
-    default:
-      return <Badge variant="outline">{status}</Badge>;
-  }
-};
-
 export default function VersionsPage() {
 
   return (
@@ -176,8 +162,7 @@ export default function VersionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[70%]">Amended</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[80%]">Amended</TableHead>
                     <TableHead className="text-center w-[80px]">Download</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -195,9 +180,6 @@ export default function VersionsPage() {
                             })}
                           </div>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(version.status)}
                       </TableCell>
                       <TableCell className="text-center">
                         {version.externalUrl ? (
