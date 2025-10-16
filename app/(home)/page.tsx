@@ -180,7 +180,7 @@ export default function HomePage() {
     },
     {
       question: "How can I learn more about the UDO?",
-      answer: "UDO University offers virtual training sessions and resources. You can also browse our comprehensive article library, attend public workshops, or contact our planning staff for assistance."
+      answer: "Use Charlotte Explorer to learn more about your zoning and more."
     },
     {
       question: "How are text amendments processed?",
