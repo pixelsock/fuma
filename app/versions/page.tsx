@@ -155,9 +155,6 @@ export default function VersionsPage() {
               <FileText className="h-5 w-5" />
               Available Versions
             </CardTitle>
-            <CardDescription>
-              Click the eye icon to view documents in the PDF viewer
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
