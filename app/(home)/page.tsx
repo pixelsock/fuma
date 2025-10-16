@@ -162,12 +162,6 @@ export default function HomePage() {
       title: "UDO University Session Scheduled",
       description: "Join us for a virtual training on UDO regulations and procedures.",
       href: "/articles/udo-university"
-    },
-    {
-      date: "November 10, 2024",
-      title: "Zoning Map Updates Released",
-      description: "Interactive zoning map now includes latest boundary adjustments and new districts.",
-      href: "/articles/zoning-map"
     }
   ]
 
