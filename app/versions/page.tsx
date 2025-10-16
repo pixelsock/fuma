@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
 import { 
   Download, 
   Eye,
   AlertCircle,
-  FileText,
-  ExternalLink
+  FileText
 } from 'lucide-react';
 import {
   Table,
@@ -20,20 +19,12 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 // Sample data for UDO versions
 const udoVersions = [
@@ -137,8 +128,6 @@ const getStatusBadge = (status: string) => {
 };
 
 export default function VersionsPage() {
-  const [selectedPdf, setSelectedPdf] = useState<{ title: string; url: string } | null>(null);
-  const currentVersion = udoVersions.find(v => v.status === 'active');
 
   return (
     <DocsPage>
@@ -162,9 +151,9 @@ export default function VersionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[60%]">Amended</TableHead>
+                    <TableHead className="w-[70%]">Amended</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-center w-[120px]">Actions</TableHead>
+                    <TableHead className="text-center w-[80px]">Download</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -186,31 +175,20 @@ export default function VersionsPage() {
                         {getStatusBadge(version.status)}
                       </TableCell>
                       <TableCell className="text-center">
-                        <div className="inline-flex items-center justify-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedPdf({ title: version.title, url: version.pdfUrl })}
-                            className="h-8 w-8 p-0"
-                            title="View PDF"
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                          className="h-8 w-8 p-0"
+                        >
+                          <a
+                            href={version.pdfUrl}
+                            download
+                            title="Download PDF"
                           >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                            className="h-8 w-8 p-0"
-                          >
-                            <a
-                              href={version.pdfUrl}
-                              download
-                              title="Download"
-                            >
-                              <Download className="h-4 w-4" />
-                            </a>
-                          </Button>
-                        </div>
+                            <Download className="h-4 w-4" />
+                          </a>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -219,38 +197,6 @@ export default function VersionsPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* PDF Viewer Dialog */}
-        <Dialog open={!!selectedPdf} onOpenChange={(open) => !open && setSelectedPdf(null)}>
-          <DialogContent className="max-w-6xl h-[90vh] p-0">
-            <DialogHeader className="p-6 pb-0">
-              <DialogTitle>{selectedPdf?.title}</DialogTitle>
-              <DialogDescription>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="mt-2"
-                >
-                  <a
-                    href={selectedPdf?.url}
-                    download
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF
-                  </a>
-                </Button>
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex-1 overflow-hidden p-6 pt-2">
-              <iframe
-                src={selectedPdf?.url}
-                className="w-full h-full rounded-md border"
-                title={selectedPdf?.title}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
 
         {/* Important Notes */}
         <Alert className="mt-8 mb-8">
@@ -264,10 +210,6 @@ export default function VersionsPage() {
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
               <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only. However, the legacy ordinance still applies to properties with conditional, optional, or exception zoning districts from the old ordinance.</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="font-semibold">•</span>
-              <span><strong>Text Amendments:</strong> Check the Text Amendments section for the latest updates and modifications.</span>
             </div>
           </AlertDescription>
         </Alert>

@@ -210,7 +210,7 @@ export default function TextAmendmentsPage() {
     {
       date: 'June 16, 2025',
       title: 'Spring 2025 UDO Maintenance Text Amendment',
-      description: 'City Council approved text amendment petition #2025-047 on June 16. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
+      description: 'City Council approved text amendment petition #2025-047 on June 16, 2025. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
       status: 'approved' as const
     },
     {
@@ -321,8 +321,8 @@ export default function TextAmendmentsPage() {
           >
             <p className="text-muted-foreground mb-4">
               Questions? Email our team at{' '}
-              <a href="mailto:charlotteUDO@charlottenc.gov" className="text-primary hover:underline">
-                charlotteUDO@charlottenc.gov
+              <a href="mailto:charlotteudo@charlottenc.gov" className="text-primary hover:underline">
+                charlotteudo@charlottenc.gov
               </a>
             </p>
           </motion.div>
