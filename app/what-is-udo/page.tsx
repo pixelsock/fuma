@@ -37,7 +37,7 @@ const keyFeatures: KeyFeature[] = [
   {
     icon: <Map className="h-6 w-6" />,
     title: "Place Types",
-    description: "A new approach to zoning that focuses on the character and form of development rather than just land use."
+    description: "Guided by a new approach to policy that focuses on the character and form of development rather than just land use."
   },
   {
     icon: <Building className="h-6 w-6" />,
@@ -77,11 +77,10 @@ export default function WhatIsUDOPage() {
             Charlotte Explorer
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            Guided by a new approach to policy that focuses on the character and form of development, the Charlotte 
-            Unified Development Ordinance (UDO) is a comprehensive update to the city's development regulations that 
-            guides how land is used and developed throughout Charlotte. Adopted on April 11, 2022, and effective 
-            June 1, 2023, the UDO replaces the previous zoning ordinance with modern, place-based regulations that 
-            support the community's vision for growth.
+            The Charlotte Unified Development Ordinance (UDO) is a comprehensive update to the city's development 
+            regulations that guides how land is used and developed throughout Charlotte. Adopted on August 22, 2022, 
+            and effective June 1, 2023, the UDO replaces the previous zoning ordinance with modern, place-based 
+            regulations that support the community's vision for growth.
           </p>
         </div>
 
@@ -215,12 +214,12 @@ export default function WhatIsUDOPage() {
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                       <Download className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">Download UDO</CardTitle>
+                    <CardTitle className="text-lg">UDO Versions & Downloads</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Access current and historical versions of the UDO
+                    Access historical and past versions of the UDO
                   </p>
                 </CardContent>
               </Card>

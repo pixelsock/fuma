@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
-  Download, 
-  Eye,
+import {
+  Download,
   AlertCircle,
   FileText,
-  ExternalLink
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import {
   Table,
@@ -20,20 +20,12 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 // Type for UDO version entries
 type UdoVersion = {
@@ -161,8 +153,6 @@ const getStatusBadge = (status: string) => {
 };
 
 export default function VersionsPage() {
-  const [selectedPdf, setSelectedPdf] = useState<{ title: string; url: string } | null>(null);
-  const currentVersion = udoVersions.find(v => v.status === 'active');
 
   return (
     <DocsPage>
@@ -186,9 +176,9 @@ export default function VersionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[60%]">Amended</TableHead>
+                    <TableHead className="w-[70%]">Amended</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-center w-[120px]">Actions</TableHead>
+                    <TableHead className="text-center w-[80px]">Download</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -210,53 +200,38 @@ export default function VersionsPage() {
                         {getStatusBadge(version.status)}
                       </TableCell>
                       <TableCell className="text-center">
-                        <div className="inline-flex items-center justify-center gap-2">
-                          {version.externalUrl ? (
-                            // External link for superseded versions
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              asChild
-                              className="h-8 w-8 p-0"
+                        {version.externalUrl ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
+                          >
+                            <a
+                              href={version.externalUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="View on Charlotte NC Website"
                             >
-                              <a
-                                href={version.externalUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="View on Charlotte NC Website"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </a>
-                            </Button>
-                          ) : (
-                            // PDF view and download for other versions
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => version.pdfUrl && setSelectedPdf({ title: version.title, url: version.pdfUrl })}
-                                className="h-8 w-8 p-0"
-                                title="View PDF"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                asChild
-                                className="h-8 w-8 p-0"
-                              >
-                                <a
-                                  href={version.pdfUrl}
-                                  download
-                                  title="Download"
-                                >
-                                  <Download className="h-4 w-4" />
-                                </a>
-                              </Button>
-                            </>
-                          )}
-                        </div>
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0"
+                          >
+                            <a
+                              href={version.pdfUrl}
+                              download
+                              title="Download PDF"
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -265,38 +240,6 @@ export default function VersionsPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* PDF Viewer Dialog */}
-        <Dialog open={!!selectedPdf} onOpenChange={(open) => !open && setSelectedPdf(null)}>
-          <DialogContent className="max-w-6xl h-[90vh] p-0">
-            <DialogHeader className="p-6 pb-0">
-              <DialogTitle>{selectedPdf?.title}</DialogTitle>
-              <DialogDescription>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="mt-2"
-                >
-                  <a
-                    href={selectedPdf?.url}
-                    download
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF
-                  </a>
-                </Button>
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex-1 overflow-hidden p-6 pt-2">
-              <iframe
-                src={selectedPdf?.url}
-                className="w-full h-full rounded-md border"
-                title={selectedPdf?.title}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
 
         {/* Important Notes */}
         <Alert className="mt-8 mb-8">
@@ -318,7 +261,43 @@ export default function VersionsPage() {
           </AlertDescription>
         </Alert>
 
-
+        {/* Additional Resources */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5 text-primary" />
+              Additional Resources
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/text-amendments">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Text Amendments
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/articles-listing">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Browse All Articles
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View Legacy Zoning Ordinance
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://charlotteudo.org" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit Legacy Site
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </DocsBody>
     </DocsPage>
   );
