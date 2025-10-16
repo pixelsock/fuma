@@ -2,10 +2,12 @@
 
 import React from 'react';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
-  Download, 
+import {
+  Download,
   AlertCircle,
-  FileText
+  FileText,
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import {
   Table,
@@ -213,7 +215,43 @@ export default function VersionsPage() {
           </AlertDescription>
         </Alert>
 
-
+        {/* Additional Resources */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5 text-primary" />
+              Additional Resources
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/text-amendments">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Text Amendments
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="/articles-listing">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Browse All Articles
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://www.charlottenc.gov/Growth-and-Development/Planning-and-Development/Zoning/Zoning-Ordinance" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View Legacy Zoning Ordinance
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://charlotteudo.org" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit Legacy Site
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </DocsBody>
     </DocsPage>
   );
