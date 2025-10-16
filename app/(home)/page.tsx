@@ -172,7 +172,7 @@ export default function HomePage() {
     },
     {
       question: "When did the UDO become effective?",
-      answer: "The UDO became effective on June 1, 2023, replacing the previous zoning ordinance. All development applications submitted after this date must comply with the new regulations."
+      answer: "The UDO became effective on June 1, 2023, replacing the previous zoning ordinance. All development applications submitted after this date for properties with new zoning districts are subject to these regulations."
     },
     {
       question: "Has my property's zoning changed?",
