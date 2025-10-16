@@ -111,7 +111,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, s
           </Badge>
         </div>
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />
       </div>
     </motion.div>
   )
@@ -123,45 +123,84 @@ export default function TextAmendmentsPage() {
 
   const amendments: Amendment[] = [
     {
-      id: '2024-001',
-      name: 'Unified Development Ordinance',
-      description: 'General amendments to various sections',
+      id: '2025-047',
+      name: 'Spring 2025 UDO Maintenance Text Amendment',
+      description: 'Maintenance text amendment proposing changes to 26 of the 39 UDO Articles',
       status: 'approved',
-      date: '07-19-2022',
-      ordinance: '07-19-2022',
-      caseNumber: '06-01-2024'
-    },
-    {
-      id: '2023-008',
-      name: 'Land Clearing and Inert Debris Landfill',
-      description: 'Use adjustments for C2 & C3 Zoning in Catawba Place Types',
-      status: 'approved',
-      date: '04-17-2023',
-      petition: '2023-008',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
-    },
-    {
-      id: '2023-007',
-      name: 'Multi-Family Residential for C2 & C3 Zoning',
-      description: 'Amendments for residential development standards',
-      status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
+      date: '06-16-2025',
+      petition: '2025-047',
+      ordinance: '06-16-2025',
       caseNumber: 'N/A'
     },
     {
-      id: '2023-006',
-      name: 'UDO General Clean Up Text Amendment',
+      id: '2024-033',
+      name: 'Clean-Up Text Amendment #3',
+      description: 'Minor modifications to enhance UDO functionality across 26 Articles',
+      status: 'approved',
+      date: '06-17-2024',
+      petition: '2024-033',
+      ordinance: '06-17-2024',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-130',
+      name: 'Clean-Up Text Amendment #2',
+      description: 'Updates to language, definitions, graphics, use permissions and standards',
+      status: 'approved',
+      date: '01-16-2024',
+      petition: '2023-130',
+      ordinance: '01-16-2024',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-058',
+      name: 'UDO Clean Up Text Amendment',
       description: 'Various technical corrections and clarifications',
       status: 'approved',
-      date: '04-17-2023',
-      ordinance: '05-02-2023',
-      caseNumber: '05-15-2023'
+      date: '05-15-2023',
+      petition: '2023-058',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-057',
+      name: 'Multi-Family Residential for C2 & C3 Zoning',
+      description: 'Amendments for residential development standards',
+      status: 'approved',
+      date: '05-15-2023',
+      petition: '2023-057',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2023-056',
+      name: 'Landfill, Land Clearing, and Inert Debris (LCID)',
+      description: 'Use adjustments for LCID landfill operations',
+      status: 'approved',
+      date: '05-15-2023',
+      petition: '2023-056',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
+    },
+    {
+      id: '2022-udo',
+      name: 'Unified Development Ordinance - Original Adoption',
+      description: 'Original adoption of the UDO consolidating zoning and land development regulations',
+      status: 'approved',
+      date: '08-22-2022',
+      petition: 'N/A',
+      ordinance: '06-01-2023',
+      caseNumber: 'N/A'
     }
   ]
 
   const timelineItems = [
+    {
+      date: 'October 8, 2025',
+      title: 'UDO Advisory Committee Meeting',
+      description: 'The Unified Development Ordinance Advisory Committee met on October 8, 2025 to discuss the upcoming text amendment to the UDO. This amendment makes clarifying changes to the ordinance to improve understanding.',
+      status: 'info' as const
+    },
     {
       date: 'July 15, 2025',
       title: 'Suggestions for UDO Updates',
@@ -169,15 +208,15 @@ export default function TextAmendmentsPage() {
       status: 'info' as const
     },
     {
-      date: 'June 20, 2025',
+      date: 'June 16, 2025',
       title: 'Spring 2025 UDO Maintenance Text Amendment',
-      description: 'City Council approved text amendment petition #2025-047 on June 16. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
+      description: 'City Council approved text amendment petition #2025-047 on June 16, 2025. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
       status: 'approved' as const
     },
     {
       date: 'Current',
       title: 'Submit a Suggestion',
-      description: 'Click the button below or click here to submit a suggested update or recommended change.',
+      description: 'Click the button below or click <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">here</a> to submit a suggested update or recommended change.',
       status: 'pending' as const
     }
   ]
@@ -228,9 +267,11 @@ export default function TextAmendmentsPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all">
-                Submit a Suggestion
-                <ArrowRight className="ml-2 w-4 h-4" />
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" asChild>
+                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
+                  Submit a Suggestion
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </a>
               </Button>
               <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white shadow-xl hover:shadow-2xl transition-all">
                 <Download className="mr-2 w-4 h-4" />
@@ -280,8 +321,8 @@ export default function TextAmendmentsPage() {
           >
             <p className="text-muted-foreground mb-4">
               Questions? Email our team at{' '}
-              <a href="mailto:charlotteUDO@charlottenc.gov" className="text-primary hover:underline">
-                charlotteUDO@charlottenc.gov
+              <a href="mailto:charlotteudo@charlottenc.gov" className="text-primary hover:underline">
+                charlotteudo@charlottenc.gov
               </a>
             </p>
           </motion.div>
@@ -406,11 +447,11 @@ export default function TextAmendmentsPage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">UDO Text Amendment Informational Sessions</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Watch recorded sessions to learn more about the text amendment process
+              Watch recorded sessions to learn more about previously adopted text amendments
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -440,9 +481,11 @@ export default function TextAmendmentsPage() {
                       <Clock className="w-4 h-4" />
                       <span>Duration: 1 hour 30 minutes</span>
                     </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
@@ -461,7 +504,7 @@ export default function TextAmendmentsPage() {
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-foreground to-accent-foreground/80 flex items-center justify-center text-white">
                       <Users className="w-6 h-6" />
                     </div>
-                    <Badge variant="outline">Community Forum</Badge>
+                    <Badge variant="outline">Virtual Session</Badge>
                   </div>
                   <CardTitle>UDO Text Amendment Process Overview</CardTitle>
                   <CardDescription>
@@ -478,9 +521,11 @@ export default function TextAmendmentsPage() {
                       <Clock className="w-4 h-4" />
                       <span>Duration: 45 minutes</span>
                     </div>
-                    <Button className="w-full" variant="outline">
-                      <Play className="mr-2 w-4 h-4" />
-                      Watch Recording
+                    <Button className="w-full" variant="outline" asChild>
+                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                        <Play className="mr-2 w-4 h-4" />
+                        Watch Recording
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
@@ -510,16 +555,22 @@ export default function TextAmendmentsPage() {
                 size="lg"
                 variant="secondary"
                 className="bg-white text-primary hover:bg-white/90"
+                asChild
               >
-                <Mail className="mr-2 w-4 h-4" />
-                Email Our Team
+                <a href="mailto:charlotteUDO@charlottenc.gov">
+                  <Mail className="mr-2 w-4 h-4" />
+                  Email Our Team
+                </a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="bg-transparent text-white border-white hover:bg-white hover:text-primary"
+                asChild
               >
-                Submit a Suggestion
+                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
+                  Submit a Suggestion
+                </a>
               </Button>
             </div>
           </motion.div>
