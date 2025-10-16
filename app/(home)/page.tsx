@@ -139,7 +139,7 @@ export default function HomePage() {
       title: "Read UDO",
       description: "Find specific ordinances, regulations, and guidelines quickly.",
       href: "/articles-listing",
-      badge: "Quick Access"
+      badge: "Learn"
     }
   ]
 
