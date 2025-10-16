@@ -6,8 +6,7 @@ import {
   Download, 
   Eye,
   AlertCircle,
-  FileText,
-  ExternalLink
+  FileText
 } from 'lucide-react';
 import {
   Table,
@@ -39,45 +38,87 @@ import {
 const udoVersions = [
   {
     id: 1,
-    title: "Unified Development Ordinance v2.0 (Current)",
-    amendedDate: "2023-06-01",
+    title: "Amended June 16, 2025",
+    amendedDate: "2025-06-16",
     status: "active",
-    pdfUrl: "/downloads/udo-v2.0.pdf"
+    pdfUrl: "/downloads/udo-amended-2025-06-16.pdf"
   },
   {
     id: 2,
-    title: "Unified Development Ordinance v1.3 (Draft)",
-    amendedDate: "2022-12-15",
+    title: "Amended February 17, 2025",
+    amendedDate: "2025-02-17",
     status: "archived",
-    pdfUrl: "/downloads/udo-v1.3-draft.pdf"
+    pdfUrl: "/downloads/udo-amended-2025-02-17.pdf"
   },
   {
     id: 3,
-    title: "Unified Development Ordinance v1.2 (Public Review)",
-    amendedDate: "2022-09-30",
+    title: "Amended September 16, 2024",
+    amendedDate: "2024-09-16",
     status: "archived",
-    pdfUrl: "/downloads/udo-v1.2-review.pdf"
+    pdfUrl: "/downloads/udo-amended-2024-09-16.pdf"
   },
   {
     id: 4,
-    title: "Zoning Ordinance v1.1 (Legacy)",
-    amendedDate: "2019-03-15",
-    status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.1.pdf"
+    title: "Amended June 24, 2024",
+    amendedDate: "2024-06-24",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2024-06-24.pdf"
   },
   {
     id: 5,
-    title: "Zoning Ordinance v1.0 (Legacy)",
-    amendedDate: "2015-01-20",
-    status: "superseded",
-    pdfUrl: "/downloads/zoning-ordinance-v1.0.pdf"
+    title: "Amended June 17, 2024",
+    amendedDate: "2024-06-17",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2024-06-17.pdf"
   },
   {
     id: 6,
-    title: "Text Amendments Archive",
-    amendedDate: "2023-07-15",
-    status: "active",
-    pdfUrl: "/downloads/udo-amendments-archive.zip"
+    title: "Amended May 20, 2024",
+    amendedDate: "2024-05-20",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2024-05-20.pdf"
+  },
+  {
+    id: 7,
+    title: "Amended April 15, 2024",
+    amendedDate: "2024-04-15",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2024-04-15.pdf"
+  },
+  {
+    id: 8,
+    title: "Amended January 16, 2024",
+    amendedDate: "2024-01-16",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2024-01-16.pdf"
+  },
+  {
+    id: 9,
+    title: "Amended October 16, 2023",
+    amendedDate: "2023-10-16",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2023-10-16.pdf"
+  },
+  {
+    id: 10,
+    title: "Amended August 21, 2023",
+    amendedDate: "2023-08-21",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2023-08-21.pdf"
+  },
+  {
+    id: 11,
+    title: "Amended May 15, 2023",
+    amendedDate: "2023-05-15",
+    status: "archived",
+    pdfUrl: "/downloads/udo-amended-2023-05-15.pdf"
+  },
+  {
+    id: 12,
+    title: "Adopted August 22, 2022",
+    amendedDate: "2022-08-22",
+    status: "archived",
+    pdfUrl: "/downloads/udo-adopted-2022-08-22.pdf"
   }
 ];
 
@@ -233,37 +274,7 @@ export default function VersionsPage() {
           </AlertDescription>
         </Alert>
 
-        {/* Additional Resources */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ExternalLink className="h-5 w-5 text-primary" />
-              Additional Resources
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="/text-amendments">
-                  <FileText className="h-4 w-4 mr-2" />
-                  View Text Amendments
-                </a>
-              </Button>
-              <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="/articles-listing">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Browse All Articles
-                </a>
-              </Button>
-              <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="https://charlotteudo.org">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Visit Legacy Site
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
       </DocsBody>
     </DocsPage>
   );
