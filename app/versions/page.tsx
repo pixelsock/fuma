@@ -144,7 +144,7 @@ export default function VersionsPage() {
       <DocsBody className="max-w-5xl mx-auto">
         {/* Hero Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Prior UDO Versions</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Previous UDO Versions</h1>
           <p className="text-muted-foreground">Access historical versions of the Charlotte Unified Development Ordinance</p>
         </div>
 
