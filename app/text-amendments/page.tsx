@@ -111,7 +111,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, s
           </Badge>
         </div>
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />
       </div>
     </motion.div>
   )
@@ -177,7 +177,7 @@ export default function TextAmendmentsPage() {
     {
       date: 'Current',
       title: 'Submit a Suggestion',
-      description: 'Click the button below or click here to submit a suggested update or recommended change.',
+      description: 'Click the button below or click <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">here</a> to submit a suggested update or recommended change.',
       status: 'pending' as const
     }
   ]
@@ -228,9 +228,11 @@ export default function TextAmendmentsPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all">
-                Submit a Suggestion
-                <ArrowRight className="ml-2 w-4 h-4" />
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" asChild>
+                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
+                  Submit a Suggestion
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </a>
               </Button>
               <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white shadow-xl hover:shadow-2xl transition-all">
                 <Download className="mr-2 w-4 h-4" />
@@ -514,16 +516,22 @@ export default function TextAmendmentsPage() {
                 size="lg"
                 variant="secondary"
                 className="bg-white text-primary hover:bg-white/90"
+                asChild
               >
-                <Mail className="mr-2 w-4 h-4" />
-                Email Our Team
+                <a href="mailto:charlotteUDO@charlottenc.gov">
+                  <Mail className="mr-2 w-4 h-4" />
+                  Email Our Team
+                </a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="bg-transparent text-white border-white hover:bg-white hover:text-primary"
+                asChild
               >
-                Submit a Suggestion
+                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
+                  Submit a Suggestion
+                </a>
               </Button>
             </div>
           </motion.div>
