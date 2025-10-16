@@ -37,7 +37,7 @@ const keyFeatures: KeyFeature[] = [
   {
     icon: <Map className="h-6 w-6" />,
     title: "Place Types",
-    description: "A new approach to zoning that focuses on the character and form of development rather than just land use."
+    description: "Guided by a new approach to policy that focuses on the character and form of development rather than just land use."
   },
   {
     icon: <Building className="h-6 w-6" />,
