@@ -145,7 +145,7 @@ export default function VersionsPage() {
       <DocsBody className="max-w-5xl mx-auto">
         {/* Hero Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Prior UDO Versions</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Previous UDO Versions</h1>
           <p className="text-muted-foreground">Access historical versions of the Charlotte Unified Development Ordinance</p>
         </div>
 
@@ -156,9 +156,6 @@ export default function VersionsPage() {
               <FileText className="h-5 w-5" />
               Available Versions
             </CardTitle>
-            <CardDescription>
-              Click the eye icon to view documents in the PDF viewer
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
@@ -262,11 +259,11 @@ export default function VersionsPage() {
           <AlertDescription className="mt-2 space-y-2">
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
-              <span><strong>Current Version:</strong> Always use the most current active version for new development applications.</span>
+              <span><strong>Current Version:</strong> Always use the most current version for new development applications.</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
-              <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only.</span>
+              <span><strong>Legacy Documents:</strong> Historical versions are provided for reference and research purposes only. However, the legacy ordinance still applies to properties with conditional, optional, or exception zoning districts from the old ordinance.</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="font-semibold">•</span>
