@@ -329,7 +329,6 @@ code {
 }
 
 /* Override transitions for performance-critical elements */
-.ag-grid *, 
 .search-input *,
 button:active {
   transition: none !important;
