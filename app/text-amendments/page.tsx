@@ -466,23 +466,31 @@ export default function TextAmendmentsPage() {
                     </div>
                     <Badge variant="outline">Virtual Session</Badge>
                   </div>
-                  <CardTitle>Spring 2025 UDO Maintenance Text Amendment</CardTitle>
+                  <CardTitle>May 2025 Virtual Information Session</CardTitle>
                   <CardDescription>
-                    Virtual information session covering the latest maintenance amendments
+                    Virtual information session for the Proposed Text Amendment to the UDO
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      <span>April 15, 2025</span>
+                      <span>May 8, 2025</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4" />
-                      <span>Duration: 1 hour 30 minutes</span>
+                      <span>12:00 PM</span>
                     </div>
-                    <Button className="w-full" variant="outline" asChild>
-                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      asChild
+                    >
+                      <a
+                        href="https://www.youtube.com/watch?v=Pzfr9hWCKWg"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <Play className="mr-2 w-4 h-4" />
                         Watch Recording
                       </a>
@@ -506,23 +514,31 @@ export default function TextAmendmentsPage() {
                     </div>
                     <Badge variant="outline">Virtual Session</Badge>
                   </div>
-                  <CardTitle>UDO Text Amendment Process Overview</CardTitle>
+                  <CardTitle>November 2024 Virtual Information Session</CardTitle>
                   <CardDescription>
-                    Learn about how text amendments are proposed, reviewed, and adopted
+                    Virtual information session for the Proposed Text Amendment to the UDO
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      <span>March 20, 2025</span>
+                      <span>November 7, 2024</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4" />
-                      <span>Duration: 45 minutes</span>
+                      <span>12:00 PM</span>
                     </div>
-                    <Button className="w-full" variant="outline" asChild>
-                      <a href="https://www.youtube.com/playlist?list=PL6SDCP0OZ_AzUSZIkkXYdVxLuHmsTHY7k" target="_blank" rel="noopener noreferrer">
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      asChild
+                    >
+                      <a
+                        href="https://www.youtube.com/watch?v=Fznw4YZCW28"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <Play className="mr-2 w-4 h-4" />
                         Watch Recording
                       </a>
