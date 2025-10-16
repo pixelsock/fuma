@@ -215,12 +215,12 @@ export default function WhatIsUDOPage() {
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                       <Download className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">Download UDO</CardTitle>
+                    <CardTitle className="text-lg">UDO Versions & Downloads</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Access current and historical versions of the UDO
+                    Access historical and past versions of the UDO
                   </p>
                 </CardContent>
               </Card>
