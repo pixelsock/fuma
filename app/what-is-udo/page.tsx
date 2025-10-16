@@ -74,7 +74,7 @@ export default function WhatIsUDOPage() {
         {/* Hero Section */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            What is the Charlotte UDO?
+            Charlotte Explorer
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
             Guided by a new approach to policy that focuses on the character and form of development, the Charlotte 
