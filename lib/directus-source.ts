@@ -717,3 +717,69 @@ export async function getSiteLogo(): Promise<string | null> {
     return null;
   }
 }
+
+export interface LatestUpdate {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  category: 'information' | 'approved' | 'pending';
+  sort: number;
+  status: string;
+}
+
+/**
+ * Fetches latest updates from Directus
+ */
+export async function getLatestUpdates(): Promise<LatestUpdate[]> {
+  try {
+    const authenticated = await ensureAuthenticated();
+    if (!authenticated) {
+      console.log('[getLatestUpdates] Not authenticated, returning fallback data');
+      return getFallbackLatestUpdates();
+    }
+    
+    const updates = await directus.request(
+      readItems('latest_updates' as any, {
+        filter: { 
+          status: { _eq: 'publish' }  // Only published updates
+        },
+        fields: ['id', 'title', 'description', 'date', 'category', 'sort', 'status'],
+        sort: ['sort', '-date'],  // Sort by sort field, then by date descending
+      })
+    );
+
+    console.log(`[getLatestUpdates] Successfully fetched ${updates.length} updates from Directus`);
+    
+    return updates.map((update: any) => ({
+      id: String(update.id),
+      title: update.title,
+      description: update.description,
+      date: update.date,
+      category: update.category,
+      sort: update.sort || 0,
+      status: update.status,
+    }));
+  } catch (error) {
+    console.error('[getLatestUpdates] Error fetching updates from Directus:', error);
+    return getFallbackLatestUpdates();
+  }
+}
+
+/**
+ * Provides fallback latest updates data when Directus is not available
+ */
+function getFallbackLatestUpdates(): LatestUpdate[] {
+  console.log('[getLatestUpdates] Using fallback updates data');
+  return [
+    {
+      id: 'fallback-1',
+      title: 'Charlotte UDO Latest Updates Collection Created',
+      description: 'Successfully created a new <strong>Latest Updates</strong> collection for managing latest updates and announcements for the Charlotte UDO website.',
+      date: '2025-01-16T00:00:00Z',
+      category: 'information',
+      sort: 1,
+      status: 'publish',
+    },
+  ];
+}

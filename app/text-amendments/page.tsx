@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import type { LatestUpdate } from '@/lib/directus-source'
 
 interface Amendment {
   id: string
@@ -56,22 +57,22 @@ interface TimelineItemProps {
   date: string
   title: string
   description: string
-  status: 'approved' | 'pending' | 'info'
+  category: 'information' | 'approved' | 'pending'
   isLast?: boolean
   index: number
 }
 
-const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, status, isLast, index }) => {
+const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, category, isLast, index }) => {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
   const statusConfig = {
     approved: { color: 'from-green-500 to-green-600', icon: CheckCircle, badge: 'Approved' },
     pending: { color: 'from-yellow-500 to-yellow-600', icon: AlertCircle, badge: 'Pending' },
-    info: { color: 'from-blue-500 to-blue-600', icon: Info, badge: 'Information' }
+    information: { color: 'from-blue-500 to-blue-600', icon: Info, badge: 'Information' }
   }
 
-  const config = statusConfig[status]
+  const config = statusConfig[category]
 
   return (
     <motion.div
@@ -106,7 +107,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, s
             <Calendar className="w-3 h-3 mr-1" />
             {date}
           </Badge>
-          <Badge variant={status === 'approved' ? 'default' : status === 'pending' ? 'secondary' : 'outline'}>
+          <Badge variant={category === 'approved' ? 'default' : category === 'pending' ? 'secondary' : 'outline'}>
             {config.badge}
           </Badge>
         </div>
@@ -120,6 +121,29 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, s
 export default function TextAmendmentsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [latestUpdates, setLatestUpdates] = useState<LatestUpdate[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch latest updates from API
+  useEffect(() => {
+    async function fetchUpdates() {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/latest-updates')
+        if (!response.ok) {
+          throw new Error('Failed to fetch updates')
+        }
+        const updates = await response.json()
+        setLatestUpdates(updates)
+      } catch (error) {
+        console.error('Error fetching latest updates:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchUpdates()
+  }, [])
 
   const amendments: Amendment[] = [
     {
@@ -194,32 +218,19 @@ export default function TextAmendmentsPage() {
     }
   ]
 
-  const timelineItems = [
-    {
-      date: 'October 8, 2025',
-      title: 'UDO Advisory Committee Meeting',
-      description: 'The Unified Development Ordinance Advisory Committee met on October 8, 2025 to discuss the upcoming text amendment to the UDO. This amendment makes clarifying changes to the ordinance to improve understanding.',
-      status: 'info' as const
-    },
-    {
-      date: 'July 15, 2025',
-      title: 'Suggestions for UDO Updates',
-      description: 'Charlotte Planning, Design and Development would like to share an opportunity to suggest updates or recommend changes to the City\'s Unified Development Ordinance (UDO) through an online portal.',
-      status: 'info' as const
-    },
-    {
-      date: 'June 16, 2025',
-      title: 'Spring 2025 UDO Maintenance Text Amendment',
-      description: 'City Council approved text amendment petition #2025-047 on June 16, 2025. This petition was a maintenance text amendment to the Unified Development Ordinance (UDO) and it proposed changes to 26 of the 39 UDO Articles.',
-      status: 'approved' as const
-    },
-    {
-      date: 'Current',
-      title: 'Submit a Suggestion',
-      description: 'Click the button below or click <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">here</a> to submit a suggested update or recommended change.',
-      status: 'pending' as const
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    } catch {
+      return dateString
     }
-  ]
+  }
 
   const filteredAmendments = amendments.filter(amendment => {
     const matchesSearch = amendment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -255,10 +266,6 @@ export default function TextAmendmentsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <Badge variant="outline" className="mb-6 border-primary text-primary">
-              <FileText className="mr-1 w-3 h-3" />
-              Living Document
-            </Badge>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
               UDO Text Amendments
             </h1>
@@ -299,17 +306,28 @@ export default function TextAmendmentsPage() {
           </motion.div>
           
           <div className="max-w-4xl mx-auto">
-            {timelineItems.map((item, index) => (
-              <TimelineItem
-                key={index}
-                date={item.date}
-                title={item.title}
-                description={item.description}
-                status={item.status}
-                isLast={index === timelineItems.length - 1}
-                index={index}
-              />
-            ))}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading latest updates...</p>
+              </div>
+            ) : latestUpdates.length > 0 ? (
+              latestUpdates.map((update, index) => (
+                <TimelineItem
+                  key={update.id}
+                  date={formatDate(update.date)}
+                  title={update.title}
+                  description={update.description}
+                  category={update.category}
+                  isLast={index === latestUpdates.length - 1}
+                  index={index}
+                />
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No updates available at this time.</p>
+              </div>
+            )}
           </div>
 
           <motion.div
