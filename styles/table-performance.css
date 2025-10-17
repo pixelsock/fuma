@@ -1,8 +1,7 @@
 /* Table performance optimizations to prevent flashing */
 
-/* Reserve space for tables to prevent layout shift */
+/* Table wrapper styling */
 .udo-content .table-wrapper {
-  min-height: 200px;
   position: relative;
   transition: opacity 0.3s ease-out;
 }

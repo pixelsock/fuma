@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { createRoot } from 'react-dom/client';
 
 export function HeadingLinkHandler() {
   const [isMounted, setIsMounted] = useState(false);
@@ -20,7 +18,7 @@ export function HeadingLinkHandler() {
       // Store active tooltip cleanup function
       let activeTooltipCleanup: (() => void) | null = null;
 
-      // Function to create and show tooltip using Radix UI
+      // Function to create and show tooltip
       const showTooltip = (element: HTMLElement, message: string) => {
         // Clean up any existing tooltip first
         if (activeTooltipCleanup) {
@@ -29,50 +27,51 @@ export function HeadingLinkHandler() {
         }
 
         // Remove any existing tooltip containers
-        document.querySelectorAll('.heading-link-tooltip-container').forEach(el => el.remove());
+        document.querySelectorAll('.heading-link-tooltip').forEach(el => el.remove());
 
-        // Create a container for the tooltip
-        const container = document.createElement('div');
-        container.className = 'heading-link-tooltip-container';
-        container.style.position = 'absolute';
-        container.style.zIndex = '10000';
+        // Create tooltip element
+        const tooltip = document.createElement('div');
+        tooltip.className = 'heading-link-tooltip';
+        tooltip.textContent = message;
         
+        // Style the tooltip to match shadcn design
+        Object.assign(tooltip.style, {
+          position: 'absolute',
+          backgroundColor: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
+          padding: '6px 12px',
+          borderRadius: '6px',
+          fontSize: '12px',
+          fontWeight: '500',
+          whiteSpace: 'nowrap',
+          zIndex: '10000',
+          pointerEvents: 'none',
+          opacity: '0',
+          transition: 'opacity 0.15s',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+        });
+
         // Get the position of the element
         const rect = element.getBoundingClientRect();
         const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
-        // Position container near the icon (right edge of heading)
-        container.style.left = `${rect.right + scrollX - 20}px`;
-        container.style.top = `${rect.top + scrollY}px`;
+        document.body.appendChild(tooltip);
+        const tooltipRect = tooltip.getBoundingClientRect();
         
-        document.body.appendChild(container);
+        // Position tooltip above the icon at the right edge of the heading
+        tooltip.style.left = `${rect.right + scrollX - 20 - tooltipRect.width / 2}px`;
+        tooltip.style.top = `${rect.top + scrollY - tooltipRect.height - 8}px`;
         
-        // Create React root and render Radix Tooltip
-        const root = createRoot(container);
-        root.render(
-          <TooltipPrimitive.Provider delayDuration={0}>
-            <TooltipPrimitive.Root open={true}>
-              <TooltipPrimitive.Trigger asChild>
-                <div style={{ width: 1, height: 1 }} />
-              </TooltipPrimitive.Trigger>
-              <TooltipPrimitive.Portal>
-                <TooltipPrimitive.Content
-                  side="top"
-                  sideOffset={8}
-                  className="z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95"
-                >
-                  {message}
-                </TooltipPrimitive.Content>
-              </TooltipPrimitive.Portal>
-            </TooltipPrimitive.Root>
-          </TooltipPrimitive.Provider>
-        );
+        // Show tooltip with animation
+        requestAnimationFrame(() => {
+          tooltip.style.opacity = '1';
+        });
 
         // Create cleanup function
         const cleanup = () => {
-          root.unmount();
-          container.remove();
+          tooltip.style.opacity = '0';
+          setTimeout(() => tooltip.remove(), 150);
         };
 
         // Store cleanup function
