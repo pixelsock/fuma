@@ -15,24 +15,30 @@ export function HeadingLinkHandler() {
     if (!isMounted) return;
 
     const setupHeadingHandlers = () => {
+      // Store active tooltip cleanup function
+      let activeTooltipCleanup: (() => void) | null = null;
+
       // Function to create and show tooltip
       const showTooltip = (element: HTMLElement, message: string) => {
-        // Remove any existing tooltips
-        const existingTooltip = document.querySelector('.heading-link-tooltip');
-        if (existingTooltip) {
-          existingTooltip.remove();
+        // Clean up any existing tooltip first
+        if (activeTooltipCleanup) {
+          activeTooltipCleanup();
+          activeTooltipCleanup = null;
         }
 
-        // Create tooltip
+        // Remove any existing tooltip containers
+        document.querySelectorAll('.heading-link-tooltip').forEach(el => el.remove());
+
+        // Create tooltip element
         const tooltip = document.createElement('div');
         tooltip.className = 'heading-link-tooltip';
         tooltip.textContent = message;
         
-        // Style the tooltip
+        // Style the tooltip to match shadcn design
         Object.assign(tooltip.style, {
           position: 'absolute',
-          backgroundColor: '#333',
-          color: 'white',
+          backgroundColor: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
           padding: '6px 12px',
           borderRadius: '6px',
           fontSize: '12px',
@@ -41,27 +47,42 @@ export function HeadingLinkHandler() {
           zIndex: '10000',
           pointerEvents: 'none',
           opacity: '0',
-          transition: 'opacity 0.2s',
+          transition: 'opacity 0.15s',
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
         });
 
-        // Position tooltip above the element
-        document.body.appendChild(tooltip);
+        // Get the position of the element
         const rect = element.getBoundingClientRect();
+        const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        
+        document.body.appendChild(tooltip);
         const tooltipRect = tooltip.getBoundingClientRect();
         
-        tooltip.style.left = `${rect.right - tooltipRect.width / 2 - 10}px`;
-        tooltip.style.top = `${rect.top - tooltipRect.height - 8}px`;
+        // Position tooltip above the icon at the right edge of the heading
+        tooltip.style.left = `${rect.right + scrollX - 20 - tooltipRect.width / 2}px`;
+        tooltip.style.top = `${rect.top + scrollY - tooltipRect.height - 8}px`;
         
-        // Show tooltip
+        // Show tooltip with animation
         requestAnimationFrame(() => {
           tooltip.style.opacity = '1';
         });
 
+        // Create cleanup function
+        const cleanup = () => {
+          tooltip.style.opacity = '0';
+          setTimeout(() => tooltip.remove(), 150);
+        };
+
+        // Store cleanup function
+        activeTooltipCleanup = cleanup;
+
         // Hide and remove tooltip after 2 seconds
         setTimeout(() => {
-          tooltip.style.opacity = '0';
-          setTimeout(() => tooltip.remove(), 200);
+          cleanup();
+          if (activeTooltipCleanup === cleanup) {
+            activeTooltipCleanup = null;
+          }
         }, 2000);
       };
 
@@ -91,25 +112,12 @@ export function HeadingLinkHandler() {
           if ((h2 as any)._linkHandlerAttached) return;
           (h2 as any)._linkHandlerAttached = true;
 
-          // Make focusable for keyboard access
-          h2.setAttribute('tabindex', '0');
-          h2.setAttribute('role', 'button');
-          h2.setAttribute('aria-label', 'Copy link to section');
-
-          // Click to copy
+          // Click to copy (don't modify DOM attributes to avoid hydration mismatch)
           h2.addEventListener('click', (e) => {
             // Ignore if selecting text
             const selection = window.getSelection();
             if (selection && selection.toString()) return;
             copyLinkToClipboard(h2);
-          });
-
-          // Keyboard support
-          h2.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              copyLinkToClipboard(h2);
-            }
           });
 
           // Hover effect to show icon via CSS

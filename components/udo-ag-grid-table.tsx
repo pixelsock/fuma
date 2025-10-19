@@ -45,13 +45,14 @@ const HtmlCellRenderer = (props: any) => {
         style={{
           width: '100%',
           height: '100%',
+          ...cellData.style, // Apply cell-specific styles from HTML
         }}
       />
     );
   }
 
-  // Fallback to plain text value
-  return <div>{cellData.value}</div>;
+  // Fallback to plain text value with styles
+  return <div style={cellData.style}>{cellData.value}</div>;
 };
 
 function parseHtmlTable(htmlString: string): TableData {
@@ -167,9 +168,33 @@ function parseHtmlTable(htmlString: string): TableData {
     if (htmlElement.style.textAlign) styles.textAlign = htmlElement.style.textAlign as any;
     if (htmlElement.style.verticalAlign) styles.verticalAlign = htmlElement.style.verticalAlign as any;
     if (htmlElement.style.padding) styles.padding = htmlElement.style.padding;
+    if (htmlElement.style.paddingLeft) styles.paddingLeft = htmlElement.style.paddingLeft;
+    if (htmlElement.style.paddingRight) styles.paddingRight = htmlElement.style.paddingRight;
+    if (htmlElement.style.marginLeft) styles.marginLeft = htmlElement.style.marginLeft;
+    if (htmlElement.style.textIndent) styles.textIndent = htmlElement.style.textIndent;
     if (htmlElement.style.border) styles.border = htmlElement.style.border;
 
     return styles;
+  };
+
+  // Helper function to extract column width from header cell
+  const getColumnWidth = (element: Element): number | undefined => {
+    const htmlElement = element as HTMLElement;
+    
+    // Check for explicit width attribute
+    const widthAttr = htmlElement.getAttribute('width');
+    if (widthAttr) {
+      const width = parseInt(widthAttr, 10);
+      if (!isNaN(width)) return width;
+    }
+    
+    // Check for inline style width
+    if (htmlElement.style.width) {
+      const width = parseInt(htmlElement.style.width, 10);
+      if (!isNaN(width)) return width;
+    }
+    
+    return undefined;
   };
 
   // Detect all header rows (multiple strategies)
@@ -180,20 +205,22 @@ function parseHtmlTable(htmlString: string): TableData {
   let dataStartIndex = 0;
 
   // Strategy 1: Look for light blue background (DDEAF6) - multi-row headers
+  // Take consecutive rows with ALL cells having header background as header rows
   for (let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
     const cells = Array.from(row.querySelectorAll('td, th'));
 
-    const hasHeaderBg = cells.some(cell => {
+    // Check if ALL cells in this row have the header background
+    const allCellsHaveHeaderBg = cells.every(cell => {
       const bgColor = (cell as HTMLElement).getAttribute('data-bg-color');
       return bgColor && bgColor.toUpperCase() === headerBgColor.replace('#', '');
     });
 
-    if (hasHeaderBg) {
+    if (allCellsHaveHeaderBg && cells.length > 0) {
       headerRows.push(cells);
       dataStartIndex = i + 1;
     } else if (headerRows.length > 0) {
-      // Stop once we hit a non-header row after finding headers
+      // Stop once we hit a row that doesn't have all cells with header background
       break;
     }
   }
@@ -295,14 +322,25 @@ function parseHtmlTable(htmlString: string): TableData {
 // Build simple flat columns from a single header row
 function buildSimpleColumns(headerCells: Element[]): ColDef[] {
   return headerCells.map((cell, index) => {
-    const headerText = cell.textContent?.trim() || `Column ${index + 1}`;
+    const headerText = cell.textContent?.trim() || '';
     const fieldName = `col${index}`;
+    const htmlCell = cell as HTMLElement;
+    
+    // Extract width from header cell
+    const widthAttr = htmlCell.getAttribute('width');
+    const styleWidth = htmlCell.style.width;
+    let columnWidth: number | undefined;
+    
+    if (widthAttr) {
+      columnWidth = parseInt(widthAttr, 10);
+    } else if (styleWidth) {
+      columnWidth = parseInt(styleWidth, 10);
+    }
 
-    return {
+    const colDef: ColDef = {
       field: fieldName,
       headerName: headerText,
-      flex: 1,
-      minWidth: 120,
+      minWidth: 70,
       resizable: true,
       sortable: false,
       filter: false,
@@ -313,12 +351,12 @@ function buildSimpleColumns(headerCells: Element[]): ColDef[] {
         const cellData = params.data?.[fieldName] as CellData;
         const baseStyle = cellData?.style || {};
         return {
-          ...baseStyle,
           paddingTop: '12px',
           paddingBottom: '12px',
           lineHeight: '1.5',
-          display: 'flex',
-          alignItems: 'center',
+          ...baseStyle, // Apply original HTML styles to preserve alignment and indentation
+          // Default to middle vertical alignment only if not specified
+          verticalAlign: baseStyle.verticalAlign || 'middle',
         } as any;
       },
       valueGetter: (params) => {
@@ -334,6 +372,15 @@ function buildSimpleColumns(headerCells: Element[]): ColDef[] {
         return cellData?.rowSpan || 1;
       },
     };
+    
+    // Set width if found, otherwise use flex
+    if (columnWidth && !isNaN(columnWidth)) {
+      colDef.width = columnWidth;
+    } else {
+      colDef.flex = 1;
+    }
+    
+    return colDef;
   });
 }
 
@@ -411,10 +458,22 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
 
   // Process cells from the first row to build groups
   if (headerRows.length > 1) {
-    const firstRow = headerMatrix[0];
-    console.log('[First Row] Processing:', firstRow.map((cell, i) => `[${i}]="${cell?.text}"`).join(', '));
+    // Find the first row that's not a full-width title (skip title rows)
+    let groupingRowIndex = 0;
+    for (let i = 0; i < headerMatrix.length - 1; i++) {
+      const row = headerMatrix[i];
+      const firstCell = row.find(cell => cell !== null);
+      // Skip if this row has a single cell spanning all columns (title row)
+      if (firstCell && firstCell.colspan < row.filter(c => c !== null).length) {
+        groupingRowIndex = i;
+        break;
+      }
+    }
 
-    firstRow.forEach((cellInfo, colIndex) => {
+    const groupingRow = headerMatrix[groupingRowIndex];
+    console.log(`[Grouping Row ${groupingRowIndex}] Processing:`, groupingRow.map((cell, i) => `[${i}]="${cell?.text}"`).join(', '));
+
+    groupingRow.forEach((cellInfo, colIndex) => {
       if (!cellInfo) return;
 
       // Skip if we already processed this exact cellInfo object (handles colspan duplicates)
@@ -442,7 +501,7 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
           const childCell = lastRow[c];
           if (childCell && !processedIndices.has(c)) {
             console.log(`    [Child] Col ${c}: "${childCell.text}"`);
-            children.push(createLeafColumn(c, childCell.text));
+            children.push(createLeafColumn(c, childCell.text, childCell.element));
             processedIndices.add(c);
           }
         }
@@ -468,7 +527,7 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
   lastRow.forEach((cellInfo, colIndex) => {
     if (cellInfo && !processedIndices.has(colIndex)) {
       console.log(`[Ungrouped] Col ${colIndex}: "${cellInfo.text}"`);
-      columns.push(createLeafColumn(colIndex, cellInfo.text));
+      columns.push(createLeafColumn(colIndex, cellInfo.text, cellInfo.element));
       processedIndices.add(colIndex);
     }
   });
@@ -484,13 +543,26 @@ function buildColumnGroupsFromMultiRowHeaders(headerRows: Element[][]): ColDef[]
 }
 
 // Create a leaf column definition
-function createLeafColumn(fieldIndex: number, headerText: string): ColDef {
+function createLeafColumn(fieldIndex: number, headerText: string, headerElement?: Element): ColDef {
   const fieldName = `col${fieldIndex}`;
+  
+  // Extract width from header element if provided
+  let columnWidth: number | undefined;
+  if (headerElement) {
+    const htmlCell = headerElement as HTMLElement;
+    const widthAttr = htmlCell.getAttribute('width');
+    const styleWidth = htmlCell.style.width;
+    
+    if (widthAttr) {
+      columnWidth = parseInt(widthAttr, 10);
+    } else if (styleWidth) {
+      columnWidth = parseInt(styleWidth, 10);
+    }
+  }
 
-  return {
+  const colDef: ColDef = {
     field: fieldName,
     headerName: headerText,
-    width: 90,
     minWidth: 70,
     resizable: true,
     sortable: false,
@@ -502,14 +574,12 @@ function createLeafColumn(fieldIndex: number, headerText: string): ColDef {
       const cellData = params.data?.[fieldName] as CellData;
       const baseStyle = cellData?.style || {};
       return {
-        ...baseStyle,
         paddingTop: '12px',
         paddingBottom: '12px',
         lineHeight: '1.5',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
+        ...baseStyle, // Apply original HTML styles to preserve them
+        // Default to middle vertical alignment only if not specified
+        verticalAlign: baseStyle.verticalAlign || 'middle',
       } as any;
     },
     valueGetter: (params) => {
@@ -525,6 +595,15 @@ function createLeafColumn(fieldIndex: number, headerText: string): ColDef {
       return cellData?.rowSpan || 1;
     },
   };
+  
+  // Set width if found, otherwise use default
+  if (columnWidth && !isNaN(columnWidth)) {
+    colDef.width = columnWidth;
+  } else {
+    colDef.width = 90;
+  }
+  
+  return colDef;
 }
 
 // Create a pinned column definition (for columns like "Uses")
@@ -548,13 +627,13 @@ function createPinnedColumn(fieldIndex: number, headerText: string): ColDef {
       const cellData = params.data?.[fieldName] as CellData;
       const baseStyle = cellData?.style || {};
       return {
-        ...baseStyle,
         paddingTop: '12px',
         paddingBottom: '12px',
         lineHeight: '1.5',
-        display: 'flex',
-        alignItems: 'center',
         fontWeight: 600,
+        ...baseStyle, // Apply original HTML styles to preserve them
+        // Default to middle vertical alignment only if not specified
+        verticalAlign: baseStyle.verticalAlign || 'middle',
       } as any;
     },
     valueGetter: (params) => {
@@ -607,6 +686,8 @@ export function UDOAgGridTable({ htmlString, tableIndex = 0 }: UDOAgGridTablePro
     enableCellTextSelection: false,
     animateRows: false,
     pagination: false,
+    suppressRowTransform: true, // Required for rowSpan to work
+    domLayout: 'autoHeight', // Allow grid to size based on content
   }), []);
 
   const handleSearch = useCallback((value: string) => {
@@ -839,7 +920,6 @@ export function UDOAgGridTable({ htmlString, tableIndex = 0 }: UDOAgGridTablePro
           overflow: 'auto',
           padding: 0, // Remove container padding
         } : {
-          height: '500px',
           width: '100%',
           padding: 0, // Remove container padding
         }}

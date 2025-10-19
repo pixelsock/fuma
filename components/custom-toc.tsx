@@ -25,7 +25,7 @@ export function CustomTOC({ items, className }: CustomTOCProps) {
         className="overflow-auto max-h-[calc(100vh-8rem)] pb-4"
       >
         <AnchorProvider 
-          single={false}
+          single={true}
           toc={items}
         >
           <ScrollProvider containerRef={containerRef}>
