@@ -11,6 +11,9 @@ import { MaterialIcon } from '@/components/material-icon'
 import { directus } from '@/lib/directus-client'
 import { readItem } from '@directus/sdk'
 
+// Force dynamic rendering to avoid build-time data fetching issues
+export const dynamic = 'force-dynamic'
+
 // Types for homepage data
 interface HomepageData {
   id: number;
