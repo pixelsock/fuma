@@ -43,6 +43,50 @@ interface HomepageData {
 }
 
 
+// Fallback homepage data
+const fallbackData: HomepageData = {
+  id: 1,
+  header_text: "Charlotte Unified Development Ordinance",
+  header_description: "Your comprehensive guide to Charlotte's zoning and development regulations",
+  header_buttons: [
+    {
+      button_text: "Browse Articles",
+      link: "/articles",
+      icon: "book"
+    },
+    {
+      button_text: "What is UDO?",
+      link: "/what-is-udo",
+      icon: "info"
+    }
+  ],
+  key_resources: [
+    {
+      icon: "gavel",
+      title: "Zoning Districts",
+      description: "Explore Charlotte's zoning districts and regulations",
+      url: "/articles",
+      category: "Zoning"
+    },
+    {
+      icon: "description",
+      title: "Development Standards",
+      description: "Learn about development standards and requirements",
+      url: "/articles",
+      category: "Standards"
+    },
+    {
+      icon: "account_balance",
+      title: "Administration",
+      description: "Understand the administration and enforcement process",
+      url: "/articles",
+      category: "Administration"
+    }
+  ],
+  updates: [],
+  faqs: []
+}
+
 // Server-side data fetching function
 async function getHomepageData(): Promise<HomepageData> {
   try {
@@ -55,7 +99,8 @@ async function getHomepageData(): Promise<HomepageData> {
     return homepage as HomepageData
   } catch (error) {
     console.error('Error fetching homepage data:', error)
-    throw error
+    console.log('Using fallback homepage data')
+    return fallbackData
   }
 }
 
