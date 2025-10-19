@@ -47,11 +47,39 @@ export interface DirectusGlobalSettings {
   logo?: string;
 }
 
+export interface DirectusHomePage {
+  id: number;
+  header_text: string;
+  header_description: string;
+  header_buttons: Array<{
+    button_text: string;
+    link: string;
+    icon: string;
+  }>;
+  key_resources: Array<{
+    icon: string;
+    title: string;
+    description: string;
+    url: string;
+    category?: string | null;
+  }>;
+  updates: Array<{
+    date: string;
+    title: string;
+    description: string;
+  }>;
+  faqs: Array<{
+    question: string;
+    answer: string;
+  }>;
+}
+
 export interface DirectusSchema {
   articles: DirectusArticle[];
   article_categories: DirectusCategory[];
   settings: DirectusSiteSetting[];
   global_settings: DirectusGlobalSettings[];
+  home_page: DirectusHomePage[];
 }
 
 // Get configuration using the environment utility
