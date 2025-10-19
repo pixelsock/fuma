@@ -76,7 +76,7 @@ export default {
     },
   },
   plugins: [
-    function({ addBase }) {
+    function({ addBase }: { addBase: any }) {
       addBase({
         '.udo-content table, .prose table, table:not(.shadcn-data-table table):not(.shadcn-data-table *)': {
           margin: '0 !important',
@@ -85,7 +85,7 @@ export default {
         },
       });
     },
-    function({ addComponents }) {
+    function({ addComponents }: { addComponents: any }) {
       addComponents({
         // Override Fumadocs article max-width from 860px to 1200px
         'article[data-component-name="PageArticle"]': {

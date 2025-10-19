@@ -2,6 +2,7 @@ import type {
   Cell,
   Column,
   ColumnDef,
+  ColumnResizeMode,
   Header,
   HeaderGroup,
   Row,

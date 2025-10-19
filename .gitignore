@@ -51,3 +51,6 @@ next.log
 
 # Netlify build artifacts
 .netlify/
+
+# Patterns Registry (separate project)
+/Patterns-Registry/
