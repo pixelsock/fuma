@@ -1,7 +1,16 @@
 /* Fumadocs UI Theme Imports */
 @import 'tailwindcss';
-@import '../app/themes/charlotte-theme.css';
 @import 'fumadocs-ui/css/preset.css';
+
+/* Material Symbols Configuration */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+  user-select: none;
+}
 
 /* UDO Table Styles */
 @import '../styles/udo-tables.css';
@@ -9,15 +18,47 @@
 /* Layout and Component Styles */
 @import '../styles/layout.css';
 
-/* Override prose table styles for clean borders */
-.prose table,
-.udo-content table,
-.prose :where(table):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+/* Definition tooltip styles */
+@import '../styles/definition-tooltip.css';
+@import "tw-animate-css";
+
+/* Charlotte Theme - Load after UDO styles but before shadcn override */
+@import '../app/themes/charlotte-theme.css';
+
+/* Override prose table styles for clean borders - exclude shadcn data tables */
+.prose table:not(.shadcn-data-table table):not(.shadcn-data-table *),
+.udo-content table:not(.shadcn-data-table table):not(.shadcn-data-table *),
+.prose :where(table):not(:where([class~="not-prose"],[class~="not-prose"] *)):not(.shadcn-data-table table):not(.shadcn-data-table *) {
   border-radius: 0 !important;
   border-collapse: collapse !important;
   border-spacing: 0 !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
+/* Additional table margin overrides */
+.udo-content > table,
+.prose > table,
+table {
+  margin-top: 0 !important;
+}
+
+/* Shadcn data table margin override */
+.shadcn-data-table table,
+[data-slot="table-container"] table,
+[data-slot="table"] {
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Force remove all table margins - nuclear option */
+.udo-content table,
+.prose table,
+table {
+  margin: 0 !important;
+}
 
 /* Search Dialog Styles */
 [data-search-dialog] input:focus,
@@ -27,9 +68,7 @@
   border: none !important;
 }
 
-/* Definition tooltip styles */
-@import '../styles/definition-tooltip.css';
-@import "tw-animate-css";
+/* Theme-based table styling is now handled in charlotte-theme.css */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -444,4 +483,134 @@ a[href*="webflow.com?utm_campaign"],
   width: 0 !important;
   height: 0 !important;
   overflow: hidden !important;
+}
+
+/* Shadcn Data Table Protection - Nuclear approach */
+.shadcn-data-table,
+.shadcn-data-table *,
+.shadcn-data-table table,
+.shadcn-data-table thead,
+.shadcn-data-table tbody,
+.shadcn-data-table tr,
+.shadcn-data-table th,
+.shadcn-data-table td,
+.shadcn-data-table input,
+.shadcn-data-table button,
+.shadcn-data-table select,
+.shadcn-data-table div,
+.shadcn-data-table span {
+  /* Nuclear reset - remove ALL styling */
+  all: unset !important;
+  display: revert !important;
+  box-sizing: border-box !important;
+  
+  /* Explicitly override UDO table styles */
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  letter-spacing: normal !important;
+  white-space: normal !important;
+  vertical-align: middle !important;
+  word-break: normal !important;
+  transition: none !important;
+}
+
+/* Restore essential table structure */
+.shadcn-data-table {
+  display: block !important;
+  width: 100% !important;
+}
+
+.shadcn-data-table table {
+  display: table !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  table-layout: auto !important;
+}
+
+.shadcn-data-table thead {
+  display: table-header-group !important;
+}
+
+.shadcn-data-table tbody {
+  display: table-row-group !important;
+}
+
+.shadcn-data-table tr {
+  display: table-row !important;
+}
+
+.shadcn-data-table th {
+  display: table-cell !important;
+  padding: 0.75rem !important;
+  font-weight: 500 !important;
+}
+
+.shadcn-data-table td {
+  display: table-cell !important;
+  padding: 0.75rem !important;
+}
+
+/* Completely remove all CSS variables that might interfere */
+.shadcn-data-table,
+.shadcn-data-table *,
+.shadcn-data-table table,
+.shadcn-data-table thead,
+.shadcn-data-table tbody,
+.shadcn-data-table tr,
+.shadcn-data-table th,
+.shadcn-data-table td {
+  --udo-table-surface: unset !important;
+  --udo-table-border: unset !important;
+  --udo-table-header-bg: unset !important;
+  --udo-table-header-text: unset !important;
+  --udo-table-body-text: unset !important;
+  --udo-table-stripe: unset !important;
+  --udo-table-hover: unset !important;
+  --udo-table-caption: unset !important;
+  --color-fd-primary: unset !important;
+  --color-fd-primary-foreground: unset !important;
+  --color-fd-background: unset !important;
+  --color-fd-foreground: unset !important;
+  --color-fd-card: unset !important;
+  --color-fd-card-foreground: unset !important;
+  --color-fd-popover: unset !important;
+  --color-fd-popover-foreground: unset !important;
+  --color-fd-secondary: unset !important;
+  --color-fd-secondary-foreground: unset !important;
+  --color-fd-muted: unset !important;
+  --color-fd-muted-foreground: unset !important;
+  --color-fd-accent: unset !important;
+  --color-fd-accent-foreground: unset !important;
+  --color-fd-border: unset !important;
+  --color-fd-ring: unset !important;
+}
+
+/* CRITICAL: Table margin overrides - MUST be at end of file to override Fumadocs preset */
+.udo-content table,
+.prose table,
+table:not(.shadcn-data-table table):not(.shadcn-data-table *) {
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Override Fumadocs default max-width for article content */
+/* Increase from 860px to 1200px for better use of screen real estate */
+article[data-component-name="PageArticle"],
+[role="main"] > article,
+.fd-page article {
+  max-width: 1200px !important;
 }

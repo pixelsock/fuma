@@ -17,5 +17,10 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "lucide",
+  "registries": {
+    "@kibo-patterns": {
+      "url": "http://localhost:3000/r/{name}.json"
+    }
+  }
 }

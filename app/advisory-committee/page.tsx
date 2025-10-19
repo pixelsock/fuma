@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { UACMeetings } from '@/components/uac-meetings';
 
 // UAC Member data structure
 interface UACMember {
@@ -150,40 +151,10 @@ export default function AdvisoryCommitteePage() {
           </AlertDescription>
         </Alert>
 
-        {/* Latest Meeting Video */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Video className="h-5 w-5" />
-              Watch the Latest UAC Meeting
-            </CardTitle>
-            <CardDescription>
-              UDO Advisory Committee (UAC Meeting) - February 27, 2025
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Video player placeholder</p>
-                <Button variant="outline" asChild>
-                  <a href="https://www.youtube.com/watch?v=XXXXXX" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View on YouTube
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-              <span>View the February 27, 2025 UAC presentation slides HERE.</span>
-              <Button variant="link" size="sm" asChild>
-                <a href="/downloads/uac-presentation.pdf">
-                  Download Slides
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* UAC Meeting Videos */}
+        <div className="mb-8">
+          <UACMeetings />
+        </div>
 
         {/* UAC Membership Section */}
         <Card>

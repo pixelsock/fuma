@@ -26,7 +26,8 @@
 /* Table wrappers */
 .udo-table-host {
   position: relative;
-  margin: 1.75rem 0;
+  margin: 0 0 1.75rem 0 !important;
+  margin-top: 0 !important;
 }
 
 .udo-table-backdrop {
@@ -219,80 +220,7 @@
   color: rgba(191, 219, 254, 0.85);
 }
 
-/* Base table styles */
-.udo-content table,
-.prose table,
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  margin: 1.5rem 0;
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  table-layout: fixed; /* Important for column resizing */
-  color: var(--udo-table-body-text);
-  background-color: var(--udo-table-surface);
-  border: 1px solid var(--udo-table-border);
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-/* Header styles */
-.udo-content thead,
-.prose thead,
-thead {
-  background-color: var(--udo-table-header-bg);
-  border-bottom: 2px solid var(--udo-table-border);
-  color: var(--udo-table-header-text);
-}
-
-/* Table header cells */
-.udo-content th,
-.prose th,
-th {
-  padding: 0.85rem 1.1rem;
-  text-align: left;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: inherit;
-  border: 1px solid var(--udo-table-border);
-  background-color: transparent;
-  white-space: normal;
-  vertical-align: middle;
-  position: relative;
-}
-
-/* Table data cells */
-.udo-content td,
-.prose td,
-td {
-  padding: 0.85rem 1.1rem;
-  border: 1px solid var(--udo-table-border);
-  color: var(--udo-table-body-text);
-  background-color: transparent;
-  vertical-align: top;
-  word-break: break-word;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* Zebra striping */
-.udo-content tbody tr:nth-child(even),
-.prose tbody tr:nth-child(even),
-tbody tr:nth-child(even) {
-  background-color: var(--udo-table-stripe);
-}
-
-/* Hover effect */
-.udo-content tbody tr,
-.prose tbody tr,
-tbody tr {
-  transition: background-color 0.2s ease;
-}
-
-.udo-content tbody tr:hover,
-.prose tbody tr:hover,
-tbody tr:hover {
-  background-color: var(--udo-table-hover);
-}
+/* UDO-specific table enhancements - now that base styling is in theme */
 
 /* Caption styling */
 .udo-content caption,

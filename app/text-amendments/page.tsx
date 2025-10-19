@@ -6,52 +6,23 @@ import Link from 'next/link'
 import { 
   Calendar,
   ArrowRight,
-  FileText,
   Clock,
   Users,
   Download,
-  ExternalLink,
   CheckCircle,
   AlertCircle,
   Info,
-  ChevronDown,
   Play,
-  Mail,
-  Filter,
-  Search
+  Mail
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import type { LatestUpdate } from '@/lib/directus-source'
+import { KiboTextAmendmentsTableV3 } from '@/components/kibo-text-amendments-table-v3'
+import { InformationalSessions } from '@/components/informational-sessions'
 
-interface Amendment {
-  id: string
-  name: string
-  description: string
-  status: 'approved' | 'pending' | 'review'
-  date: string
-  petition?: string
-  ordinance?: string
-  caseNumber: string
-}
 
 interface TimelineItemProps {
   date: string
@@ -119,8 +90,6 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description, c
 }
 
 export default function TextAmendmentsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
   const [latestUpdates, setLatestUpdates] = useState<LatestUpdate[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -145,79 +114,6 @@ export default function TextAmendmentsPage() {
     fetchUpdates()
   }, [])
 
-  const amendments: Amendment[] = [
-    {
-      id: '2025-047',
-      name: 'Spring 2025 UDO Maintenance Text Amendment',
-      description: 'Maintenance text amendment proposing changes to 26 of the 39 UDO Articles',
-      status: 'approved',
-      date: '06-16-2025',
-      petition: '2025-047',
-      ordinance: '06-16-2025',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2024-033',
-      name: 'Clean-Up Text Amendment #3',
-      description: 'Minor modifications to enhance UDO functionality across 26 Articles',
-      status: 'approved',
-      date: '06-17-2024',
-      petition: '2024-033',
-      ordinance: '06-17-2024',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2023-130',
-      name: 'Clean-Up Text Amendment #2',
-      description: 'Updates to language, definitions, graphics, use permissions and standards',
-      status: 'approved',
-      date: '01-16-2024',
-      petition: '2023-130',
-      ordinance: '01-16-2024',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2023-058',
-      name: 'UDO Clean Up Text Amendment',
-      description: 'Various technical corrections and clarifications',
-      status: 'approved',
-      date: '05-15-2023',
-      petition: '2023-058',
-      ordinance: '06-01-2023',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2023-057',
-      name: 'Multi-Family Residential for C2 & C3 Zoning',
-      description: 'Amendments for residential development standards',
-      status: 'approved',
-      date: '05-15-2023',
-      petition: '2023-057',
-      ordinance: '06-01-2023',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2023-056',
-      name: 'Landfill, Land Clearing, and Inert Debris (LCID)',
-      description: 'Use adjustments for LCID landfill operations',
-      status: 'approved',
-      date: '05-15-2023',
-      petition: '2023-056',
-      ordinance: '06-01-2023',
-      caseNumber: 'N/A'
-    },
-    {
-      id: '2022-udo',
-      name: 'Unified Development Ordinance - Original Adoption',
-      description: 'Original adoption of the UDO consolidating zoning and land development regulations',
-      status: 'approved',
-      date: '08-22-2022',
-      petition: 'N/A',
-      ordinance: '06-01-2023',
-      caseNumber: 'N/A'
-    }
-  ]
-
   // Format date for display
   const formatDate = (dateString: string) => {
     try {
@@ -231,13 +127,6 @@ export default function TextAmendmentsPage() {
       return dateString
     }
   }
-
-  const filteredAmendments = amendments.filter(amendment => {
-    const matchesSearch = amendment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         amendment.description.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || amendment.status === statusFilter
-    return matchesSearch && matchesStatus
-  })
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -369,205 +258,13 @@ export default function TextAmendmentsPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search amendments..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-full md:w-[200px]">
-                      <Filter className="w-4 h-4 mr-2" />
-                      <SelectValue placeholder="Filter by status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="approved">Approved</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="review">Under Review</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Petition</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Ordinance</TableHead>
-                        <TableHead>Case #</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredAmendments.map((amendment, index) => (
-                        <motion.tr
-                          key={amendment.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: index * 0.05 }}
-                          className="hover:bg-muted/50 transition-colors"
-                        >
-                          <TableCell className="font-medium">
-                            {amendment.petition || 'N/A'}
-                          </TableCell>
-                          <TableCell className="max-w-xs">
-                            <div>
-                              <p className="font-medium">{amendment.name}</p>
-                              <p className="text-sm text-muted-foreground">{amendment.description}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={amendment.status === 'approved' ? 'default' : 'secondary'}>
-                              {amendment.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{amendment.date}</TableCell>
-                          <TableCell>{amendment.ordinance || 'N/A'}</TableCell>
-                          <TableCell>{amendment.caseNumber}</TableCell>
-                          <TableCell className="text-right">
-                            <Button size="sm" variant="ghost" className="h-8 px-2">
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
-                          </TableCell>
-                        </motion.tr>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+            <KiboTextAmendmentsTableV3 />
           </motion.div>
         </div>
       </section>
 
       {/* Informational Sessions */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">UDO Text Amendment Informational Sessions</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Watch recorded sessions to learn more about previously adopted text amendments
-            </p>
-          </motion.div>
-
-          <div className="max-w-xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 hover:shadow-xl">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white">
-                      <Play className="w-6 h-6" />
-                    </div>
-                    <Badge variant="outline">Virtual Session</Badge>
-                  </div>
-                  <CardTitle>May 2025 Virtual Information Session</CardTitle>
-                  <CardDescription>
-                    Virtual information session for the Proposed Text Amendment to the UDO
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>May 8, 2025</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>12:00 PM</span>
-                    </div>
-                    <Button
-                      className="w-full"
-                      variant="outline"
-                      asChild
-                    >
-                      <a
-                        href="https://www.youtube.com/watch?v=Pzfr9hWCKWg"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Play className="mr-2 w-4 h-4" />
-                        Watch Recording
-                      </a>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 hover:shadow-xl">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-foreground to-accent-foreground/80 flex items-center justify-center text-white">
-                      <Users className="w-6 h-6" />
-                    </div>
-                    <Badge variant="outline">Virtual Session</Badge>
-                  </div>
-                  <CardTitle>November 2024 Virtual Information Session</CardTitle>
-                  <CardDescription>
-                    Virtual information session for the Proposed Text Amendment to the UDO
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>November 7, 2024</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>12:00 PM</span>
-                    </div>
-                    <Button
-                      className="w-full"
-                      variant="outline"
-                      asChild
-                    >
-                      <a
-                        href="https://www.youtube.com/watch?v=Fznw4YZCW28"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Play className="mr-2 w-4 h-4" />
-                        Watch Recording
-                      </a>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <InformationalSessions />
 
       {/* Call to Action */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary/80">

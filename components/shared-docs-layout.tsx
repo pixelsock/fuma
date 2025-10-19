@@ -42,11 +42,6 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
         sidebar={{
           tabs: [
             {
-              title: 'Home',
-              description: 'Home',
-              url: '/',
-            },
-            {
               title: 'What is the UDO',
               description: 'Learn about the ordinance',
               url: '/what-is-udo',

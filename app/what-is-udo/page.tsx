@@ -91,7 +91,7 @@ export default function WhatIsUDOPage() {
               <Play className="h-5 w-5" />
               Learn About the UDO
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="mb-4">
               Watch this introductory video to understand the basics of Charlotte's Unified Development Ordinance
             </CardDescription>
           </CardHeader>
@@ -196,7 +196,7 @@ export default function WhatIsUDOPage() {
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                       <Map className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">Interactive Zoning Map</CardTitle>
+                    <CardTitle className="text-lg">Charlotte Explorer</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -214,7 +214,7 @@ export default function WhatIsUDOPage() {
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                       <Download className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">UDO Versions & Downloads</CardTitle>
+                    <CardTitle className="text-lg">Previous UDO Versions</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>

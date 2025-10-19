@@ -65,7 +65,7 @@ export async function getArticles(): Promise<ProcessedArticle[]> {
           status: { _in: ['publish', 'published'] }  // Only published articles
         },
         fields: ['id', 'name', 'slug', 'status', 'content', 'category', 'PDF'],
-        sort: ['name']
+        sort: ['name']  // Sort by name
       })
     );
 

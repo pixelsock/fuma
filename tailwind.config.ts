@@ -75,5 +75,15 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addBase }) {
+      addBase({
+        '.udo-content table, .prose table, table:not(.shadcn-data-table table):not(.shadcn-data-table *)': {
+          margin: '0 !important',
+          marginTop: '0 !important',
+          marginBottom: '0 !important',
+        },
+      });
+    },
+  ],
 } satisfies Config;

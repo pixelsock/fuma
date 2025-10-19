@@ -18,6 +18,7 @@ export interface DirectusArticle {
   status: string;
   category?: { key: string; name: string } | null;
   order?: number;
+  sort?: number; // Sort order field
   pdf?: string; // PDF file reference (lowercase for compatibility)
   PDF?: string | { id: string; filename_download: string } | null; // Actual field from Directus (uppercase)
 }
