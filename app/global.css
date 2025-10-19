@@ -611,6 +611,16 @@ table:not(.shadcn-data-table table):not(.shadcn-data-table *) {
 /* Increase from 860px to 1200px for better use of screen real estate */
 article[data-component-name="PageArticle"],
 [role="main"] > article,
-.fd-page article {
+.fd-page article,
+main article,
+main > article,
+article.flex.flex-1.flex-col {
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Target Fumadocs specific article classes */
+main.flex.w-full.min-w-0.flex-col > article {
   max-width: 1200px !important;
 }

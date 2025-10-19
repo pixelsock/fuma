@@ -85,5 +85,19 @@ export default {
         },
       });
     },
+    function({ addComponents }) {
+      addComponents({
+        // Override Fumadocs article max-width from 860px to 1200px
+        'article[data-component-name="PageArticle"]': {
+          maxWidth: '1200px !important',
+        },
+        'main article': {
+          maxWidth: '1200px !important',
+        },
+        'article.max-w-\\[860px\\]': {
+          maxWidth: '1200px !important',
+        },
+      });
+    },
   ],
 } satisfies Config;
