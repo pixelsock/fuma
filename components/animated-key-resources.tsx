@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MaterialIcon } from '@/components/material-icon'
+import { EditableText } from '@/components/editable-text'
 
 interface FeatureCardProps {
   iconName: string
@@ -66,6 +67,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ iconName, title, description,
 }
 
 interface AnimatedKeyResourcesProps {
+  homepageId: number
   keyResources: Array<{
     icon: string
     title: string
@@ -75,7 +77,7 @@ interface AnimatedKeyResourcesProps {
   }>
 }
 
-export function AnimatedKeyResources({ keyResources }: AnimatedKeyResourcesProps) {
+export function AnimatedKeyResources({ homepageId, keyResources }: AnimatedKeyResourcesProps) {
   return (
     <section className="py-20 bg-background/50">
       <div className="container mx-auto px-4">
@@ -91,14 +93,20 @@ export function AnimatedKeyResources({ keyResources }: AnimatedKeyResourcesProps
             Jump into the UDO and the resources to help you understand it
           </p>
         </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <EditableText
+          collection="home_page"
+          itemId={homepageId}
+          field="key_resources"
+          mode="drawer"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {keyResources?.map((resource, index) => {
             // Ensure URL starts with / for internal links
-            const href = resource.url && !resource.url.startsWith('http') && !resource.url.startsWith('/') 
-              ? `/${resource.url}` 
+            const href = resource.url && !resource.url.startsWith('http') && !resource.url.startsWith('/')
+              ? `/${resource.url}`
               : resource.url || '#'
-            
+
             return (
               <FeatureCard
                 key={`${resource.title}-${index}`}
@@ -112,7 +120,7 @@ export function AnimatedKeyResources({ keyResources }: AnimatedKeyResourcesProps
               />
             )
           })}
-        </div>
+        </EditableText>
       </div>
     </section>
   )

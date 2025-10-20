@@ -10,7 +10,17 @@
 export function isVisualEditingMode(): boolean {
   if (typeof window === 'undefined') return false
   const params = new URLSearchParams(window.location.search)
-  return params.get('visual-editing') === 'true'
+  const isEnabled = params.get('visual-editing') === 'true'
+  
+  // Debug logging
+  if (typeof window !== 'undefined') {
+    console.log('[isVisualEditingMode] URL:', window.location.href)
+    console.log('[isVisualEditingMode] Query params:', window.location.search)
+    console.log('[isVisualEditingMode] visual-editing param:', params.get('visual-editing'))
+    console.log('[isVisualEditingMode] Enabled:', isEnabled)
+  }
+  
+  return isEnabled
 }
 
 /**
@@ -23,11 +33,32 @@ export function getDirectusAttr(
   field: string,
   mode: 'drawer' | 'modal' | 'popover' = 'drawer'
 ): string | undefined {
+  const isServer = typeof window === 'undefined'
+  const isVEMode = !isServer && isVisualEditingMode()
+
+  console.log('[getDirectusAttr] Called with:', {
+    collection,
+    item,
+    field,
+    mode,
+    isServer,
+    isVEMode,
+    willGenerate: !isServer && isVEMode
+  })
+
   // Only generate attributes on client side in visual editing mode
-  if (typeof window === 'undefined') return undefined
-  if (!isVisualEditingMode()) return undefined
-  
-  return `collection:${collection};item:${item};fields:${field};mode:${mode}`
+  if (isServer) {
+    console.log('[getDirectusAttr] Skipping - running on server')
+    return undefined
+  }
+  if (!isVEMode) {
+    console.log('[getDirectusAttr] Skipping - not in visual editing mode')
+    return undefined
+  }
+
+  const attr = `collection:${collection};item:${item};fields:${field};mode:${mode}`
+  console.log('[getDirectusAttr] Generated attribute:', attr)
+  return attr
 }
 
 /**

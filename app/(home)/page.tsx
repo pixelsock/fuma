@@ -140,44 +140,53 @@ export default async function HomePage() {
               {homepageData.header_description}
             </EditableText>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {homepageData.header_buttons?.map((button, index) => (
-              <Button 
-                key={index}
-                size="lg" 
-                className={index === 0 ? "bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" : "border-primary text-primary hover:bg-primary hover:text-white shadow-xl hover:shadow-2xl transition-all"}
-                variant={index === 0 ? "default" : "outline"}
-                asChild
-              >
-                {button.link.startsWith('http') ? (
-                  <a href={button.link} target="_blank" rel="noopener noreferrer">
-                    <MaterialIcon iconName={button.icon} size={16} />
-                    <span className="ml-2">{button.button_text}</span>
-                  </a>
-                ) : (
-                  <Link href={button.link}>
-                    <MaterialIcon iconName={button.icon} size={16} />
-                    <span className="ml-2">{button.button_text}</span>
-                </Link>
-                )}
-              </Button>
-            ))}
-          </div>
+            <EditableText
+              collection="home_page"
+              itemId={homepageData.id}
+              field="header_buttons"
+              mode="drawer"
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              {homepageData.header_buttons?.map((button, index) => (
+                <Button
+                  key={index}
+                  size="lg"
+                  className={index === 0 ? "bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" : "border-primary text-primary hover:bg-primary hover:text-white shadow-xl hover:shadow-2xl transition-all"}
+                  variant={index === 0 ? "default" : "outline"}
+                  asChild
+                >
+                  {button.link.startsWith('http') ? (
+                    <a href={button.link} target="_blank" rel="noopener noreferrer">
+                      <MaterialIcon iconName={button.icon} size={16} />
+                      <span className="ml-2">{button.button_text}</span>
+                    </a>
+                  ) : (
+                    <Link href={button.link}>
+                      <MaterialIcon iconName={button.icon} size={16} />
+                      <span className="ml-2">{button.button_text}</span>
+                  </Link>
+                  )}
+                </Button>
+              ))}
+            </EditableText>
         </div>
       </div>
 
       {/* Key Resources Section */}
-      <AnimatedKeyResources 
+      <AnimatedKeyResources
+        homepageId={homepageData.id}
         keyResources={homepageData.key_resources}
       />
 
       {/* Recent Updates Section */}
-      <AnimatedUpdates 
+      <AnimatedUpdates
+        homepageId={homepageData.id}
         updates={homepageData.updates}
       />
 
       {/* FAQ Section */}
-      <AnimatedFAQs 
+      <AnimatedFAQs
+        homepageId={homepageData.id}
         faqs={homepageData.faqs}
       />
 

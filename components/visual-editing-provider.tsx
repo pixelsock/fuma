@@ -21,16 +21,26 @@ export function VisualEditingProvider() {
 
     console.log('[VisualEditingProvider] Initializing visual editing...')
 
-    // Wait for DOM to be fully loaded
-    const initTimeout = setTimeout(() => {
-      initVisualEditing({
-        onSaved: ({ collection, item, payload }) => {
-          console.log('[VisualEditingProvider] Content saved:', { collection, item, payload })
-          // Reload the page to show updated content
-          window.location.reload()
-        }
-      })
-    }, 500) // Small delay to ensure all elements are mounted
+    // Wait for elements with data-directus attributes to be in the DOM
+    const waitForElements = () => {
+      const elements = document.querySelectorAll('[data-directus]')
+      if (elements.length > 0) {
+        console.log('[VisualEditingProvider] Found', elements.length, 'elements with data-directus, initializing...')
+        initVisualEditing({
+          onSaved: ({ collection, item, payload }) => {
+            console.log('[VisualEditingProvider] Content saved:', { collection, item, payload })
+            // Reload the page to show updated content
+            window.location.reload()
+          }
+        })
+      } else {
+        console.log('[VisualEditingProvider] No elements found yet, retrying in 100ms...')
+        setTimeout(waitForElements, 100)
+      }
+    }
+
+    // Start checking after a small initial delay
+    const initTimeout = setTimeout(waitForElements, 100)
 
     // Cleanup on unmount or navigation
     return () => {

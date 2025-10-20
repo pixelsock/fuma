@@ -39,6 +39,17 @@ export async function initVisualEditing(options?: {
     const directusUrl = getDirectusUrl()
     console.log('[Visual Editing] Initializing with URL:', directusUrl)
 
+    // Log all elements with data-directus attributes before calling apply
+    const elementsWithAttr = document.querySelectorAll('[data-directus]')
+    console.log('[Visual Editing] Found elements with data-directus:', elementsWithAttr.length)
+    elementsWithAttr.forEach((el, i) => {
+      console.log(`[Visual Editing] Element ${i}:`, {
+        tag: el.tagName,
+        attr: el.getAttribute('data-directus'),
+        text: el.textContent?.substring(0, 50)
+      })
+    })
+
     const result = await apply({
       directusUrl,
       elements: options?.elements,
@@ -49,14 +60,25 @@ export async function initVisualEditing(options?: {
       })
     })
 
+    console.log('[Visual Editing] Apply result:', result)
+
     if (result) {
       currentDisable = result.disable
       currentEnable = result.enable
       currentRemove = result.remove
+      console.log('[Visual Editing] Result has disable/enable/remove functions:', {
+        hasDisable: !!result.disable,
+        hasEnable: !!result.enable,
+        hasRemove: !!result.remove
+      })
     }
 
     visualEditingEnabled = true
     console.log('[Visual Editing] Successfully initialized')
+
+    // Log overlay elements after initialization
+    const overlays = document.querySelectorAll('.directus-visual-editing-overlay')
+    console.log('[Visual Editing] Overlay elements created:', overlays.length)
   } catch (error) {
     console.error('[Visual Editing] Failed to initialize:', error)
   }

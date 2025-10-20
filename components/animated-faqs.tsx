@@ -4,6 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { EditableText } from '@/components/editable-text'
 
 interface FAQ {
   question: string
@@ -11,10 +12,11 @@ interface FAQ {
 }
 
 interface AnimatedFAQsProps {
+  homepageId: number
   faqs: FAQ[]
 }
 
-export function AnimatedFAQs({ faqs }: AnimatedFAQsProps) {
+export function AnimatedFAQs({ homepageId, faqs }: AnimatedFAQsProps) {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -29,7 +31,13 @@ export function AnimatedFAQs({ faqs }: AnimatedFAQsProps) {
           <p className="text-xl text-muted-foreground">Common questions about the Charlotte UDO</p>
         </motion.div>
         
-        <div className="max-w-3xl mx-auto space-y-4">
+        <EditableText
+          collection="home_page"
+          itemId={homepageId}
+          field="faqs"
+          mode="drawer"
+          className="max-w-3xl mx-auto space-y-4"
+        >
           {faqs?.map((faq, index) => (
             <motion.div
               key={index}
@@ -49,7 +57,7 @@ export function AnimatedFAQs({ faqs }: AnimatedFAQsProps) {
               </Collapsible>
             </motion.div>
           ))}
-        </div>
+        </EditableText>
       </div>
     </section>
   )

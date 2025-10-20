@@ -4,6 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { EditableText } from '@/components/editable-text'
 
 interface Update {
   date: string
@@ -12,10 +13,11 @@ interface Update {
 }
 
 interface AnimatedUpdatesProps {
+  homepageId: number
   updates: Update[]
 }
 
-export function AnimatedUpdates({ updates }: AnimatedUpdatesProps) {
+export function AnimatedUpdates({ homepageId, updates }: AnimatedUpdatesProps) {
   // Format date for display
   const formatDate = (dateString: string) => {
     try {
@@ -43,7 +45,13 @@ export function AnimatedUpdates({ updates }: AnimatedUpdatesProps) {
           <p className="text-xl text-muted-foreground">Stay informed with the latest UDO news and updates</p>
         </motion.div>
         
-        <div className="max-w-4xl mx-auto space-y-6">
+        <EditableText
+          collection="home_page"
+          itemId={homepageId}
+          field="updates"
+          mode="drawer"
+          className="max-w-4xl mx-auto space-y-6"
+        >
           {updates?.map((update, index) => (
             <motion.div
               key={index}
@@ -76,7 +84,7 @@ export function AnimatedUpdates({ updates }: AnimatedUpdatesProps) {
               </Card>
             </motion.div>
           ))}
-        </div>
+        </EditableText>
       </div>
     </section>
   )

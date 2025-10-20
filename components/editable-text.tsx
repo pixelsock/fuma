@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import { getDirectusAttr } from '@/lib/visual-editing-helpers'
 
 interface EditableTextProps {
@@ -26,13 +26,34 @@ export function EditableText({
   className,
   as: Component = 'div'
 }: EditableTextProps) {
-  const dataDirectus = getDirectusAttr(collection, itemId, field, mode)
-  
+  const elementRef = useRef<HTMLElement>(null)
+
+  // Set the attribute after mount to ensure it's in the DOM for the visual editor
+  useEffect(() => {
+    if (elementRef.current && typeof window !== 'undefined') {
+      const attr = getDirectusAttr(collection, itemId, field, mode)
+
+      console.log('[EditableText] Setting attribute on mounted element:', {
+        collection,
+        itemId,
+        field,
+        mode,
+        attr,
+        hasAttr: !!attr,
+        element: elementRef.current.tagName
+      })
+
+      if (attr) {
+        elementRef.current.setAttribute('data-directus', attr)
+        console.log('[EditableText] Attribute set successfully:', elementRef.current.getAttribute('data-directus'))
+      }
+    }
+  }, [collection, itemId, field, mode])
+
   return (
-    <Component 
+    <Component
+      ref={elementRef as any}
       className={className}
-      data-directus={dataDirectus}
-      suppressHydrationWarning
     >
       {children}
     </Component>
