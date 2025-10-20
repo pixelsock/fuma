@@ -78,10 +78,13 @@ export function getDirectusConfig(): DirectusConfig {
     console.log(`[env-config] Using LOCAL configuration: ${config.url}`);
     return config;
   } else {
-    // On Render server-side, use internal service URL for better performance
-    // Client-side and external requests use public URL
+    // On Render server-side, use internal private network URL
+    // Services in same region + workspace share a private network
+    // Internal hostname format: [service-slug]:[port]
+    // Note: Port 10000 is restricted for private network - using 8055 (Directus default)
+    // If this fails, falls back to DIRECTUS_INTERNAL_URL env var
     const directusUrl = isServerSideRender
-      ? (process.env.DIRECTUS_INTERNAL_URL || 'http://udo-backend:10000')
+      ? (process.env.DIRECTUS_INTERNAL_URL || 'http://udo-backend-y1w0:8055')
       : (process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org');
 
     const config = {
