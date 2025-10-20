@@ -2,24 +2,18 @@
 
 import { apply, setAttr, remove, disable } from '@directus/visual-editing'
 import { getDirectusUrl } from './env-config'
+import { isVisualEditingMode } from './visual-editing-helpers'
 
 // Export the setAttr helper for use in components
 export { setAttr }
+
+// Re-export server-safe helpers
+export { isVisualEditingMode, getDirectusAttr, getDirectusAttrs } from './visual-editing-helpers'
 
 let visualEditingEnabled = false
 let currentDisable: (() => void) | null = null
 let currentEnable: (() => void) | null = null
 let currentRemove: (() => void) | null = null
-
-/**
- * Check if we're in visual editing mode
- * This checks for a query parameter that should be added to the visual editor URL
- */
-export function isVisualEditingMode(): boolean {
-  if (typeof window === 'undefined') return false
-  const params = new URLSearchParams(window.location.search)
-  return params.get('visual-editing') === 'true'
-}
 
 /**
  * Initialize visual editing connection to Directus
@@ -107,30 +101,4 @@ export function enableVisualEditing() {
     currentEnable()
     console.log('[Visual Editing] Enabled')
   }
-}
-
-/**
- * Helper to generate data-directus attribute for a single field
- */
-export function getDirectusAttr(
-  collection: string,
-  item: string | number,
-  field: string,
-  mode: 'drawer' | 'modal' | 'popover' = 'drawer'
-) {
-  if (!isVisualEditingMode()) return undefined
-  return setAttr({ collection, item, fields: field, mode })
-}
-
-/**
- * Helper to generate data-directus attribute for multiple fields
- */
-export function getDirectusAttrs(
-  collection: string,
-  item: string | number,
-  fields: string[],
-  mode: 'drawer' | 'modal' | 'popover' = 'drawer'
-) {
-  if (!isVisualEditingMode()) return undefined
-  return setAttr({ collection, item, fields, mode })
 }
