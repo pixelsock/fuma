@@ -1,14 +1,8 @@
 import type { NextConfig } from "next";
 import userConfig from './clouduser.next.config';
 
-const webflowOverrides: NextConfig = {
-  basePath: "/articles",
-  assetPrefix: "https://c33a6979-70b3-4cb8-b0d0-4a877a09cf77.wf-app-prod.cosmic.webflow.services/articles",
-};
-
-for (const [key, value] of Object.entries(webflowOverrides)) {
-  userConfig[key] = value;
-}
+// Webflow basePath is no longer needed - using root path for all deployments
+// Removed basePath and assetPrefix overrides to fix API route conflicts
 
 export default userConfig;
 
