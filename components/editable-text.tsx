@@ -32,6 +32,7 @@ export function EditableText({
     <Component 
       className={className}
       data-directus={dataDirectus}
+      suppressHydrationWarning
     >
       {children}
     </Component>
