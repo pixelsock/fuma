@@ -162,7 +162,7 @@
 .udo-table-scroll {
   position: relative;
   overflow: auto;
-  padding: 0.75rem 1rem 1rem;
+  padding: 0;
   max-height: 100%;
 }
 
@@ -172,9 +172,60 @@
 
 .udo-table-scroll table {
   margin: 0;
-  border: none;
+  border: 1px solid color-mix(in srgb, var(--udo-table-border) 35%, #0f172a 65%);
   background: transparent;
   min-width: 100%;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.resizable-table-wrapper {
+  position: relative;
+  min-width: 100%;
+}
+
+.resizable-table {
+  width: 100%;
+}
+
+.resizable-table th,
+.resizable-table td {
+  position: relative;
+  overflow: visible;
+}
+
+.table-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  touch-action: none;
+}
+
+.table-resize-handle::after {
+  content: '';
+  width: 2px;
+  height: 60%;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--udo-table-border) 70%, white 30%);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.65;
+}
+
+.resizable-table th:hover .table-resize-handle::after,
+.table-resize-handle--active::after {
+  background: #2563eb;
+  opacity: 1;
+}
+
+.table-resize-handle--active {
+  cursor: col-resize;
 }
 
 .udo-table-scroll-buttons {
