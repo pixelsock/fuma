@@ -49,14 +49,14 @@ function isWebflowProduction(): boolean {
     return true;
   }
 
-  // In production builds, default to Webflow unless explicitly set to local or netlify
+  // In production builds, ONLY use basePath if explicitly targeting Webflow
   if (process.env.NODE_ENV === 'production') {
-    // Skip Webflow paths for local or netlify deployments
-    if (explicitEnv === 'local' || deploymentTarget === 'netlify') {
-      return false;
+    // Only use Webflow basePath if explicitly set to webflow target
+    if (explicitEnv === 'production' && deploymentTarget === 'webflow') {
+      return true;
     }
-    // Default to Webflow for production builds
-    return true;
+    // All other production deployments (Render, Netlify, etc.) use root path
+    return false;
   }
 
   // Development mode - no Webflow basePath
