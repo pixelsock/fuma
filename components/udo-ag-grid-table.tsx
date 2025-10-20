@@ -262,20 +262,46 @@ function enableColumnResizing(
   if (!table.style.width) {
     table.style.width = '100%';
   }
-  table.style.minWidth = `${Math.max(colCount * MIN_COLUMN_WIDTH, table.clientWidth)}px`;
 
   const cleanups: Array<() => void> = [];
   const syncTableMinWidth = () => {
     const container = table.closest('.udo-table-scroll') as HTMLElement | null;
     const containerWidth = container?.clientWidth ?? table.parentElement?.clientWidth ?? 0;
 
-    const totalWidth = columns.reduce((sum, column) => {
+    let totalWidth = columns.reduce((sum, column) => {
       const numeric = parseFloat(column.style.width || '0');
       return sum + (Number.isFinite(numeric) ? numeric : MIN_COLUMN_WIDTH);
     }, 0);
 
-    const base = Math.max(colCount * MIN_COLUMN_WIDTH, containerWidth, totalWidth);
-    table.style.minWidth = `${base}px`;
+    const minWidthForColumns = colCount * MIN_COLUMN_WIDTH;
+    const base = Math.max(minWidthForColumns, containerWidth);
+
+    if (columns.length > 0 && totalWidth < base) {
+      const remainder = base - totalWidth;
+      const targetIndex = columns.length - 1;
+      const target = columns[targetIndex];
+      if (target) {
+        const parsed = parseFloat(target.style.width || '0');
+        const currentWidth = Number.isFinite(parsed) && parsed > 0 ? parsed : MIN_COLUMN_WIDTH;
+        const resolvedWidth = Math.max(MIN_COLUMN_WIDTH, currentWidth + remainder);
+        const delta = resolvedWidth - currentWidth;
+
+        target.style.width = `${resolvedWidth}px`;
+        target.style.minWidth = `${resolvedWidth}px`;
+
+        columnCells[targetIndex].forEach((cell) => {
+          cell.style.width = `${resolvedWidth}px`;
+          cell.style.minWidth = `${resolvedWidth}px`;
+          cell.style.boxSizing = 'border-box';
+        });
+
+        totalWidth += delta;
+      }
+    }
+
+    const finalWidth = Math.max(base, totalWidth, minWidthForColumns);
+    table.style.minWidth = `${finalWidth}px`;
+    table.style.width = '100%';
   };
 
   const win = doc.defaultView;

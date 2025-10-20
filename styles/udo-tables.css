@@ -4,6 +4,7 @@
 :root {
   --udo-table-surface: #ffffff;
   --udo-table-border: #d3dbe8;
+  --udo-table-cell-border: color-mix(in srgb, var(--udo-table-border) 55%, #1f2937 45%);
   --udo-table-header-bg: #ecf2fb;
   --udo-table-header-text: #0f172a;
   --udo-table-body-text: #1f2937;
@@ -15,6 +16,7 @@
 .dark {
   --udo-table-surface: rgba(15, 23, 42, 0.92);
   --udo-table-border: rgba(148, 163, 184, 0.35);
+  --udo-table-cell-border: rgba(148, 163, 184, 0.55);
   --udo-table-header-bg: rgba(30, 41, 59, 0.75);
   --udo-table-header-text: #f8fafc;
   --udo-table-body-text: #e2e8f0;
@@ -172,12 +174,34 @@
 
 .udo-table-scroll table {
   margin: 0;
-  border: 1px solid color-mix(in srgb, var(--udo-table-border) 35%, #0f172a 65%);
   background: transparent;
   min-width: 100%;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+}
+
+.udo-content table th,
+.udo-content table td,
+.prose table th,
+.prose table td,
+.udo-table-scroll table th,
+.udo-table-scroll table td,
+.resizable-table th,
+.resizable-table td {
+  border-bottom: 1px solid var(--udo-table-cell-border);
+  border-right: 1px solid var(--udo-table-cell-border);
+}
+
+.udo-content table th:last-child,
+.udo-content table td:last-child,
+.prose table th:last-child,
+.prose table td:last-child,
+.udo-table-scroll table th:last-child,
+.udo-table-scroll table td:last-child,
+.resizable-table th:last-child,
+.resizable-table td:last-child {
+  border-right: none;
 }
 
 .resizable-table-wrapper {

@@ -1,11 +1,12 @@
 import { createDirectus, rest, staticToken, authentication, readItems } from '@directus/sdk';
 import type { DirectusSchema } from './directus-client';
+import { getDirectusUrl, getDirectusToken } from './env-config';
 
 // Server-side Directus client setup
 export function getDirectusClient() {
-  const directusUrl = process.env.DIRECTUS_URL || 'https://admin.charlotteudo.org';
-  const directusToken = process.env.DIRECTUS_TOKEN;
-  
+  const directusUrl = getDirectusUrl();
+  const directusToken = getDirectusToken();
+
   console.log('[directus-server] Creating client with URL:', directusUrl);
   console.log('[directus-server] Token configured:', !!directusToken);
   

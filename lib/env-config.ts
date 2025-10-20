@@ -81,10 +81,10 @@ export function getDirectusConfig(): DirectusConfig {
     // On Render server-side, use internal private network URL
     // Services in same region + workspace share a private network
     // Internal hostname format: [service-slug]:[port]
-    // Note: Port 10000 is restricted for private network - using 8055 (Directus default)
-    // If this fails, falls back to DIRECTUS_INTERNAL_URL env var
+    // Port 10000 is Render's standard internal port for web services
+    // This provides ~10-50x faster API calls vs public internet
     const directusUrl = isServerSideRender
-      ? (process.env.DIRECTUS_INTERNAL_URL || 'http://udo-backend-y1w0:8055')
+      ? (process.env.DIRECTUS_INTERNAL_URL || 'http://udo-backend-y1w0:10000')
       : (process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org');
 
     const config = {

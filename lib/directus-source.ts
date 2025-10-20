@@ -2,6 +2,7 @@ import { readItems } from '@directus/sdk';
 import { isPublishedStatus } from './status-helpers';
 import { directus, ensureAuthenticated, type DirectusArticle, type DirectusSiteSetting, type DirectusGlobalSettings } from './directus-client';
 import { getDirectusUrl } from './env-config';
+import { getPublicDirectusUrl, getDirectusAssetUrl } from './directus-asset-url';
 
 // Re-export the helper function for backward compatibility
 export { isPublishedStatus } from './status-helpers';
@@ -300,8 +301,7 @@ export async function getArticleBySlug(slug: string): Promise<ProcessedArticle |
  */
 async function checkPdfExists(slug: string): Promise<string | null> {
   try {
-    const directusUrl = getDirectusUrl();
-    const pdfUrl = `${directusUrl}/assets/pdfs/${slug}.pdf`;
+    const pdfUrl = getDirectusAssetUrl(`assets/pdfs/${slug}.pdf`);
     
     // Make a HEAD request to check if the PDF exists
     const response = await fetch(pdfUrl, { 
@@ -418,8 +418,7 @@ async function processArticle(article: Article, categoriesMap?: Map<string, Cate
 }
 
 function rewriteAssetUrls(html: string): string {
-  const directusUrl =
-    process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
+  const directusUrl = getPublicDirectusUrl();
 
   const replacements: Array<[RegExp, string]> = [
     [/http:\/\/localhost:8056\/assets\//g, `${directusUrl}/assets/`],
@@ -703,9 +702,9 @@ export async function getSiteLogo(): Promise<string | null> {
     
     const result = await response.json();
     const globalSettings = result.data as GlobalSettings;
-    
+
     if (globalSettings && globalSettings.logo) {
-      const logoUrl = `${baseUrl}/assets/${globalSettings.logo}`;
+      const logoUrl = getDirectusAssetUrl(globalSettings.logo);
       console.log('[getSiteLogo] Logo URL:', logoUrl);
       return logoUrl;
     }
