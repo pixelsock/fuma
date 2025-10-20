@@ -10,6 +10,7 @@ import { AnimatedFAQs } from '@/components/animated-faqs'
 import { MaterialIcon } from '@/components/material-icon'
 import { directus } from '@/lib/directus-client'
 import { readItem } from '@directus/sdk'
+import { getDirectusAttr, getDirectusAttrs } from '@/lib/visual-editing'
 
 // Force dynamic rendering to avoid build-time data fetching issues
 export const dynamic = 'force-dynamic'
@@ -118,10 +119,16 @@ export default async function HomePage() {
               <Calendar className="mr-1 w-3 h-3" />
               Effective June 1, 2023
             </Badge>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
+            <h1 
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent"
+              data-directus={getDirectusAttr('home_page', homepageData.id, 'header_text', 'popover')}
+            >
             {homepageData.header_text}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+            <p 
+              className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto"
+              data-directus={getDirectusAttr('home_page', homepageData.id, 'header_description', 'popover')}
+            >
             {homepageData.header_description}
             </p>
             

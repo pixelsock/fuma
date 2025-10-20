@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { PerformanceMonitor } from '@/components/performance-monitor';
+import { VisualEditingProvider } from '@/components/visual-editing-provider';
 
 export const metadata: Metadata = {
   title: 'Charlotte UDO',
@@ -24,6 +25,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </head>
       <body className="flex flex-col min-h-screen">
         <Provider>
+          <VisualEditingProvider />
           {children}
           {process.env.NODE_ENV === 'development' && <PerformanceMonitor />}
         </Provider>
