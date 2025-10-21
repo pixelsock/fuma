@@ -37,8 +37,8 @@ export function HeadingLinkHandler() {
         // Style the tooltip to match shadcn design
         Object.assign(tooltip.style, {
           position: 'absolute',
-          backgroundColor: 'hsl(var(--primary))',
-          color: 'hsl(var(--primary-foreground))',
+          backgroundColor: '#1e293b',
+          color: '#ffffff',
           padding: '6px 12px',
           borderRadius: '6px',
           fontSize: '12px',
@@ -48,7 +48,7 @@ export function HeadingLinkHandler() {
           pointerEvents: 'none',
           opacity: '0',
           transition: 'opacity 0.15s',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+          boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
         });
 
         // Get the position of the element

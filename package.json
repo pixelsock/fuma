@@ -92,6 +92,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.7",
+    "@types/jsdom": "^27.0.0",
     "@types/mdx": "^2.0.13",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.5",
@@ -100,6 +101,7 @@
     "@webflow/react": "^1.0.1",
     "@webflow/webflow-cli": "^1.8.44",
     "dotenv": "^16.6.1",
+    "jsdom": "^27.0.1",
     "postcss": "^8.5.3",
     "prosemirror-model": "^1.25.1",
     "shadcn": "^3.4.2",

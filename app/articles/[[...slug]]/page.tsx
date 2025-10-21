@@ -1,7 +1,7 @@
 import { unifiedSource } from '@/lib/unified-source';
 import { notFound, redirect } from 'next/navigation';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { UDOContentRendererV3Optimized } from '@/components/udo-content-renderer-v3-optimized';
+import { UDOContentRenderer } from '@/components/udo-content-renderer';
 import { ArticleTitleHeader } from '@/components/article-title-header';
 import { DebugTOCData } from '@/components/debug-toc-data';
 
@@ -49,7 +49,7 @@ export default async function Page(props: {
           description={directusPage.data.description}
           pdfUrl={directusPage.data.pdf}
         />
-        <UDOContentRendererV3Optimized 
+        <UDOContentRenderer 
           htmlContent={directusPage.data.content || ''} 
         />
       </DocsBody>

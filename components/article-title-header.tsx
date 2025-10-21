@@ -23,7 +23,15 @@ export function ArticleTitleHeader({
   const [isOpenDropdownOpen, setIsOpenDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const currentUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002'}${pathname}`;
+  
+  // Dynamically get the current URL based on the browser's location
+  const [currentUrl, setCurrentUrl] = useState('');
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(`${window.location.origin}${pathname}`);
+    }
+  }, [pathname]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -107,7 +115,7 @@ export function ArticleTitleHeader({
   };
 
   return (
-    <div className="mb-8 border-b border-fd-border pb-6">
+    <div className="mb-0 border-b border-fd-border pb-6">
       {/* Category */}
       {category && (
         <div className="text-sm font-medium text-fd-accent-foreground mb-2">
