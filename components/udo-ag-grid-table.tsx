@@ -3,7 +3,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -13,592 +12,20 @@ import {
   ChevronRight,
   Maximize2,
   Minimize2,
-  RotateCcw,
-  Search,
 } from 'lucide-react';
 
 interface UDOAgGridTableProps {
   htmlString: string;
+  title?: string;
   tableIndex?: number;
 }
 
-interface TableMeta {
-  html: string;
-  title?: string;
-  enableSearch: boolean;
-  hasTable: boolean;
-}
-
-const MIN_COLUMN_WIDTH = 60;
-
-// Generate a stable identifier for a table based on its structure
-function generateTableId(table: HTMLTableElement): string {
-  // Try to get an explicit ID from data attributes first
-  const explicitId = table.getAttribute('data-table-id');
-  if (explicitId) {
-    return explicitId;
-  }
-
-  // Generate ID from table structure (headers + column count)
-  const headers: string[] = [];
-  const firstRow = table.querySelector('tr');
-  if (firstRow) {
-    Array.from(firstRow.cells).forEach((cell) => {
-      const text = cell.textContent?.trim() || '';
-      if (text) {
-        headers.push(text.substring(0, 20)); // Limit to 20 chars per header
-      }
-    });
-  }
-
-  const colCount = getColumnCount(table);
-  const headerHash = headers.join('|').replace(/\s+/g, '-');
-  return `table-${colCount}-${headerHash}`.substring(0, 100);
-}
-
-// Save column widths to localStorage
-function saveColumnWidths(tableId: string, widths: number[]): void {
-  try {
-    const key = `table-columns-${tableId}`;
-    localStorage.setItem(key, JSON.stringify(widths));
-  } catch (e) {
-    // Ignore localStorage errors (quota exceeded, privacy mode, etc.)
-  }
-}
-
-// Load column widths from localStorage
-function loadColumnWidths(tableId: string): number[] | null {
-  try {
-    const key = `table-columns-${tableId}`;
-    const data = localStorage.getItem(key);
-    if (data) {
-      const widths = JSON.parse(data);
-      if (Array.isArray(widths) && widths.every((w) => typeof w === 'number' && w > 0)) {
-        return widths;
-      }
-    }
-  } catch (e) {
-    // Ignore localStorage errors
-  }
-  return null;
-}
-
-// Clear saved column widths
-function clearColumnWidths(tableId: string): void {
-  try {
-    const key = `table-columns-${tableId}`;
-    localStorage.removeItem(key);
-  } catch (e) {
-    // Ignore localStorage errors
-  }
-}
-
-function extractTableMeta(htmlString: string): TableMeta {
-  if (typeof window === 'undefined') {
-    return {
-      html: htmlString,
-      hasTable: true,
-      enableSearch: false,
-    };
-  }
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  const table = doc.querySelector('table');
-
-  if (!table) {
-    return {
-      html: htmlString,
-      hasTable: false,
-      enableSearch: false,
-    };
-  }
-
-  const enableSearch =
-    table.getAttribute('data-ag-enable-search') === 'true' ||
-    table.getAttribute('data-table-enable-search') === 'true';
-
-  const titleCandidates: Array<string | undefined> = [];
-
-  const dataTitle = table.getAttribute('data-table-title');
-  if (dataTitle) {
-    titleCandidates.push(dataTitle.trim());
-  }
-
-  const ariaLabelledBy = table.getAttribute('aria-labelledby');
-  if (ariaLabelledBy) {
-    const labelledElement = doc.getElementById(ariaLabelledBy);
-    if (labelledElement) {
-      titleCandidates.push(labelledElement.textContent?.trim());
-    }
-  }
-
-  const caption = table.querySelector('caption');
-  if (caption) {
-    titleCandidates.push(caption.textContent?.trim());
-  }
-
-  const sibling = table.previousElementSibling as HTMLElement | null;
-  if (sibling) {
-    if (sibling.classList.contains('table-title-row')) {
-      titleCandidates.push(sibling.textContent?.trim());
-    } else if (/^H[1-6]$/.test(sibling.tagName) || sibling.tagName === 'P') {
-      titleCandidates.push(sibling.textContent?.trim());
-    }
-  }
-
-  if (!titleCandidates.length) {
-    const firstRow = table.querySelector('tr');
-    if (firstRow) {
-      const cells = Array.from(firstRow.querySelectorAll('th, td'));
-      if (cells.length === 1) {
-        titleCandidates.push(cells[0].textContent?.trim());
-      }
-    }
-  }
-
-  const title = titleCandidates.find((candidate) => candidate && candidate.length > 0);
-
-  const wrapper = doc.createElement('div');
-  wrapper.appendChild(table);
-
-  return {
-    html: wrapper.innerHTML,
-    title,
-    enableSearch,
-    hasTable: true,
-  };
-}
-
-function getColumnCount(table: HTMLTableElement): number {
-  let max = 0;
-  const rows = Array.from(table.rows);
-  rows.forEach((row) => {
-    let count = 0;
-    Array.from(row.cells).forEach((cell) => {
-      count += cell.colSpan || 1;
-    });
-    if (count > max) {
-      max = count;
-    }
-  });
-  return max;
-}
-
-function measureColumnWidths(table: HTMLTableElement, colCount: number): number[] {
-  const widths = new Array(colCount).fill(0);
-  const rowSpanTracker = new Array(colCount).fill(0);
-  const rows = Array.from(table.rows);
-
-  rows.forEach((row) => {
-    for (let i = 0; i < colCount; i += 1) {
-      if (rowSpanTracker[i] > 0) {
-        rowSpanTracker[i] -= 1;
-      }
-    }
-
-    let columnIndex = 0;
-    Array.from(row.cells).forEach((cell) => {
-      while (columnIndex < colCount && rowSpanTracker[columnIndex] > 0) {
-        columnIndex += 1;
-      }
-
-      const span = cell.colSpan || 1;
-      const rowSpan = cell.rowSpan || 1;
-      const rect = (cell as HTMLElement).getBoundingClientRect();
-      const widthPerColumn = rect.width / span;
-
-      for (let offset = 0; offset < span; offset += 1) {
-        const targetIndex = columnIndex + offset;
-        if (targetIndex < colCount) {
-          widths[targetIndex] = Math.max(widths[targetIndex], widthPerColumn);
-          if (rowSpan > 1) {
-            rowSpanTracker[targetIndex] = rowSpan - 1;
-          }
-        }
-      }
-
-      columnIndex += span;
-    });
-  });
-
-  return widths;
-}
-
-interface ColumnResizeResult {
-  cleanup: () => void;
-  resetWidths: () => void;
-  getTableId: () => string;
-}
-
-function enableColumnResizing(
-  table: HTMLTableElement,
-  onResize?: () => void,
-): ColumnResizeResult {
-  const doc = table.ownerDocument;
-  const colCount = getColumnCount(table);
-
-  if (colCount === 0) {
-    return {
-      cleanup: () => undefined,
-      resetWidths: () => undefined,
-      getTableId: () => '',
-    };
-  }
-
-  const tableId = generateTableId(table);
-  table.setAttribute('data-table-id', tableId);
-
-  table.classList.add('resizable-table');
-  const handles = Array.from(table.querySelectorAll<HTMLElement>('.table-resize-handle'));
-  handles.forEach((handle) => handle.remove());
-
-  let colgroup = table.querySelector('colgroup[data-resize-colgroup="true"]');
-  if (!colgroup) {
-    colgroup = doc.createElement('colgroup');
-    colgroup.setAttribute('data-resize-colgroup', 'true');
-    table.insertBefore(colgroup, table.firstChild);
-  }
-
-  const existingCols = Array.from(colgroup.children);
-  if (existingCols.length > colCount) {
-    for (let i = colCount; i < existingCols.length; i += 1) {
-      colgroup.removeChild(existingCols[i]);
-    }
-  }
-  if (existingCols.length < colCount) {
-    for (let i = existingCols.length; i < colCount; i += 1) {
-      const col = doc.createElement('col');
-      colgroup.appendChild(col);
-    }
-  }
-
-  const columns = Array.from(colgroup.children) as HTMLTableColElement[];
-  const columnCells: HTMLElement[][] = Array.from({ length: colCount }, () => []);
-
-  // Try to load saved widths first, fall back to measuring actual widths
-  const savedWidths = loadColumnWidths(tableId);
-  const measuredWidths = measureColumnWidths(table, colCount);
-
-  columns.forEach((column, index) => {
-    let width = 0;
-
-    // Priority order: saved widths > existing inline widths > measured widths
-    if (savedWidths && savedWidths[index]) {
-      width = savedWidths[index];
-    } else {
-      const widthAttr = column.getAttribute('width');
-      if (column.style.width) {
-        width = parseFloat(column.style.width);
-      } else if (widthAttr) {
-        width = parseFloat(widthAttr);
-      }
-
-      if (!Number.isFinite(width) || width <= 0) {
-        width = measuredWidths[index] || MIN_COLUMN_WIDTH;
-      }
-    }
-
-    column.style.width = `${Math.max(width, MIN_COLUMN_WIDTH)}px`;
-    column.style.minWidth = `${MIN_COLUMN_WIDTH}px`;
-    column.removeAttribute('width');
-  });
-
-  const rowSpanTrackerForCells = new Array(colCount).fill(0);
-  const allRows = Array.from(table.rows);
-
-  allRows.forEach((row) => {
-    for (let i = 0; i < colCount; i += 1) {
-      if (rowSpanTrackerForCells[i] > 0) {
-        rowSpanTrackerForCells[i] -= 1;
-      }
-    }
-
-    let columnIndex = 0;
-
-    Array.from(row.cells).forEach((cell) => {
-      while (columnIndex < colCount && rowSpanTrackerForCells[columnIndex] > 0) {
-        columnIndex += 1;
-      }
-
-      const span = cell.colSpan || 1;
-      const rowSpan = cell.rowSpan || 1;
-
-      if (span === 1) {
-        columnCells[columnIndex].push(cell as HTMLElement);
-      }
-
-      if (rowSpan > 1) {
-        for (let offset = 0; offset < span; offset += 1) {
-          const idx = columnIndex + offset;
-          if (idx < colCount) {
-            rowSpanTrackerForCells[idx] = rowSpan - 1;
-          }
-        }
-      }
-
-      columnIndex += span;
-    });
-  });
-
-  if (!table.style.tableLayout) {
-    table.style.tableLayout = 'fixed';
-  }
-  if (!table.style.width) {
-    table.style.width = '100%';
-  }
-
-  const cleanups: Array<() => void> = [];
-  const syncTableMinWidth = () => {
-    const container = table.closest('.udo-table-scroll') as HTMLElement | null;
-    const containerWidth = container?.clientWidth ?? table.parentElement?.clientWidth ?? 0;
-
-    let totalWidth = columns.reduce((sum, column) => {
-      const numeric = parseFloat(column.style.width || '0');
-      return sum + (Number.isFinite(numeric) ? numeric : MIN_COLUMN_WIDTH);
-    }, 0);
-
-    const minWidthForColumns = colCount * MIN_COLUMN_WIDTH;
-    const base = Math.max(minWidthForColumns, containerWidth);
-
-    if (columns.length > 0 && totalWidth < base) {
-      const remainder = base - totalWidth;
-      const targetIndex = columns.length - 1;
-      const target = columns[targetIndex];
-      if (target) {
-        const parsed = parseFloat(target.style.width || '0');
-        const currentWidth = Number.isFinite(parsed) && parsed > 0 ? parsed : MIN_COLUMN_WIDTH;
-        const resolvedWidth = Math.max(MIN_COLUMN_WIDTH, currentWidth + remainder);
-        const delta = resolvedWidth - currentWidth;
-
-        target.style.width = `${resolvedWidth}px`;
-        target.style.minWidth = `${resolvedWidth}px`;
-
-        columnCells[targetIndex].forEach((cell) => {
-          cell.style.width = `${resolvedWidth}px`;
-          cell.style.minWidth = `${resolvedWidth}px`;
-          cell.style.boxSizing = 'border-box';
-        });
-
-        totalWidth += delta;
-      }
-    }
-
-    const finalWidth = Math.max(base, totalWidth, minWidthForColumns);
-    table.style.minWidth = `${finalWidth}px`;
-    table.style.width = '100%';
-  };
-
-  const win = doc.defaultView;
-  if (win) {
-    const handleWindowResize = () => {
-      syncTableMinWidth();
-      onResize?.();
-    };
-    win.addEventListener('resize', handleWindowResize);
-    cleanups.push(() => win.removeEventListener('resize', handleWindowResize));
-  }
-
-  const applyColumnWidth = (columnIndex: number, width: number) => {
-    const target = columns[columnIndex];
-    if (!target) {
-      return;
-    }
-
-    const resolvedWidth = Math.max(MIN_COLUMN_WIDTH, width);
-    target.style.width = `${resolvedWidth}px`;
-    target.style.minWidth = `${resolvedWidth}px`;
-
-    columnCells[columnIndex].forEach((cell) => {
-      cell.style.width = `${resolvedWidth}px`;
-      cell.style.minWidth = `${resolvedWidth}px`;
-      cell.style.boxSizing = 'border-box';
-    });
-
-    syncTableMinWidth();
-    onResize?.();
-  };
-
-  // Save current column widths to localStorage
-  const saveCurrentWidths = () => {
-    const currentWidths = columns.map((col) => {
-      const width = parseFloat(col.style.width || '0');
-      return Number.isFinite(width) && width > 0 ? width : MIN_COLUMN_WIDTH;
-    });
-    saveColumnWidths(tableId, currentWidths);
-  };
-
-  // Reset to auto-sized widths
-  const resetWidths = () => {
-    clearColumnWidths(tableId);
-    const autoWidths = measureColumnWidths(table, colCount);
-    columns.forEach((column, index) => {
-      const width = autoWidths[index] || MIN_COLUMN_WIDTH;
-      column.style.width = `${Math.max(width, MIN_COLUMN_WIDTH)}px`;
-      column.style.minWidth = `${MIN_COLUMN_WIDTH}px`;
-
-      columnCells[index].forEach((cell) => {
-        cell.style.width = `${Math.max(width, MIN_COLUMN_WIDTH)}px`;
-        cell.style.minWidth = `${MIN_COLUMN_WIDTH}px`;
-        cell.style.boxSizing = 'border-box';
-      });
-    });
-    syncTableMinWidth();
-    onResize?.();
-  };
-
-  const spanTracker = new Array(colCount).fill(0);
-  const headerRows = table.tHead
-    ? Array.from(table.tHead.rows)
-    : [];
-
-  if (!headerRows.length && table.rows.length > 0) {
-    headerRows.push(table.rows[0]);
-  }
-
-  headerRows.forEach((row) => {
-    for (let i = 0; i < colCount; i += 1) {
-      if (spanTracker[i] > 0) {
-        spanTracker[i] -= 1;
-      }
-    }
-
-    let columnIndex = 0;
-
-    Array.from(row.cells).forEach((cell) => {
-      while (columnIndex < colCount && spanTracker[columnIndex] > 0) {
-        columnIndex += 1;
-      }
-
-      const span = cell.colSpan || 1;
-      const rowSpan = cell.rowSpan || 1;
-      const cellElement = cell as HTMLElement;
-
-      // Set cell positioning for handles
-      if (!cellElement.style.position || cellElement.style.position === 'static') {
-        cellElement.style.position = 'relative';
-      }
-      cellElement.style.overflow = 'visible';
-
-      // Add resize handles for each column boundary in this cell
-      // For cells with colspan > 1, add handles at internal column boundaries too
-      for (let offset = 0; offset < span; offset += 1) {
-        const targetColumnIndex = columnIndex + offset;
-        if (targetColumnIndex >= colCount) break;
-
-        // Skip the last column if this is the last cell in the row
-        // (no point resizing the last column)
-        const isLastColumn = targetColumnIndex === colCount - 1;
-        if (isLastColumn) continue;
-
-        const handle = doc.createElement('div');
-        handle.className = 'table-resize-handle';
-        handle.setAttribute('data-column-index', String(targetColumnIndex));
-
-        // Position the handle based on which column boundary it represents
-        if (span > 1 && offset < span - 1) {
-          // For internal boundaries in a spanned cell, calculate position
-          const boundaryPosition = ((offset + 1) / span) * 100;
-          handle.style.left = `${boundaryPosition}%`;
-          handle.style.right = 'auto';
-          handle.style.transform = 'translateX(-50%)';
-        }
-
-        cellElement.appendChild(handle);
-
-        const startResize = (event: PointerEvent) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          const startX = event.clientX;
-          const targetCol = columns[targetColumnIndex];
-          const referenceCell = columnCells[targetColumnIndex][0] ?? cellElement;
-          const computedWidth = targetCol?.getBoundingClientRect().width
-            || referenceCell.getBoundingClientRect().width;
-          const startWidth = Number.isFinite(computedWidth) && computedWidth > 0
-            ? computedWidth
-            : MIN_COLUMN_WIDTH;
-
-          handle.classList.add('table-resize-handle--active');
-
-          // Set pointer capture on the handle for better drag behavior
-          try {
-            handle.setPointerCapture(event.pointerId);
-          } catch (e) {
-            // Ignore if pointer capture fails
-          }
-
-          const onPointerMove = (moveEvent: PointerEvent) => {
-            moveEvent.preventDefault();
-            const delta = moveEvent.clientX - startX;
-            const newWidth = Math.max(MIN_COLUMN_WIDTH, startWidth + delta);
-            applyColumnWidth(targetColumnIndex, newWidth);
-          };
-
-          const onPointerUp = (upEvent: PointerEvent) => {
-            upEvent.preventDefault();
-            handle.classList.remove('table-resize-handle--active');
-            doc.removeEventListener('pointermove', onPointerMove, true);
-            doc.removeEventListener('pointerup', onPointerUp, true);
-            doc.removeEventListener('pointercancel', onPointerUp, true);
-            try {
-              handle.releasePointerCapture(upEvent.pointerId);
-            } catch (e) {
-              // Ignore if pointer capture release fails
-            }
-            syncTableMinWidth();
-            onResize?.();
-            // Save the new column widths to localStorage
-            saveCurrentWidths();
-          };
-
-          // Use capture phase for more reliable event handling
-          doc.addEventListener('pointermove', onPointerMove, true);
-          doc.addEventListener('pointerup', onPointerUp, true);
-          doc.addEventListener('pointercancel', onPointerUp, true);
-        };
-
-        handle.addEventListener('pointerdown', startResize);
-        cleanups.push(() => handle.removeEventListener('pointerdown', startResize));
-      }
-
-      if (rowSpan > 1) {
-        for (let offset = 0; offset < span; offset += 1) {
-          const idx = columnIndex + offset;
-          if (idx < colCount) {
-            spanTracker[idx] = rowSpan - 1;
-          }
-        }
-      }
-
-      columnIndex += span;
-    });
-  });
-
-  syncTableMinWidth();
-
-  return {
-    cleanup: () => {
-      cleanups.forEach((cleanup) => cleanup());
-      const activeHandles = Array.from(table.querySelectorAll<HTMLElement>('.table-resize-handle'));
-      activeHandles.forEach((handle) => handle.remove());
-      table.classList.remove('resizable-table');
-    },
-    resetWidths,
-    getTableId: () => tableId,
-  };
-}
 
 export function UDOAgGridTable({
   htmlString,
+  title,
   tableIndex = 0,
 }: UDOAgGridTableProps) {
-  const { html, title, enableSearch, hasTable } = useMemo(
-    () => extractTableMeta(htmlString),
-    [htmlString],
-  );
-
-  const [searchTerm, setSearchTerm] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -607,17 +34,10 @@ export function UDOAgGridTable({
   const hostRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement | null>(null);
-  const resetWidthsRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (!enableSearch) {
-      setSearchTerm('');
-    }
-  }, [enableSearch]);
 
   const updateScrollIndicators = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -639,28 +59,22 @@ export function UDOAgGridTable({
       return () => undefined;
     }
 
-    let resizeResult: ColumnResizeResult | null = null;
     const frame = requestAnimationFrame(() => {
       const table = host.querySelector('table');
       if (!table || !(table instanceof HTMLTableElement)) {
         tableRef.current = null;
-        resetWidthsRef.current = null;
         return;
       }
 
       tableRef.current = table;
-      resizeResult = enableColumnResizing(table, updateScrollIndicators);
-      resetWidthsRef.current = resizeResult.resetWidths;
       updateScrollIndicators();
     });
 
     return () => {
       cancelAnimationFrame(frame);
-      resizeResult?.cleanup();
       tableRef.current = null;
-      resetWidthsRef.current = null;
     };
-  }, [html, updateScrollIndicators]);
+  }, [htmlString, updateScrollIndicators]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -676,30 +90,7 @@ export function UDOAgGridTable({
       container.removeEventListener('scroll', updateScrollIndicators);
       window.removeEventListener('resize', updateScrollIndicators);
     };
-  }, [updateScrollIndicators, isFullscreen, html]);
-
-  useEffect(() => {
-    if (!enableSearch || !tableRef.current) {
-      return;
-    }
-
-    const table = tableRef.current;
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
-    const fallbackRows = rows.length ? rows : Array.from(table.querySelectorAll('tr')).slice(1);
-
-    const normalized = searchTerm.trim().toLowerCase();
-
-    fallbackRows.forEach((row) => {
-      const element = row as HTMLElement;
-      if (!normalized) {
-        element.style.display = '';
-        return;
-      }
-
-      const text = element.textContent?.toLowerCase() ?? '';
-      element.style.display = text.includes(normalized) ? '' : 'none';
-    });
-  }, [searchTerm, enableSearch]);
+  }, [updateScrollIndicators, isFullscreen, htmlString]);
 
   useEffect(() => {
     if (!isFullscreen) {
@@ -727,19 +118,10 @@ export function UDOAgGridTable({
     container.scrollBy({ left: offset, behavior: 'smooth' });
   }, []);
 
-  const handleResetColumnWidths = useCallback(() => {
-    if (resetWidthsRef.current) {
-      resetWidthsRef.current();
-    }
-  }, []);
 
   useEffect(() => {
     updateScrollIndicators();
   }, [updateScrollIndicators, isFullscreen]);
-
-  if (!hasTable) {
-    return null;
-  }
 
   const tableContent = (
     <div
@@ -755,19 +137,6 @@ export function UDOAgGridTable({
         </div>
 
         <div className="udo-table-actions">
-          {enableSearch && (
-            <div className="relative">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search..."
-                className="h-[1.9rem] px-3 pr-8 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Search className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            </div>
-          )}
-
           {(canScrollLeft || canScrollRight) && (
             <>
               <button
@@ -793,16 +162,6 @@ export function UDOAgGridTable({
 
           <button
             type="button"
-            onClick={handleResetColumnWidths}
-            className="udo-table-action"
-            aria-label="Reset column widths"
-            title="Reset column widths to auto-size"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-
-          <button
-            type="button"
             onClick={() => setIsFullscreen((prev) => !prev)}
             className="udo-table-action"
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
@@ -824,7 +183,7 @@ export function UDOAgGridTable({
         <div
           ref={hostRef}
           className="resizable-table-wrapper"
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: htmlString }}
         />
       </div>
     </div>

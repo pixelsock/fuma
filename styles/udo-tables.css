@@ -35,7 +35,7 @@
 .udo-table-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  z-index: 9998;
   background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(2px);
 }
@@ -48,6 +48,7 @@
   box-shadow: 0 24px 48px -32px rgba(15, 23, 42, 0.28);
   transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
   overflow: hidden;
+  margin: 2rem 0;
 }
 
 .dark .udo-table-shell {
@@ -57,7 +58,7 @@
 .udo-table-shell--fullscreen {
   position: fixed;
   inset: 2rem;
-  z-index: 80;
+  z-index: 9999;
   max-width: none;
   max-height: calc(100vh - 4rem);
   display: flex;
@@ -172,6 +173,12 @@
   flex: 1;
 }
 
+/* Ensure fullscreen tables maintain same padding as article tables */
+.udo-table-shell--fullscreen table th,
+.udo-table-shell--fullscreen table td {
+  padding: 0.4rem 0.75rem;
+}
+
 .udo-table-scroll table {
   margin: 0;
   background: transparent;
@@ -186,11 +193,27 @@
 .prose table th,
 .prose table td,
 .udo-table-scroll table th,
-.udo-table-scroll table td,
-.resizable-table th,
-.resizable-table td {
+.udo-table-scroll table td {
   border-bottom: 1px solid var(--udo-table-cell-border);
   border-right: 1px solid var(--udo-table-cell-border);
+  vertical-align: middle !important;
+  font-weight: normal !important;
+}
+
+/* Allow explicit bold tags to work */
+.udo-content table th strong,
+.udo-content table td strong,
+.udo-content table th b,
+.udo-content table td b,
+.prose table th strong,
+.prose table td strong,
+.prose table th b,
+.prose table td b,
+.udo-table-scroll table th strong,
+.udo-table-scroll table td strong,
+.udo-table-scroll table th b,
+.udo-table-scroll table td b {
+  font-weight: 700 !important;
 }
 
 .udo-content table th:last-child,
@@ -198,77 +221,13 @@
 .prose table th:last-child,
 .prose table td:last-child,
 .udo-table-scroll table th:last-child,
-.udo-table-scroll table td:last-child,
-.resizable-table th:last-child,
-.resizable-table td:last-child {
+.udo-table-scroll table td:last-child {
   border-right: none;
 }
 
 .resizable-table-wrapper {
   position: relative;
   min-width: 100%;
-}
-
-.resizable-table {
-  width: 100%;
-  table-layout: fixed;
-}
-
-.resizable-table th,
-.resizable-table td {
-  position: relative;
-  overflow: visible;
-  box-sizing: border-box;
-}
-
-.resizable-table colgroup {
-  visibility: visible;
-}
-
-.resizable-table col {
-  visibility: visible;
-}
-
-.table-resize-handle {
-  position: absolute;
-  top: 0;
-  right: -4px;
-  width: 10px;
-  height: 100%;
-  cursor: col-resize;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: none;
-  z-index: 10;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.table-resize-handle::after {
-  content: '';
-  width: 3px;
-  height: 70%;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--udo-table-border) 80%, white 20%);
-  transition: background-color 0.15s ease, opacity 0.15s ease, width 0.15s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.resizable-table th:hover .table-resize-handle::after,
-.table-resize-handle:hover::after {
-  opacity: 0.8;
-}
-
-.table-resize-handle--active::after {
-  background: #2563eb;
-  opacity: 1;
-  width: 4px;
-}
-
-.table-resize-handle--active {
-  cursor: col-resize;
 }
 
 .udo-table-scroll-buttons {
@@ -343,7 +302,6 @@ th[style*="background-color: rgb(30, 78, 121)"] {
   background-color: #1E4E79 !important;
   color: white !important;
   text-align: center !important;
-  font-weight: bold !important;
 }
 
 /* AG-Grid border radius removal */
@@ -376,7 +334,6 @@ th[style*="background-color: #DEEAF6"],
 th[style*="background-color: rgb(222, 234, 246)"] {
   background-color: #DEEAF6 !important;
   color: #1F2937 !important;
-  font-weight: 600 !important;
 }
 
 /* Zoning table specific styles */
@@ -418,11 +375,8 @@ th[style*="background-color: rgb(222, 234, 246)"] {
 /* Responsive table wrapper */
 /* Additional overrides handled by TanStack renderer */
 
-/* Preserve inline styles for text colors */
-td[style*="color:"],
-th[style*="color:"] {
-  /* Inline color styles will be preserved */
-}
+/* Preserve inline styles for text colors and alignment */
+/* These empty rules increase specificity so inline styles take precedence */
 
 /* Common text color classes based on Charlotte UDO patterns */
 .text-white,
@@ -472,11 +426,6 @@ th[style*="background-color"] {
   .resizable-table-wrapper {
     margin: 1.25rem 0;
     border-radius: 0.65rem;
-  }
-  
-  /* Hide resize handles on mobile */
-  .table-resize-handle {
-    display: none;
   }
 }
 
