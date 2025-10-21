@@ -211,41 +211,60 @@
 
 .resizable-table {
   width: 100%;
+  table-layout: fixed;
 }
 
 .resizable-table th,
 .resizable-table td {
   position: relative;
   overflow: visible;
+  box-sizing: border-box;
+}
+
+.resizable-table colgroup {
+  visibility: visible;
+}
+
+.resizable-table col {
+  visibility: visible;
 }
 
 .table-resize-handle {
   position: absolute;
   top: 0;
-  right: -3px;
-  width: 8px;
+  right: -4px;
+  width: 10px;
   height: 100%;
   cursor: col-resize;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   touch-action: none;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .table-resize-handle::after {
   content: '';
-  width: 2px;
-  height: 60%;
+  width: 3px;
+  height: 70%;
   border-radius: 9999px;
-  background: color-mix(in srgb, var(--udo-table-border) 70%, white 30%);
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-  opacity: 0.65;
+  background: color-mix(in srgb, var(--udo-table-border) 80%, white 20%);
+  transition: background-color 0.15s ease, opacity 0.15s ease, width 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .resizable-table th:hover .table-resize-handle::after,
+.table-resize-handle:hover::after {
+  opacity: 0.8;
+}
+
 .table-resize-handle--active::after {
   background: #2563eb;
   opacity: 1;
+  width: 4px;
 }
 
 .table-resize-handle--active {

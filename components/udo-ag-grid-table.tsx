@@ -359,21 +359,47 @@ function enableColumnResizing(
 
       const span = cell.colSpan || 1;
       const rowSpan = cell.rowSpan || 1;
+      const cellElement = cell as HTMLElement;
 
-      if (span === 1) {
+      // Set cell positioning for handles
+      if (!cellElement.style.position || cellElement.style.position === 'static') {
+        cellElement.style.position = 'relative';
+      }
+      cellElement.style.overflow = 'visible';
+
+      // Add resize handles for each column boundary in this cell
+      // For cells with colspan > 1, add handles at internal column boundaries too
+      for (let offset = 0; offset < span; offset += 1) {
+        const targetColumnIndex = columnIndex + offset;
+        if (targetColumnIndex >= colCount) break;
+
+        // Skip the last column if this is the last cell in the row
+        // (no point resizing the last column)
+        const isLastColumn = targetColumnIndex === colCount - 1;
+        if (isLastColumn) continue;
+
         const handle = doc.createElement('div');
         handle.className = 'table-resize-handle';
-        cell.style.position = cell.style.position || 'relative';
-        cell.style.overflow = 'visible';
-        cell.appendChild(handle);
+        handle.setAttribute('data-column-index', String(targetColumnIndex));
+
+        // Position the handle based on which column boundary it represents
+        if (span > 1 && offset < span - 1) {
+          // For internal boundaries in a spanned cell, calculate position
+          const boundaryPosition = ((offset + 1) / span) * 100;
+          handle.style.left = `${boundaryPosition}%`;
+          handle.style.right = 'auto';
+          handle.style.transform = 'translateX(-50%)';
+        }
+
+        cellElement.appendChild(handle);
 
         const startResize = (event: PointerEvent) => {
           event.preventDefault();
           event.stopPropagation();
 
           const startX = event.clientX;
-          const targetCol = columns[columnIndex];
-          const referenceCell = columnCells[columnIndex][0] ?? (cell as HTMLElement);
+          const targetCol = columns[targetColumnIndex];
+          const referenceCell = columnCells[targetColumnIndex][0] ?? cellElement;
           const computedWidth = targetCol?.getBoundingClientRect().width
             || referenceCell.getBoundingClientRect().width;
           const startWidth = Number.isFinite(computedWidth) && computedWidth > 0
@@ -382,26 +408,39 @@ function enableColumnResizing(
 
           handle.classList.add('table-resize-handle--active');
 
+          // Set pointer capture on the handle for better drag behavior
+          try {
+            handle.setPointerCapture(event.pointerId);
+          } catch (e) {
+            // Ignore if pointer capture fails
+          }
+
           const onPointerMove = (moveEvent: PointerEvent) => {
+            moveEvent.preventDefault();
             const delta = moveEvent.clientX - startX;
             const newWidth = Math.max(MIN_COLUMN_WIDTH, startWidth + delta);
-            applyColumnWidth(columnIndex, newWidth);
+            applyColumnWidth(targetColumnIndex, newWidth);
           };
 
-          const onPointerUp = () => {
+          const onPointerUp = (upEvent: PointerEvent) => {
+            upEvent.preventDefault();
             handle.classList.remove('table-resize-handle--active');
-            doc.removeEventListener('pointermove', onPointerMove);
-            doc.removeEventListener('pointerup', onPointerUp);
-            doc.removeEventListener('pointercancel', onPointerUp);
-            handle.releasePointerCapture?.(event.pointerId);
+            doc.removeEventListener('pointermove', onPointerMove, true);
+            doc.removeEventListener('pointerup', onPointerUp, true);
+            doc.removeEventListener('pointercancel', onPointerUp, true);
+            try {
+              handle.releasePointerCapture(upEvent.pointerId);
+            } catch (e) {
+              // Ignore if pointer capture release fails
+            }
             syncTableMinWidth();
             onResize?.();
           };
 
-          doc.addEventListener('pointermove', onPointerMove);
-          doc.addEventListener('pointerup', onPointerUp);
-          doc.addEventListener('pointercancel', onPointerUp);
-          handle.setPointerCapture?.(event.pointerId);
+          // Use capture phase for more reliable event handling
+          doc.addEventListener('pointermove', onPointerMove, true);
+          doc.addEventListener('pointerup', onPointerUp, true);
+          doc.addEventListener('pointercancel', onPointerUp, true);
         };
 
         handle.addEventListener('pointerdown', startResize);
