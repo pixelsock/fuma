@@ -74,12 +74,42 @@ export interface DirectusHomePage {
   }>;
 }
 
+export interface DirectusSupportingDocument {
+  id: string;
+  title: string;
+  status: 'available' | 'in_development' | 'pending';
+  managed_by?: string;
+  link?: string;
+  file?: string;
+}
+
+export interface DirectusSupportingDocumentsPage {
+  id: number;
+  page_title: string;
+  page_description: string;
+}
+
+export interface DirectusAdvisoryCommitteePage {
+  id: number;
+  page_title: string;
+  page_description: string;
+  membership_description?: string;
+  uac_members: Array<{
+    name: string;
+    organization: string;
+    additional_details?: string;
+  }>;
+}
+
 export interface DirectusSchema {
   articles: DirectusArticle[];
   article_categories: DirectusCategory[];
   settings: DirectusSiteSetting[];
   global_settings: DirectusGlobalSettings[];
   home_page: DirectusHomePage[];
+  supporting_documents: DirectusSupportingDocument[];
+  supporting_documents_page: DirectusSupportingDocumentsPage;
+  advisory_committee_page: DirectusAdvisoryCommitteePage;
 }
 
 // Get configuration using the environment utility

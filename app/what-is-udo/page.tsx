@@ -1,21 +1,11 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
 import { 
   BookOpen,
-  Building,
-  Trees,
-  Car,
-  Home,
-  Map,
-  Shield,
-  Users,
-  FileText,
-  Download,
   Play
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -28,59 +18,70 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 
 interface KeyFeature {
-  icon: React.ReactNode;
+  icon: string;
   title: string;
   description: string;
 }
 
-const keyFeatures: KeyFeature[] = [
-  {
-    icon: <Map className="h-6 w-6" />,
-    title: "Place Types",
-    description: "Guided by a new approach to policy that focuses on the character and form of development rather than just land use."
-  },
-  {
-    icon: <Building className="h-6 w-6" />,
-    title: "Unified Standards",
-    description: "Combines zoning, subdivision, streets, and other development standards into one comprehensive document."
-  },
-  {
-    icon: <Trees className="h-6 w-6" />,
-    title: "Environmental Protection",
-    description: "Enhanced tree protection, stormwater management, and environmental standards."
-  },
-  {
-    icon: <Car className="h-6 w-6" />,
-    title: "Transit-Oriented Development",
-    description: "Encourages development near transit stations and along transit corridors."
-  },
-  {
-    icon: <Home className="h-6 w-6" />,
-    title: "Neighborhood Protection",
-    description: "Provides options for protection of existing neighborhood character while also allowing for needed housing supply."
-  },
-  {
-    icon: <Shield className="h-6 w-6" />,
-    title: "Predictable Process",
-    description: "Clear and predictable development review process with defined timelines and expectations."
+interface LearnMoreLink {
+  icon: string;
+  title: string;
+  description: string;
+  url: string;
+}
+
+interface QuickFact {
+  value: string;
+  label: string;
+}
+
+interface WhatIsUDOPageData {
+  page_title: string;
+  page_description: string;
+  video_url: string;
+  video_title: string;
+  video_description: string;
+  alert_title: string;
+  alert_content: string;
+  key_features: KeyFeature[];
+  learn_more_links: LearnMoreLink[];
+  quick_facts: QuickFact[];
+}
+
+function getIconComponent(iconName: string) {
+  const Icon = (LucideIcons as any)[iconName.split('-').map((word: string) => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join('').replace(/_/g, '')];
+  return Icon || LucideIcons.HelpCircle;
+}
+
+async function getPageData(): Promise<WhatIsUDOPageData> {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002';
+  const res = await fetch(`${baseUrl}/api/what-is-udo-page`, {
+    next: { revalidate: 60 }
+  });
+  
+  if (!res.ok) {
+    throw new Error('Failed to fetch page data');
   }
-];
+  
+  return res.json();
+}
 
 
-export default function WhatIsUDOPage() {
+export default async function WhatIsUDOPage() {
+  const data = await getPageData();
+  
   return (
     <DocsPage>
       <DocsBody className="max-w-6xl mx-auto">
         {/* Hero Section */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            Charlotte Explorer
+            {data.page_title}
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            The Charlotte Unified Development Ordinance (UDO) is a comprehensive update to the city's development 
-            regulations that guides how land is used and developed throughout Charlotte. Adopted on August 22, 2022, 
-            and effective June 1, 2023, the UDO replaces the previous zoning ordinance with modern, place-based 
-            regulations that support the community's vision for growth.
+            {data.page_description}
           </p>
         </div>
 
@@ -89,10 +90,10 @@ export default function WhatIsUDOPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Play className="h-5 w-5" />
-              Learn About the UDO
+              {data.video_title}
             </CardTitle>
             <CardDescription className="mb-4">
-              Watch this introductory video to understand the basics of Charlotte's Unified Development Ordinance
+              {data.video_description}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -100,8 +101,8 @@ export default function WhatIsUDOPage() {
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/FQ5TDuiSnZo"
-                title="What is the Charlotte UDO?"
+                src={data.video_url}
+                title={data.video_title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
@@ -115,33 +116,31 @@ export default function WhatIsUDOPage() {
         <Alert className="mb-12 border-primary">
           <BookOpen className="h-4 w-4" />
           <AlertDescription className="mt-2">
-            <strong className="block mb-2">Why a Unified Development Ordinance?</strong>
-            The UDO consolidates multiple ordinances into a single, user-friendly document that aligns development 
-            regulations with Charlotte's adopted plans and policies, including the Charlotte Future 2040 Comprehensive Plan.
+            <strong className="block mb-2">{data.alert_title}</strong>
+            {data.alert_content}
           </AlertDescription>
         </Alert>
 
         {/* Key Features Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Key Features of the UDO</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {keyFeatures.map((feature, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                      {feature.icon}
+          <h2 className="text-2xl font-bold mb-8">Key Features of the UDO</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {data.key_features.map((feature, index) => {
+              const IconComponent = getIconComponent(feature.icon);
+              return (
+                <div key={index} className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                      <IconComponent className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    <h3 className="font-semibold text-lg" style={{ margin: 0, padding: 0 }}>{feature.title}</h3>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -152,131 +151,40 @@ export default function WhatIsUDOPage() {
           <p className="text-muted-foreground mb-8">
             Explore these resources to better understand the UDO
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/articles-listing">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <BookOpen className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Browse UDO Articles</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Search and explore all UDO articles by category
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/articles/udo-university">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Users className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">UDO University</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Virtual training sessions on the UDO
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/articles/zoning-map">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Map className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Charlotte Explorer</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Use Charlotte Explorer to learn more about your zoning and more.
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/versions">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Download className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Previous UDO Versions</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Access historical and past versions of the UDO
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/text-amendments">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <FileText className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Text Amendments</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Track ongoing updates and amendments to the UDO
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/advisory-committee">
-              <Card className="hover:shadow-lg transition-shadow group cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Users className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Advisory Committee</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Learn about UAC membership and meeting information
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+            {data.learn_more_links.map((link, index) => {
+              const IconComponent = getIconComponent(link.icon);
+              return (
+                <Link key={index} href={link.url} style={{ textDecoration: 'none' }} className="h-full">
+                  <Card className="h-full hover:shadow-lg transition-shadow group cursor-pointer">
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                          <IconComponent className="h-6 w-6" />
+                        </div>
+                        <CardTitle className="text-lg">{link.title}</CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        {link.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
         {/* Quick Facts */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">June 1, 2023</div>
-            <p className="text-sm text-muted-foreground">Effective Date</p>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">600+</div>
-            <p className="text-sm text-muted-foreground">Pages of Regulations</p>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">29</div>
-            <p className="text-sm text-muted-foreground">Zoning Districts</p>
-          </div>
+          {data.quick_facts.map((fact, index) => (
+            <div key={index} className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">{fact.value}</div>
+              <p className="text-sm text-muted-foreground">{fact.label}</p>
+            </div>
+          ))}
         </div>
       </DocsBody>
     </DocsPage>

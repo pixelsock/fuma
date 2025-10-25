@@ -138,17 +138,17 @@ export function InformationalSessions({ className }: InformationalSessionsProps)
               <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 hover:shadow-xl overflow-hidden">
                 <CardHeader>
                   {/* Icon and Badge Header */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white">
                       <Play className="w-6 h-6" />
                     </div>
                     <Badge variant="outline">Virtual Session</Badge>
                   </div>
                   
-                  <CardTitle>{video.title}</CardTitle>
+                  <CardTitle className="mb-1">{video.title}</CardTitle>
                   
                   {/* Date and Time */}
-                  <div className="flex items-center gap-4 mt-2">
+                  <div className="flex items-center gap-4">
                     {video.date && (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4" />
@@ -166,7 +166,7 @@ export function InformationalSessions({ className }: InformationalSessionsProps)
                 
                 {/* Video Embed */}
                 {video.url && (
-                  <div className="aspect-video overflow-hidden bg-muted px-6 rounded-lg">
+                  <div className="aspect-video overflow-hidden bg-muted px-6 rounded-lg my-6">
                     <iframe
                       width="100%"
                       height="100%"

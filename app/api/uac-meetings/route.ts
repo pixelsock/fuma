@@ -21,3 +21,4 @@ export async function GET() {
     return NextResponse.json({ message: 'Failed to fetch UAC meeting videos' }, { status: 500 });
   }
 }
+

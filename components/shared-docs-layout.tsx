@@ -73,6 +73,11 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
               description: 'UAC membership and meetings',
               url: '/advisory-committee',
             },
+            {
+              title: 'Supporting Documents',
+              description: 'Technical guidance documents',
+              url: '/supporting-documents',
+            },
           ],
         }}
       >

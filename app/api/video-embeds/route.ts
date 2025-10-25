@@ -21,3 +21,4 @@ export async function GET() {
     return NextResponse.json({ message: 'Failed to fetch video embeds' }, { status: 500 });
   }
 }
+

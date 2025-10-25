@@ -156,7 +156,7 @@ export function UACMeetings() {
         </div>
         
         {/* Content */}
-        <div className="relative z-10 text-center space-y-3">
+        <div className="relative text-center space-y-3">
           <div>
             <h3 className="text-base font-bold mb-1 text-white">Charlotte UDO</h3>
             <p className="text-xs opacity-90 text-white">Advisory Committee Meeting</p>
@@ -192,19 +192,19 @@ export function UACMeetings() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Video Archive - Thumbnail Grid */}
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h3 className="text-xl font-semibold">Meeting Archive</h3>
           </div>
           
           {/* Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div>
             {/* Year Filter */}
             <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="w-full sm:w-32">
+              <SelectTrigger className="w-32">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
               <SelectContent>
@@ -218,36 +218,19 @@ export function UACMeetings() {
         </div>
 
         {/* Results Count */}
-        <div className="flex items-center justify-between">
+        <div>
           <p className="text-sm text-muted-foreground">
             Showing {filteredVideos.length} of {videos.length} meetings
           </p>
-          {yearFilter !== 'all' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setYearFilter('all')}
-              className="text-xs"
-            >
-              <X className="h-3 w-3 mr-1" />
-              Clear Filter
-            </Button>
-          )}
         </div>
         
         {filteredVideos.length === 0 ? (
           <div className="text-center py-12">
             <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h4 className="text-lg font-medium mb-2">No meetings found</h4>
-            <p className="text-muted-foreground mb-4">
-              Try adjusting your year filter
+            <p className="text-muted-foreground">
+              Try selecting a different year from the filter above
             </p>
-            <Button
-              variant="outline"
-              onClick={() => setYearFilter('all')}
-            >
-              Clear Filter
-            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

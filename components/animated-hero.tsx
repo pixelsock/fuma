@@ -80,3 +80,4 @@ export function AnimatedHero({ headerText, headerDescription, headerButtons, get
     </section>
   )
 }
+

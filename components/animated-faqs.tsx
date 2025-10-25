@@ -62,3 +62,4 @@ export function AnimatedFAQs({ homepageId, faqs }: AnimatedFAQsProps) {
     </section>
   )
 }
+
