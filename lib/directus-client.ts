@@ -101,6 +101,43 @@ export interface DirectusAdvisoryCommitteePage {
   }>;
 }
 
+export interface DirectusVersionsPage {
+  id: number;
+  page_title: string;
+  page_description: string;
+  available_versions: Array<{
+    amended_date: string;
+    link_type: 'file' | 'link';
+    file_id?: string;
+    title?: string;
+    external_link?: string;
+    is_current?: boolean;
+  }>;
+  important_notes: string;
+  additional_resources: Array<{
+    title: string;
+    url: string;
+    icon?: string;
+  }>;
+  current_version: string;
+}
+
+export interface DirectusWhatIsUdoPage {
+  id: number;
+  page_title: string;
+  page_description: string;
+  video_url?: string;
+  video_title?: string;
+  video_description?: string;
+  alert_title?: string;
+  alert_content?: string;
+  key_features: Array<{
+    icon: string;
+    title: string;
+    description: string;
+  }>;
+}
+
 export interface DirectusSchema {
   articles: DirectusArticle[];
   article_categories: DirectusCategory[];
@@ -110,6 +147,8 @@ export interface DirectusSchema {
   supporting_documents: DirectusSupportingDocument[];
   supporting_documents_page: DirectusSupportingDocumentsPage;
   advisory_committee_page: DirectusAdvisoryCommitteePage;
+  versions_page: DirectusVersionsPage;
+  what_is_udo_page: DirectusWhatIsUdoPage;
 }
 
 // Get configuration using the environment utility
