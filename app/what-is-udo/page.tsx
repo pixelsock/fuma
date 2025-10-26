@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
-import { 
+import {
   BookOpen,
   Play
 } from 'lucide-react';
@@ -16,6 +16,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { getPublicDirectusClient } from '@/lib/directus-server';
+import { readSingleton } from '@directus/sdk';
 
 interface KeyFeature {
   icon: string;
@@ -55,22 +57,14 @@ function getIconComponent(iconName: string) {
   return Icon || LucideIcons.HelpCircle;
 }
 
-async function getPageData(): Promise<WhatIsUDOPageData> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002';
-  const res = await fetch(`${baseUrl}/api/what-is-udo-page`, {
-    next: { revalidate: 60 }
-  });
-  
-  if (!res.ok) {
-    throw new Error('Failed to fetch page data');
-  }
-  
-  return res.json();
-}
-
-
 export default async function WhatIsUDOPage() {
-  const data = await getPageData();
+  const directus = await getPublicDirectusClient();
+
+  const data = await directus.request<WhatIsUDOPageData>(
+    readSingleton('what_is_udo_page', {
+      fields: ['*']
+    })
+  );
   
   return (
     <DocsPage>
