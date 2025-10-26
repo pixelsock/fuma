@@ -1,6 +1,9 @@
 /**
  * Environment Configuration Utility
  * Intelligently selects local or production Directus settings based on deployment environment
+ *
+ * NOTE: Production Directus public permissions have been configured for singleton page collections
+ * (what_is_udo_page, versions_page, supporting_documents_page, advisory_committee_page)
  */
 
 export type DeploymentEnvironment = 'local' | 'production';
