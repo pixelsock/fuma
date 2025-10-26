@@ -51,10 +51,16 @@ export function getDeploymentEnvironment(): DeploymentEnvironment {
  * Detects if we're running server-side on Render (at runtime, not during build)
  */
 function isRenderServerSide(): boolean {
-  // During build phase, we need to use public URLs even on Render
-  // Only use internal URLs during actual runtime
-  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
-  return typeof window === 'undefined' && !!process.env.RENDER && !isBuildPhase;
+  // IMPORTANT: Only use internal URLs for runtime SSR, NOT for build-time SSG
+  // During build, Next.js pre-renders pages which requires public URL access
+  // We can detect runtime by checking if headers are available (only present during actual requests)
+  if (typeof window !== 'undefined') {
+    return false; // Client-side
+  }
+
+  // Server-side: check if we're on Render AND if RENDER_RUNTIME is explicitly set
+  // Set RENDER_RUNTIME=true in Render environment variables to enable internal URL optimization
+  return !!process.env.RENDER && process.env.RENDER_RUNTIME === 'true';
 }
 
 /**
@@ -81,11 +87,9 @@ export function getDirectusConfig(): DirectusConfig {
     console.log(`[env-config] Using LOCAL configuration: ${config.url}`);
     return config;
   } else {
-    // On Render server-side, use internal private network URL
-    // Services in same region + workspace share a private network
-    // Internal hostname format: [service-slug]:[port]
-    // Port 10000 is Render's standard internal port for web services
-    // This provides ~10-50x faster API calls vs public internet
+    // For production: ALWAYS use public URL unless RENDER_RUNTIME is explicitly true
+    // This ensures build-time static generation works correctly
+    // Internal URL optimization only applies when explicitly enabled for runtime SSR
     const directusUrl = isServerSideRender
       ? (process.env.DIRECTUS_INTERNAL_URL || 'http://udo-backend-y1w0:10000')
       : (process.env.PRODUCTION_DIRECTUS_URL || 'https://admin.charlotteudo.org');
