@@ -1,18 +1,11 @@
 'use client';
 
 import React, { useMemo, useRef } from 'react';
-import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
 import { GlobalDefinitionTooltipV2 } from './global-definition-tooltip-v2';
 import { TooltipProvider as DefinitionTooltipProvider } from './definition-tooltip-context';
 import { HighlightedContent } from '@/lib/search-highlight-react';
-
-// Import table component dynamically with client-only rendering to avoid hydration issues
-const UDOAgGridTable = dynamic(
-  () => import('./udo-ag-grid-table').then(mod => ({ default: mod.UDOAgGridTable })),
-  { ssr: false }
-);
 
 interface UDOContentRendererProps {
   htmlContent: string;
@@ -34,72 +27,6 @@ function rewriteAssetUrls(html: string): string {
   });
 
   return result;
-}
-
-interface ExtractedTable {
-  html: string;
-  title?: string;
-}
-
-function extractTablesFromHtml(html: string): {
-  segments: string[];
-  tables: ExtractedTable[];
-} {
-  if (typeof window === 'undefined') {
-    return { segments: [html], tables: [] };
-  }
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const tableElements = Array.from(doc.querySelectorAll('table'));
-
-  if (tableElements.length === 0) {
-    return { segments: [html], tables: [] };
-  }
-
-  const extracted: ExtractedTable[] = [];
-
-  tableElements.forEach((table, index) => {
-    // Find the table title if it exists (as a sibling of the table)
-    let titleElement: HTMLElement | null = null;
-    let title = '';
-
-    const sibling = table.previousElementSibling;
-    if (
-      sibling instanceof HTMLElement &&
-      sibling.classList.contains('table-title-row')
-    ) {
-      titleElement = sibling;
-      title = titleElement.textContent?.trim() || '';
-      // Remove the title element so it doesn't appear in the extracted HTML
-      titleElement.remove();
-    }
-
-    // Extract only the table itself, not wrapper containers
-    extracted.push({
-      html: table.outerHTML,
-      title: title || undefined,
-    });
-
-    // Replace ONLY the table element with a placeholder
-    const placeholder = doc.createComment(`UDO_TABLE_${index}`);
-    table.replaceWith(placeholder);
-  });
-
-  const htmlWithPlaceholders = doc.body.innerHTML;
-  const segments: string[] = [];
-  let lastIndex = 0;
-  const regex = /<!--UDO_TABLE_(\d+)-->/g;
-  let match: RegExpExecArray | null;
-
-  while ((match = regex.exec(htmlWithPlaceholders)) !== null) {
-    segments.push(htmlWithPlaceholders.slice(lastIndex, match.index));
-    lastIndex = match.index + match[0].length;
-  }
-
-  segments.push(htmlWithPlaceholders.slice(lastIndex));
-
-  return { segments, tables: extracted };
 }
 
 export function UDOContentRenderer({
@@ -127,12 +54,17 @@ export function UDOContentRenderer({
           // Skip if already enhanced
           if (table.parentElement?.classList.contains('udo-table-shell')) return;
 
-      // Find table title if it exists
+      // Find table title if it exists (TD/TH cell in first row with table-title-row class)
       let title = '';
-      const titleDiv = table.previousElementSibling;
-      if (titleDiv instanceof HTMLElement && titleDiv.classList.contains('table-title-row')) {
-        title = titleDiv.textContent?.trim() || '';
-        titleDiv.style.display = 'none'; // Hide the title div, we'll show it in toolbar
+      const firstRow = table.querySelector('tr');
+      const firstCell = firstRow?.querySelector('td.table-title-row, th.table-title-row');
+
+      if (firstCell && firstCell.getAttribute('colspan')) {
+        title = firstCell.textContent?.trim() || '';
+        // Hide the entire title row (we'll show text in toolbar)
+        if (firstRow) {
+          firstRow.style.display = 'none';
+        }
       }
 
       // Create wrapper structure
