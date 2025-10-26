@@ -48,10 +48,13 @@ export function getDeploymentEnvironment(): DeploymentEnvironment {
 }
 
 /**
- * Detects if we're running server-side on Render
+ * Detects if we're running server-side on Render (at runtime, not during build)
  */
 function isRenderServerSide(): boolean {
-  return typeof window === 'undefined' && !!process.env.RENDER;
+  // During build phase, we need to use public URLs even on Render
+  // Only use internal URLs during actual runtime
+  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+  return typeof window === 'undefined' && !!process.env.RENDER && !isBuildPhase;
 }
 
 /**
