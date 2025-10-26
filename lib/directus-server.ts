@@ -9,12 +9,32 @@ export function getDirectusClient() {
 
   console.log('[directus-server] Creating client with URL:', directusUrl);
   console.log('[directus-server] Token configured:', !!directusToken);
-  
+
   // Create client with static token if available
   const client = createDirectus<DirectusSchema>(directusUrl)
     .with(rest())
     .with(directusToken ? staticToken(directusToken) : authentication());
-  
+
+  return client;
+}
+
+/**
+ * Public Directus client - no authentication required
+ * Use this for publicly accessible singleton collections:
+ * - what_is_udo_page
+ * - versions_page
+ * - supporting_documents_page
+ * - advisory_committee_page
+ */
+export function getPublicDirectusClient() {
+  const directusUrl = getDirectusUrl();
+
+  console.log('[directus-server] Creating public client with URL:', directusUrl);
+
+  // Create client without authentication
+  const client = createDirectus<DirectusSchema>(directusUrl)
+    .with(rest());
+
   return client;
 }
 

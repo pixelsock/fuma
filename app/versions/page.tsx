@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { getDirectusClient } from '@/lib/directus-server';
+import { getPublicDirectusClient } from '@/lib/directus-server';
 import { readSingleton } from '@directus/sdk';
 
 // Type for UDO version entries from Directus
@@ -49,8 +49,8 @@ type VersionsPageData = {
 };
 
 export default async function VersionsPage() {
-  const directus = await getDirectusClient();
-  
+  const directus = await getPublicDirectusClient();
+
   const data = await directus.request<VersionsPageData>(
     readSingleton('versions_page', {
       fields: ['*']

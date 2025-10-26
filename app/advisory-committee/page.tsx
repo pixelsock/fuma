@@ -25,7 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { UACMeetings } from '@/components/uac-meetings';
-import { getDirectusClient } from '@/lib/directus-server';
+import { getPublicDirectusClient } from '@/lib/directus-server';
 import { readSingleton } from '@directus/sdk';
 
 // Type definitions for Directus data
@@ -51,8 +51,8 @@ interface AdvisoryCommitteePageData {
 }
 
 export default async function AdvisoryCommitteePage() {
-  const directus = await getDirectusClient();
-  
+  const directus = await getPublicDirectusClient();
+
   const data = await directus.request<AdvisoryCommitteePageData>(
     readSingleton('advisory_committee_page', {
       fields: ['*']
