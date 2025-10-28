@@ -163,33 +163,40 @@ console.log('[lib/directus-client.ts] Directus URL:', directusUrl);
 console.log('[lib/directus-client.ts] Token configured:', directusToken ? `${directusToken.substring(0, 10)}...` : 'not set');
 console.log('[lib/directus-client.ts] Environment type:', typeof window === 'undefined' ? 'server' : 'client');
 
-// Create client with static token if available, otherwise use authentication
-export const directus = createDirectus<DirectusSchema>(directusUrl)
-  .with(rest())
-  .with(directusToken ? staticToken(directusToken) : authentication());
+// Create client with static token if available, otherwise just REST (supports public access)
+const baseClient = createDirectus<DirectusSchema>(directusUrl).with(rest());
+
+// Add authentication composable only if we have credentials
+export const directus = directusToken
+  ? baseClient.with(staticToken(directusToken))
+  : (directusConfig.email && directusConfig.password
+      ? baseClient.with(authentication())
+      : baseClient); // No auth = public access
 
 // Helper to ensure authentication
+// Returns: true if authenticated, false if no credentials (will use public access)
 export async function ensureAuthenticated(): Promise<boolean> {
   console.log('[directus-client.ts] ensureAuthenticated called');
-  
+
   // If using static token, we're already authenticated
   if (directusToken) {
     console.log('[directus-client.ts] Using static token authentication');
     return true;
   }
-  
+
   // If using email/password authentication
   const credentials = getDirectusCredentials();
   const { email: directusEmail, password: directusPassword } = credentials;
-  
+
   console.log('[directus-client.ts] Email configured:', !!directusEmail);
   console.log('[directus-client.ts] Password configured:', !!directusPassword);
-  
+
   if (!directusEmail || !directusPassword) {
-    console.warn('[directus-client.ts] Directus credentials not configured. Skipping Directus content.');
-    return false;
+    console.log('[directus-client.ts] No credentials configured - will use public API access');
+    // Return true to allow public API requests to proceed
+    return true;
   }
-  
+
   try {
     console.log('[directus-client.ts] Attempting to authenticate with Directus...');
     // Type assertion to access login method when using authentication
@@ -199,7 +206,9 @@ export async function ensureAuthenticated(): Promise<boolean> {
     return true;
   } catch (error) {
     console.error('[directus-client.ts] Failed to authenticate with Directus:', error);
-    return false;
+    console.log('[directus-client.ts] Will attempt to use public API access');
+    // Return true to allow public API requests as fallback
+    return true;
   }
 }
 
