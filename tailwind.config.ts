@@ -39,16 +39,42 @@ export default {
         md: 'calc(var(--fd-radius) - 2px)',
         sm: 'calc(var(--fd-radius) - 4px)',
       },
-      spacing: {
-        'fd-xs': 'var(--fd-spacing-xs)',
-        'fd-sm': 'var(--fd-spacing-sm)',
-        'fd-md': 'var(--fd-spacing-md)',
-        'fd-lg': 'var(--fd-spacing-lg)',
-        'fd-xl': 'var(--fd-spacing-xl)',
-        'fd-2xl': 'var(--fd-spacing-2xl)',
-        'fd-3xl': 'var(--fd-spacing-3xl)',
+      // Custom container width utilities from design tokens
+      maxWidth: {
+        'content': 'var(--container-content)',   // 1200px - main content
+        'wide': 'var(--container-wide)',         // 1440px - marketing/hero
+        'narrow': 'var(--container-narrow)',     // 860px - focused reading
+        'section': 'var(--container-section)',   // 1280px - section containers
+        'fd-layout': 'var(--fd-layout-width)',   // Fumadocs layout width
       },
+      // Custom typography utilities from design tokens
       fontSize: {
+        // Heading utilities with font-weight and line-height
+        'h1': ['var(--text-h1)', {
+          lineHeight: 'var(--text-h1-line-height)',
+          fontWeight: 'var(--text-h1-weight)'
+        }],
+        'h2': ['var(--text-h2)', {
+          lineHeight: 'var(--text-h2-line-height)',
+          fontWeight: 'var(--text-h2-weight)'
+        }],
+        'h3': ['var(--text-h3)', {
+          lineHeight: 'var(--text-h3-line-height)',
+          fontWeight: 'var(--text-h3-weight)'
+        }],
+        'h4': ['var(--text-h4)', {
+          lineHeight: 'var(--text-h4-line-height)',
+          fontWeight: 'var(--text-h4-weight)'
+        }],
+        'h5': ['var(--text-h5)', {
+          lineHeight: 'var(--text-h5-line-height)',
+          fontWeight: 'var(--text-h5-weight)'
+        }],
+        'h6': ['var(--text-h6)', {
+          lineHeight: 'var(--text-h6-line-height)',
+          fontWeight: 'var(--text-h6-weight)'
+        }],
+        // Fumadocs font sizes
         'fd-xs': 'var(--fd-font-size-xs)',
         'fd-sm': 'var(--fd-font-size-sm)',
         'fd-base': 'var(--fd-font-size-base)',
@@ -59,13 +85,26 @@ export default {
         'fd-4xl': 'var(--fd-font-size-4xl)',
         'fd-5xl': 'var(--fd-font-size-5xl)',
       },
+      // Custom shadow utilities from design tokens
+      boxShadow: {
+        'sm': 'var(--shadow-sm)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
+        'xl': 'var(--shadow-xl)',
+      },
+      spacing: {
+        'fd-xs': 'var(--fd-spacing-xs)',
+        'fd-sm': 'var(--fd-spacing-sm)',
+        'fd-md': 'var(--fd-spacing-md)',
+        'fd-lg': 'var(--fd-spacing-lg)',
+        'fd-xl': 'var(--fd-spacing-xl)',
+        'fd-2xl': 'var(--fd-spacing-2xl)',
+        'fd-3xl': 'var(--fd-spacing-3xl)',
+      },
       lineHeight: {
         'fd-tight': 'var(--fd-line-height-tight)',
         'fd-normal': 'var(--fd-line-height-normal)',
         'fd-relaxed': 'var(--fd-line-height-relaxed)',
-      },
-      maxWidth: {
-        'fd-layout': 'var(--fd-layout-width)',
       },
       height: {
         'fd-nav': 'var(--fd-nav-height)',

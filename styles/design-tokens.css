@@ -1,0 +1,139 @@
+/**
+ * Charlotte UDO Design Token System
+ *
+ * This file defines all design tokens for global style consistency.
+ * These tokens ensure visual uniformity across all pages while maintaining
+ * accessibility, responsive behavior, and dark mode compatibility.
+ *
+ * Design Principles:
+ * - Mobile-first responsive design
+ * - WCAG 2.1 AA accessibility compliance
+ * - Dark mode parity with light mode
+ * - 4px base spacing scale
+ * - Semantic token naming
+ */
+
+:root {
+  /* ========================================
+   * CONTAINER WIDTHS
+   * ======================================== */
+
+  /* Main content width - standardized across all content pages */
+  --container-content: 1200px;
+
+  /* Wide layout for marketing sections and hero areas */
+  --container-wide: 1440px;
+
+  /* Narrow reading width for focused content (matches Fumadocs default) */
+  --container-narrow: 860px;
+
+  /* Section container for full-width sections with inner content */
+  --container-section: 1280px;
+
+  /* ========================================
+   * TYPOGRAPHY - HEADINGS
+   * ======================================== */
+
+  /* H1 - Page Titles */
+  --text-h1: 2.5rem;              /* 40px */
+  --text-h1-weight: 700;          /* Bold */
+  --text-h1-line-height: 1.2;     /* Tight for impact */
+
+  /* H2 - Section Headers (CRITICAL FIX: was 1.125rem/18px, now 2rem/32px) */
+  --text-h2: 2rem;                /* 32px */
+  --text-h2-weight: 600;          /* Semibold */
+  --text-h2-line-height: 1.3;     /* Balanced */
+
+  /* H3 - Subsection Headers */
+  --text-h3: 1.5rem;              /* 24px */
+  --text-h3-weight: 600;          /* Semibold */
+  --text-h3-line-height: 1.4;     /* Comfortable */
+
+  /* H4 - Minor Headers */
+  --text-h4: 1.25rem;             /* 20px */
+  --text-h4-weight: 600;          /* Semibold */
+  --text-h4-line-height: 1.5;     /* Relaxed */
+
+  /* H5 - Small Headers */
+  --text-h5: 1.125rem;            /* 18px */
+  --text-h5-weight: 600;          /* Semibold */
+  --text-h5-line-height: 1.5;     /* Relaxed */
+
+  /* H6 - Tiny Headers */
+  --text-h6: 1rem;                /* 16px */
+  --text-h6-weight: 600;          /* Semibold */
+  --text-h6-line-height: 1.5;     /* Relaxed */
+
+  /* ========================================
+   * TYPOGRAPHY - BODY TEXT
+   * ======================================== */
+
+  /* Base Body Text */
+  --text-base: 1rem;              /* 16px */
+  --text-base-weight: 400;        /* Normal */
+  --text-base-line-height: 1.6;   /* Optimal readability */
+
+  /* Large Body Text (Lead paragraphs, introductions) */
+  --text-lg: 1.125rem;            /* 18px */
+  --text-lg-weight: 400;          /* Normal */
+  --text-lg-line-height: 1.6;     /* Comfortable */
+
+  /* Small Text (Captions, labels, metadata) */
+  --text-sm: 0.875rem;            /* 14px */
+  --text-sm-weight: 400;          /* Normal */
+  --text-sm-line-height: 1.5;     /* Tight but readable */
+
+  /* Extra Small Text (Fine print, timestamps) */
+  --text-xs: 0.75rem;             /* 12px */
+  --text-xs-weight: 400;          /* Normal */
+  --text-xs-line-height: 1.4;     /* Compact */
+
+  /* ========================================
+   * SPACING SCALE (4px Base System)
+   * ======================================== */
+
+  /* Base Scale - 4px increments */
+  --space-1: 0.25rem;     /* 4px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.25rem;     /* 20px */
+  --space-6: 1.5rem;      /* 24px */
+  --space-8: 2rem;        /* 32px */
+  --space-10: 2.5rem;     /* 40px */
+  --space-12: 3rem;       /* 48px */
+  --space-16: 4rem;       /* 64px */
+  --space-20: 5rem;       /* 80px */
+  --space-24: 6rem;       /* 96px */
+
+  /* Semantic Spacing Tokens */
+  --section-spacing: var(--space-16);        /* 64px - between major sections */
+  --section-spacing-tight: var(--space-12);  /* 48px - between related sections */
+  --card-spacing: var(--space-8);            /* 32px - between cards */
+  --element-spacing: var(--space-6);         /* 24px - between elements */
+  --card-padding: var(--space-6);            /* 24px - inside cards */
+  --element-gap: var(--space-4);             /* 16px - in flex/grid layouts */
+  --element-gap-tight: var(--space-3);       /* 12px - tight layouts */
+
+  /* ========================================
+   * SHADOW ELEVATION SYSTEM
+   * ======================================== */
+
+  /* Light Mode Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* ========================================
+ * DARK MODE ADJUSTMENTS
+ * ======================================== */
+
+.dark {
+  /* Dark Mode Shadow Adjustments - Increased opacity for visibility */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+}

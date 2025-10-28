@@ -8,7 +8,7 @@ export default async function ArticlesListingPage() {
   
   return (
     <DocsPage>
-      <DocsBody className="max-w-7xl mx-auto">
+      <DocsBody className="max-w-content mx-auto">
         <ArticlesTable articles={articles} categories={categories} />
       </DocsBody>
     </DocsPage>

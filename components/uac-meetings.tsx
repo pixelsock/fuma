@@ -67,6 +67,17 @@ export function UACMeetings() {
   useEffect(() => {
     let filtered = videos;
 
+    // Exclude the latest video (most recent by date)
+    if (filtered.length > 0) {
+      const sortedByDate = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB.getTime() - dateA.getTime();
+      });
+      const latestVideoId = sortedByDate[0].id;
+      filtered = filtered.filter(video => video.id !== latestVideoId);
+    }
+
     // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(video =>

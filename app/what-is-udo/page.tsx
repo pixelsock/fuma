@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { getPublicDirectusClient } from '@/lib/directus-server';
+import { getDirectusClient } from '@/lib/directus-server';
 import { readSingleton } from '@directus/sdk';
 
 interface KeyFeature {
@@ -58,7 +58,7 @@ function getIconComponent(iconName: string) {
 }
 
 export default async function WhatIsUDOPage() {
-  const directus = await getPublicDirectusClient();
+  const directus = getDirectusClient();
 
   const data = await directus.request<WhatIsUDOPageData>(
     readSingleton('what_is_udo_page', {
@@ -68,13 +68,13 @@ export default async function WhatIsUDOPage() {
   
   return (
     <DocsPage>
-      <DocsBody className="max-w-6xl mx-auto">
+      <DocsBody className="max-w-content mx-auto">
         {/* Hero Section */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             {data.page_title}
           </h1>
-          <p className="text-xl text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground">
             {data.page_description}
           </p>
         </div>

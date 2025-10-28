@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LatestUpdate } from '@/lib/directus-source'
 import { KiboTextAmendmentsTableV3 } from '@/components/kibo-text-amendments-table-v3'
 import { InformationalSessions } from '@/components/informational-sessions'
+import { DocsPage, DocsBody } from 'fumadocs-ui/page'
 
 
 interface TimelineItemProps {
@@ -129,57 +130,39 @@ export default function TextAmendmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Hero Section - Extended to top */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden -mt-16 pt-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent-foreground/20" />
-        <motion.div
-          className="absolute inset-0 opacity-30"
-          animate={{
-            background: [
-              "radial-gradient(circle at 20% 50%, var(--color-fd-primary) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 50%, var(--color-fd-accent-foreground) 0%, transparent 50%)",
-              "radial-gradient(circle at 40% 40%, var(--color-fd-primary) 0%, transparent 50%)",
-            ],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-        
-        <div className="container mx-auto px-4 z-9 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
-              UDO Text Amendments
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              In keeping with the intention of maintaining the UDO as a "living" document, it will continue to be updated and modified through text amendments, even after its adoption.
-            </p>
+    <DocsPage>
+      <DocsBody className="max-w-content mx-auto">
+        {/* Hero Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
+            UDO Text Amendments
+          </h1>
+          <p className="text-muted-foreground mb-8">
+            In keeping with the intention of maintaining the UDO as a "living" document, it will continue to be updated and modified through text amendments, even after its adoption.
+          </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all" asChild>
-                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
-                  Submit a Suggestion
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white shadow-xl hover:shadow-2xl transition-all">
-                <Download className="mr-2 w-4 h-4" />
-                View UDO Versions
-              </Button>
-            </div>
-          </motion.div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white" asChild>
+              <a 
+                href="https://publicinput.com/udo-comment-hub" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="no-underline"
+                style={{ textDecoration: 'none' }}
+              >
+                Submit a Suggestion
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white">
+              <Download className="mr-2 w-4 h-4" />
+              View UDO Versions
+            </Button>
+          </div>
         </div>
-      </section>
 
       {/* Latest Updates Timeline */}
-      <section className="py-20 bg-background/50">
+      <section className="pt-8 pb-20 bg-background/50">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -237,7 +220,7 @@ export default function TextAmendmentsPage() {
       </section>
 
       {/* Text Amendment History */}
-      <section className="py-20 bg-muted/30">
+      <section className="pb-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -307,6 +290,7 @@ export default function TextAmendmentsPage() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </DocsBody>
+    </DocsPage>
   )
 }

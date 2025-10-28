@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { getPublicDirectusClient } from '@/lib/directus-server';
+import { getDirectusClient } from '@/lib/directus-server';
 import { readSingleton } from '@directus/sdk';
 
 // Type for UDO version entries from Directus
@@ -49,29 +49,56 @@ type VersionsPageData = {
 };
 
 export default async function VersionsPage() {
-  const directus = await getPublicDirectusClient();
+  const directus = getDirectusClient();
 
-  const data = await directus.request<VersionsPageData>(
-    readSingleton('versions_page', {
-      fields: ['*']
-    })
-  );
+  let data: VersionsPageData | null = null;
+  
+  try {
+    data = await directus.request<VersionsPageData>(
+      readSingleton('versions_page', {
+        fields: ['*']
+      })
+    );
+  } catch (error) {
+    console.error('[VersionsPage] Error fetching versions_page:', error);
+  }
 
   const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'http://localhost:8056';
 
+  // If no data, show a fallback message
+  if (!data) {
+    return (
+      <DocsPage>
+        <DocsBody className="max-w-content mx-auto">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-4">UDO Versions</h1>
+            <p className="text-muted-foreground">Version history information is currently unavailable.</p>
+          </div>
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Configuration Required</AlertTitle>
+            <AlertDescription>
+              The versions page collection needs to be configured in Directus. Please contact your administrator.
+            </AlertDescription>
+          </Alert>
+        </DocsBody>
+      </DocsPage>
+    );
+  }
+
   return (
     <DocsPage>
-      <DocsBody className="max-w-5xl mx-auto">
+      <DocsBody className="max-w-content mx-auto">
         {/* Hero Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">{data.page_title}</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">{data.page_title}</h1>
           <p className="text-muted-foreground">{data.page_description}</p>
         </div>
 
         {/* Versions Table */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 mb-4">
               <FileText className="h-5 w-5" />
               Available Versions
             </CardTitle>
@@ -108,7 +135,7 @@ export default async function VersionsPage() {
                             <div className="flex items-center gap-2">
                               <div className="font-medium text-foreground">{displayTitle}</div>
                               {version.is_current && (
-                                <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20 dark:bg-primary/20 dark:text-primary">
                                   Current Version
                                 </span>
                               )}
@@ -177,7 +204,7 @@ export default async function VersionsPage() {
         {data.additional_resources && data.additional_resources.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-4">
                 <ExternalLink className="h-5 w-5 text-primary" />
                 Additional Resources
               </CardTitle>

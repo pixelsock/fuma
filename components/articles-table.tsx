@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { TableContainer } from '@/components/ui/table-container';
 import {
   Select,
   SelectContent,
@@ -20,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   Card,
   CardHeader,
@@ -37,7 +37,8 @@ import {
   Filter,
   X,
   Grid3X3,
-  List
+  List,
+  LayoutGrid
 } from 'lucide-react';
 
 interface Article {
@@ -237,9 +238,9 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
   };
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-full space-y-6">
       {/* Header */}
-      <div>
+      <div className="w-full min-w-full">
         <h1 className="text-3xl font-bold tracking-tight">Charlotte UDO Articles</h1>
         <p className="text-muted-foreground mt-2">
           Browse and search {articles.length} articles of the Charlotte Unified Development Ordinance
@@ -247,12 +248,12 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
       </div>
 
       {/* Table Container */}
-      <div className="rounded-lg border bg-card">
+      <div className="w-full min-w-full rounded-lg border bg-card">
         {/* Toolbar */}
         <div className="p-4 border-b">
           <div className="flex flex-col gap-4">
-            {/* Search and Filter Row */}
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            {/* Search and View Toggle Row */}
+            <div className="flex gap-3 items-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
@@ -264,8 +265,32 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
               </div>
               
               <div className="flex gap-2">
-                <Select value="" onValueChange={handleCategorySelect}>
-                  <SelectTrigger className="w-full sm:w-[180px]">
+                {/* View Mode Toggle */}
+                <div className="flex gap-1 border rounded-md p-1">
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className="h-8 px-3 hover:!bg-[color-mix(in_oklab,var(--color-fd-background)_25%,var(--color-fd-primary))]"
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className="h-8 px-3 hover:!bg-[color-mix(in_oklab,var(--color-fd-background)_25%,var(--color-fd-primary))]"
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Category Filter Row */}
+            <div className="flex gap-3 items-center">
+              <Select value="" onValueChange={handleCategorySelect}>
+                  <SelectTrigger className="w-full sm:w-[250px] text-left">
                     <Filter className="w-4 h-4 mr-2" />
                     <SelectValue placeholder={selectedCategories.length > 0 ? "Add filter" : "Filter by category"} />
                   </SelectTrigger>
@@ -294,16 +319,6 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                
-                <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as ViewMode)} variant="outline">
-                  <ToggleGroupItem value="grid" aria-label="Grid view">
-                    <Grid3X3 className="h-4 w-4" />
-                  </ToggleGroupItem>
-                  <ToggleGroupItem value="list" aria-label="List view">
-                    <List className="h-4 w-4" />
-                  </ToggleGroupItem>
-                </ToggleGroup>
-              </div>
             </div>
             
             {/* Filter Pills */}
@@ -359,7 +374,7 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
         
         {/* Content */}
         {viewMode === 'list' ? (
-          <div className="overflow-x-auto">
+          <TableContainer>
             <Table>
           <TableHeader>
             <TableRow>
@@ -469,12 +484,12 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
             )}
           </TableBody>
         </Table>
-          </div>
+          </TableContainer>
         ) : (
-          <div className="p-6">
-            <div className="grid gap-4 md:grid-cols-2">
+          <div className="w-full max-w-full p-6">
+            <div className="w-full max-w-full grid gap-4 md:grid-cols-2">
               {groupedArticles.map(({ id, category, articles: categoryArticles }) => (
-                <Card key={id} className="h-full gap-2">
+                <Card key={id} className="h-full gap-2 min-w-0">
                   <CardHeader className="pb-2">
                     <div className="flex items-center gap-2">
                       <div 
@@ -492,11 +507,11 @@ export default function ArticlesTable({ articles, categories }: ArticlesTablePro
                       <Link 
                         key={article.id}
                         href={getArticleUrl(article)}
-                        className="block py-1 px-3 hover:bg-muted/50 transition-colors"
+                        className="block py-1 px-3 hover:bg-muted/50 transition-colors min-w-0"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <p className="text-sm font-medium leading-tight truncate">
+                          <p className="text-sm font-medium leading-tight break-words min-w-0 flex-1">
                             {article.name}
                           </p>
                         </div>

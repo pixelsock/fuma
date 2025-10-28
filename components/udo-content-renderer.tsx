@@ -219,6 +219,49 @@ export function UDOContentRenderer({
 
       // Initial check for scroll indicators
       setTimeout(updateScrollIndicators, 100);
+
+      // Add column resize enhancement (async, non-blocking)
+      // Task Group 6.6: Enhanced error boundary
+      requestAnimationFrame(() => {
+        try {
+          import('@/lib/table-column-resize')
+            .then(({ TableColumnResizer }) => {
+              try {
+                const tableId = TableColumnResizer.generateTableId(table);
+                TableColumnResizer.enhance(table, tableId);
+
+                // Add reset button to toolbar if preferences exist
+                if (TableColumnResizer.hasPreferences(tableId)) {
+                  const resetBtn = document.createElement('button');
+                  resetBtn.className = 'udo-table-action';
+                  resetBtn.innerHTML = '↺';
+                  resetBtn.setAttribute('aria-label', 'Reset column widths');
+                  resetBtn.onclick = () => {
+                    try {
+                      TableColumnResizer.resetWidths(tableId);
+                      location.reload(); // Simple approach: reload to reset
+                    } catch (error) {
+                      console.error('Failed to reset column widths:', error);
+                      // Fail gracefully - table remains functional
+                    }
+                  };
+                  actionsContainer.insertBefore(resetBtn, actionsContainer.firstChild);
+                }
+              } catch (enhanceError) {
+                // Task Group 6.6: Log error but don't break table
+                console.error('Failed to enhance table columns:', enhanceError);
+              }
+            })
+            .catch((importError) => {
+              // Task Group 6.6: Handle module loading failure
+              console.error('Failed to load table column resize module:', importError);
+            });
+        } catch (error) {
+          // Task Group 6.6: Outer catch for any unexpected errors
+          console.error('Unexpected error in table resize setup:', error);
+          // Fail silently - table is still functional without resize
+        }
+      });
     });
 
     // Process definition links in place

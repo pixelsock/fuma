@@ -292,6 +292,19 @@ input[type="file"]:focus-visible {
   outline-offset: 0.125rem;
 }
 
+/* Screen reader only utility class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Table styles */
 .table-enhanced {
   width: 100%;

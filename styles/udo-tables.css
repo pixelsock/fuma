@@ -28,7 +28,7 @@
 /* Table wrappers */
 .udo-table-host {
   position: relative;
-  margin: 0 0 1.75rem 0 !important;
+  margin: 0 0 var(--space-8) 0 !important;
   margin-top: 0 !important;
 }
 
@@ -45,14 +45,14 @@
   background: var(--udo-table-surface);
   border: 1px solid var(--udo-table-cell-border);
   border-radius: 0.25rem;
-  box-shadow: 0 24px 48px -32px rgba(15, 23, 42, 0.28);
+  box-shadow: var(--shadow-lg);
   transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
   overflow: hidden;
-  margin: 2rem 0;
+  margin: var(--space-8) 0;
 }
 
 .dark .udo-table-shell {
-  box-shadow: 0 24px 56px -36px rgba(15, 23, 42, 0.55);
+  box-shadow: var(--shadow-lg);
 }
 
 .udo-table-shell--fullscreen {
@@ -86,8 +86,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: #1e4e79;
 }
 
@@ -98,29 +98,29 @@
 .udo-table-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
   flex-wrap: wrap;
   min-width: 0; /* Allow flex item to shrink below content size */
 }
 
 .udo-table-title-text {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: var(--text-h6-weight);
   color: #ffffff;
   flex: 1;
   min-width: 0; /* Allow flex item to shrink */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 1.25;
+  line-height: var(--text-sm-line-height);
 }
 
 .udo-table-index {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   font-weight: 500;
   color: var(--udo-table-caption);
   background: color-mix(in srgb, var(--udo-table-border) 30%, white 70%);
-  padding: 0.15rem 0.5rem;
+  padding: 0.15rem var(--space-2);
   border-radius: 9999px;
 }
 
@@ -132,7 +132,7 @@
 .udo-table-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .udo-table-action {
@@ -198,7 +198,7 @@
 .prose table td,
 .udo-table-scroll table th,
 .udo-table-scroll table td {
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-2) var(--space-3);
   border-right: 1px solid var(--udo-table-cell-border);
   border-bottom: 1px solid var(--udo-table-cell-border);
   vertical-align: middle !important;
@@ -259,7 +259,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.5rem;
+  padding: 0 var(--space-2);
 }
 
 .udo-table-scroll-button {
@@ -273,7 +273,7 @@
   background: color-mix(in srgb, var(--udo-table-surface) 90%, white 10%);
   border: 1px solid color-mix(in srgb, var(--udo-table-border) 85%, white 15%);
   color: var(--udo-table-header-text);
-  box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.35);
+  box-shadow: var(--shadow-md);
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -293,7 +293,7 @@
   background: rgba(30, 41, 59, 0.85);
   border-color: rgba(148, 163, 184, 0.35);
   color: rgba(226, 232, 240, 0.85);
-  box-shadow: 0 18px 32px -22px rgba(15, 23, 42, 0.5);
+  box-shadow: var(--shadow-md);
 }
 
 .dark .udo-table-scroll-button:hover:not(:disabled) {
@@ -309,12 +309,12 @@
 .prose caption,
 caption {
   caption-side: top;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: var(--text-h6-weight);
   letter-spacing: 0.015em;
   color: var(--udo-table-caption);
   text-align: left;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
 }
 
 /* Charlotte UDO specific header styles */
@@ -430,19 +430,19 @@ th[style*="color: rgb(0, 0, 0)"] {
   table {
     font-size: 0.85rem;
   }
-  
+
   .udo-content th,
   .udo-content td,
   .prose th,
   .prose td,
   th,
   td {
-    padding: 0.5rem 0.75rem;
+    padding: var(--space-2) var(--space-3);
   }
-  
+
   .table-wrapper,
   .resizable-table-wrapper {
-    margin: 1.25rem 0;
+    margin: var(--space-5) 0;
     border-radius: 0.65rem;
   }
 }
@@ -454,17 +454,92 @@ th[style*="color: rgb(0, 0, 0)"] {
   table {
     page-break-inside: avoid;
   }
-  
+
   .udo-content thead,
   .prose thead,
   thead {
     display: table-header-group;
   }
-  
+
   .udo-content tr,
   .prose tr,
   tr {
     page-break-inside: avoid;
     page-break-after: auto;
   }
+}
+
+/* Table Column Resize Styles - Cell-based handles in lower-right corner */
+.table-resize-handle {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 16px;
+  height: 16px;
+  cursor: col-resize;
+  z-index: 10;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Show handle when hovering over the cell */
+th:hover .table-resize-handle,
+td:hover .table-resize-handle {
+  opacity: 1;
+}
+
+.table-resize-handle:hover,
+.table-resize-handle:focus {
+  opacity: 1;
+  background: rgba(37, 99, 235, 0.08);
+  outline: none;
+  color: rgba(37, 99, 235, 0.8);
+}
+
+.table-resize-handle:focus-visible {
+  opacity: 1;
+  background: rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
+  color: rgb(37, 99, 235);
+}
+
+.table-resize-handle svg {
+  pointer-events: none;
+}
+
+.table-resizing {
+  user-select: none;
+  cursor: col-resize;
+}
+
+.table-resizing * {
+  cursor: col-resize !important;
+}
+
+/* Dark mode adjustments */
+.dark .table-resize-handle {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dark th:hover .table-resize-handle,
+.dark td:hover .table-resize-handle {
+  opacity: 1;
+}
+
+.dark .table-resize-handle:hover,
+.dark .table-resize-handle:focus {
+  background: rgba(59, 130, 246, 0.12);
+  color: rgba(96, 165, 250, 0.9);
+}
+
+.dark .table-resize-handle:focus-visible {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+  color: rgb(96, 165, 250);
 }

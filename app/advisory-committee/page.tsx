@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Clock,
   FileText,
+  Play,
 } from 'lucide-react';
 import {
   Card,
@@ -25,7 +26,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { UACMeetings } from '@/components/uac-meetings';
-import { getPublicDirectusClient } from '@/lib/directus-server';
+import { LatestUACVideo } from '@/components/latest-uac-video';
+import { getDirectusClient } from '@/lib/directus-server';
 import { readSingleton } from '@directus/sdk';
 
 // Type definitions for Directus data
@@ -51,7 +53,7 @@ interface AdvisoryCommitteePageData {
 }
 
 export default async function AdvisoryCommitteePage() {
-  const directus = await getPublicDirectusClient();
+  const directus = getDirectusClient();
 
   const data = await directus.request<AdvisoryCommitteePageData>(
     readSingleton('advisory_committee_page', {
@@ -60,10 +62,10 @@ export default async function AdvisoryCommitteePage() {
   );
   return (
     <DocsPage>
-      <DocsBody className="max-w-6xl mx-auto">
+      <DocsBody className="max-w-content mx-auto">
         {/* Hero Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             {data.page_title}
           </h1>
           <p className="text-muted-foreground">
@@ -81,6 +83,9 @@ export default async function AdvisoryCommitteePage() {
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Featured Latest Video */}
+        <LatestUACVideo />
 
         {/* UAC Meeting Videos */}
         <div className="mb-12 pb-8 border-b">
@@ -135,7 +140,7 @@ export default async function AdvisoryCommitteePage() {
         {data.contact_resources && data.contact_resources.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-4">
                 <Mail className="h-5 w-5" />
                 Contact Information
               </CardTitle>
