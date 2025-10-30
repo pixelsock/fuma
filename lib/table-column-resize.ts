@@ -1,10 +1,13 @@
 /**
  * Table Column Resize Module
- * Provides drag-to-resize functionality for UDO tables with localStorage persistence
+ * Provides drag-to-resize functionality for UDO tables
  *
- * Task Group 1: Foundation Module & Storage Layer
- * Task Group 6: Edge Cases & Error Handling
- * Task Group 8: Performance Validation & Documentation
+ * Features:
+ * - Drag-to-resize columns from right edge
+ * - Independent column resizing with table-layout: fixed
+ * - Colspan support for merged header cells
+ * - Resize handles on last column when table overflows container
+ * - Keyboard accessibility for resize operations
  */
 
 /**
@@ -24,6 +27,7 @@ export interface ResizeState {
   startWidth: number;
   columnIndex: number;
   minWidth: number;
+  targetCell: HTMLElement | null;
 }
 
 /**
@@ -512,6 +516,56 @@ export class TableColumnResizer {
   }
 
   /**
+   * Get column widths from colgroup elements (backend-defined widths)
+   * Reads the width style from <col> elements in <colgroup>
+   *
+   * @param table - The table element
+   * @returns Array of widths in pixels from colgroup (one per actual column), or null if not found
+   */
+  static getColgroupWidths(table: HTMLTableElement): number[] | null {
+    try {
+      const colgroup = table.querySelector('colgroup');
+      if (!colgroup) {
+        return null;
+      }
+
+      const cols = colgroup.querySelectorAll('col');
+      if (cols.length === 0) {
+        return null;
+      }
+
+      const widths: number[] = [];
+      for (const col of Array.from(cols)) {
+        const colElement = col as HTMLElement;
+        const widthStyle = colElement.style.width;
+        
+        if (!widthStyle) {
+          // If any col is missing width, use a default
+          console.warn('Col element missing width, using default');
+          widths.push(100);
+          continue;
+        }
+
+        // Parse width (assumes px units)
+        const width = parseInt(widthStyle, 10);
+        if (isNaN(width) || width <= 0) {
+          console.warn('Invalid col width, using minimum');
+          widths.push(this.MIN_COLUMN_WIDTH);
+          continue;
+        }
+
+        // Enforce minimum width - never allow columns smaller than MIN_COLUMN_WIDTH
+        widths.push(Math.max(width, this.MIN_COLUMN_WIDTH));
+      }
+
+      return widths.length > 0 ? widths : null;
+    } catch (error) {
+      console.warn('Error reading colgroup widths:', error);
+      return null;
+    }
+  }
+
+  /**
    * Get current column widths from a table
    * Reads the offsetWidth of each header cell
    *
@@ -526,32 +580,57 @@ export class TableColumnResizer {
   /**
    * Apply widths to table columns
    * Sets width and minWidth CSS properties on header cells
+   * Handles colspan by mapping colgroup widths to actual columns
    * Task Group 8.1: Enhanced with performance measurements
    *
    * @param table - The table element
-   * @param widths - Array of widths in pixels to apply
+   * @param widths - Array of widths in pixels from colgroup (one per actual column)
    */
   static applyWidths(table: HTMLTableElement, widths: number[]): void {
     const tableId = this.generateTableId(table);
     this.performanceMark(`applyWidths-${tableId}-start`);
 
-    const headers = table.querySelectorAll('thead th');
+    // Find the first row without title cells to get actual column structure
+    const headerRows = table.querySelectorAll('thead tr');
+    let targetRow: Element | null = null;
+    
+    for (const row of Array.from(headerRows)) {
+      const firstCell = row.querySelector('th, td');
+      if (firstCell && !firstCell.classList.contains('table-title-row')) {
+        targetRow = row;
+        break;
+      }
+    }
 
-    // Validate column count matches
-    if (headers.length !== widths.length) {
-      console.warn(
-        `Column count mismatch: table has ${headers.length} columns, ` +
-        `stored widths has ${widths.length} entries. Ignoring stored widths.`
-      );
-      this.resetWidths(tableId);
+    if (!targetRow) {
+      console.warn('No valid header row found for applying widths');
       return;
     }
 
-    headers.forEach((th, index) => {
-      const width = Math.max(widths[index], this.MIN_COLUMN_WIDTH);
+    const headers = targetRow.querySelectorAll('th, td');
+    
+    // Map colgroup widths to header cells, accounting for colspan
+    let colIndex = 0;
+    headers.forEach((th) => {
       const element = th as HTMLElement;
-      element.style.width = `${width}px`;
-      element.style.minWidth = `${width}px`;
+      const colspan = parseInt(element.getAttribute('colspan') || '1');
+      
+      // For cells with colspan, sum the widths of the columns they span
+      let totalWidth = 0;
+      for (let i = 0; i < colspan && colIndex + i < widths.length; i++) {
+        totalWidth += widths[colIndex + i];
+      }
+      
+      if (totalWidth > 0) {
+        const width = Math.max(totalWidth, this.MIN_COLUMN_WIDTH);
+        element.style.width = `${width}px`;
+        // Keep minWidth at global minimum to preserve CSS constraints
+        element.style.minWidth = `${this.MIN_COLUMN_WIDTH}px`;
+        // Allow text wrapping
+        element.style.whiteSpace = 'normal';
+      }
+      
+      colIndex += colspan;
     });
 
     this.performanceMark(`applyWidths-${tableId}-end`);
@@ -568,7 +647,7 @@ export class TableColumnResizer {
    * Task Group 6.4: Uses dynamic minimum width for mobile
    *
    * @param table - The table element
-   * @param columnIndex - Zero-based column index
+   * @param columnIndex - Zero-based actual column index (accounting for colspan)
    * @param width - Desired width in pixels
    */
   static setColumnWidth(
@@ -577,19 +656,53 @@ export class TableColumnResizer {
     width: number
   ): void {
     try {
-      const headers = table.querySelectorAll('thead th');
+      // Find the first row without title cells to get actual column structure
+      const headerRows = table.querySelectorAll('thead tr');
+      let targetRow: Element | null = null;
+      
+      for (const row of Array.from(headerRows)) {
+        const firstCell = row.querySelector('th, td');
+        if (firstCell && !firstCell.classList.contains('table-title-row')) {
+          targetRow = row;
+          break;
+        }
+      }
 
-      if (columnIndex < 0 || columnIndex >= headers.length) {
-        console.warn(`Invalid column index: ${columnIndex}`);
+      if (!targetRow) {
+        console.warn('No valid header row found for setting width');
+        return;
+      }
+
+      const headers = targetRow.querySelectorAll('th, td');
+      
+      // Map columnIndex to the actual cell, accounting for colspan
+      let colIndex = 0;
+      let targetCell: HTMLElement | null = null;
+      
+      for (const header of Array.from(headers)) {
+        const element = header as HTMLElement;
+        const colspan = parseInt(element.getAttribute('colspan') || '1');
+        
+        // Check if this cell contains the target column
+        if (columnIndex >= colIndex && columnIndex < colIndex + colspan) {
+          targetCell = element;
+          break;
+        }
+        
+        colIndex += colspan;
+      }
+
+      if (!targetCell) {
+        console.warn(`No cell found for column index: ${columnIndex}`);
         return;
       }
 
       // Task Group 6.4: Use dynamic minimum width for mobile support
       const minWidth = this.getMinimumWidth();
       const constrainedWidth = Math.max(width, minWidth);
-      const element = headers[columnIndex] as HTMLElement;
-      element.style.width = `${constrainedWidth}px`;
-      element.style.minWidth = `${constrainedWidth}px`;
+      targetCell.style.width = `${constrainedWidth}px`;
+      // Keep minWidth at global minimum to preserve CSS constraints
+      targetCell.style.minWidth = `${minWidth}px`;
     } catch (error) {
       console.warn('Error setting column width:', error);
     }
@@ -609,18 +722,25 @@ export class TableColumnResizer {
       return;
     }
 
+    // Check if table overflows its container
+    const container = table.closest('.udo-table-scroll');
+    const tableOverflows = container 
+      ? table.scrollWidth > container.clientWidth 
+      : false;
+
     allCells.forEach((cell) => {
       const cellElement = cell as HTMLElement;
 
       // Get the column index for this cell
       const columnIndex = this.getCellColumnIndex(cellElement);
 
-      // Don't add handle to cells in the last column
+      // Check if this is the last column in the row
       const row = cellElement.parentElement;
       const cellsInRow = row?.querySelectorAll('th, td');
       const isLastColumn = cellsInRow && columnIndex >= cellsInRow.length - 1;
 
-      if (isLastColumn) {
+      // Skip last column only if table doesn't overflow
+      if (isLastColumn && !tableOverflows) {
         return;
       }
 
@@ -643,27 +763,34 @@ export class TableColumnResizer {
   }
 
   /**
-   * Get the column index for a cell, accounting for colspan
+   * Get the column index for a cell, accounting for colspan and rowspan
+   * Uses the browser's cellIndex which properly handles rowspan
    *
    * @param cell - The cell element
    * @returns The zero-based column index
    */
   private static getCellColumnIndex(cell: HTMLElement): number {
-    const row = cell.parentElement;
-    if (!row) return 0;
+    // Use the browser's built-in cellIndex which accounts for rowspan/colspan
+    const cellElement = cell as HTMLTableCellElement;
+    if (cellElement.cellIndex !== undefined && cellElement.cellIndex >= 0) {
+      // cellIndex gives us the visual column position
+      // Now we need to account for colspan in previous cells to get the actual column index
+      const row = cell.parentElement;
+      if (!row) return 0;
 
-    const cells = Array.from(row.querySelectorAll('th, td'));
-    let columnIndex = 0;
+      const cells = Array.from(row.querySelectorAll('th, td'));
+      let columnIndex = 0;
 
-    for (let i = 0; i < cells.length; i++) {
-      if (cells[i] === cell) {
-        return columnIndex;
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i] === cell) {
+          return columnIndex;
+        }
+        const colspan = parseInt((cells[i] as HTMLElement).getAttribute('colspan') || '1');
+        columnIndex += colspan;
       }
-      const colspan = parseInt((cells[i] as HTMLElement).getAttribute('colspan') || '1');
-      columnIndex += colspan;
     }
 
-    return columnIndex;
+    return 0;
   }
 
   /**
@@ -682,18 +809,15 @@ export class TableColumnResizer {
       startX: 0,
       startWidth: 0,
       columnIndex: -1,
-      minWidth: this.MIN_COLUMN_WIDTH
+      minWidth: this.MIN_COLUMN_WIDTH,
+      targetCell: null
     };
 
     this.resizeStates.set(table, state);
 
     // Handle pointer down on resize handles
     table.addEventListener('pointerdown', (e: PointerEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.classList.contains('table-resize-handle')) {
-        return;
-      }
-
+      // Let onResizeStart determine if this is a resize handle click
       this.onResizeStart(e, state, table);
     });
 
@@ -736,17 +860,25 @@ export class TableColumnResizer {
     table: HTMLTableElement
   ): void {
     const target = event.target as HTMLElement;
+    
+    // Find the resize handle (might be the target or a parent)
+    const handle = target.closest('.table-resize-handle') as HTMLElement;
+    
+    if (!handle) {
+      return;
+    }
+    
     const columnIndex = parseInt(
-      target.getAttribute('data-column-index') || '-1'
+      handle.getAttribute('data-column-index') || '-1'
     );
 
     if (columnIndex < 0) {
       return;
     }
 
-    const headers = table.querySelectorAll('thead th');
-    const column = headers[columnIndex] as HTMLElement;
-
+    // Find the cell that contains the resize handle
+    const column = handle.closest('th, td') as HTMLElement;
+    
     if (!column) {
       return;
     }
@@ -756,6 +888,21 @@ export class TableColumnResizer {
     state.startX = event.clientX;
     state.startWidth = column.offsetWidth;
     state.columnIndex = columnIndex;
+    state.targetCell = column;
+
+    // PERFORMANCE: Lock all other column widths ONCE at start, not on every move
+    const headerRows = table.querySelectorAll('thead tr');
+    headerRows.forEach(row => {
+      const cells = row.querySelectorAll('th, td');
+      cells.forEach(cell => {
+        const cellElement = cell as HTMLElement;
+        if (cellElement !== column) {
+          const currentWidth = cellElement.offsetWidth;
+          cellElement.style.width = `${currentWidth}px`;
+          cellElement.style.minWidth = `${this.MIN_COLUMN_WIDTH}px`;
+        }
+      });
+    });
 
     // Add visual feedback
     table.classList.add('table-resizing');
@@ -790,8 +937,43 @@ export class TableColumnResizer {
       this.MIN_COLUMN_WIDTH
     );
 
-    // Apply width to column
-    this.setColumnWidth(table, state.columnIndex, newWidth);
+    // Apply width directly to the target cell
+    if (state.targetCell) {
+      state.targetCell.style.width = `${newWidth}px`;
+      // Keep minWidth at global minimum (80px) to preserve CSS constraints
+      state.targetCell.style.minWidth = `${this.MIN_COLUMN_WIDTH}px`;
+      
+      // Also update the corresponding col element(s) in colgroup if it exists
+      const colgroup = table.querySelector('colgroup');
+      if (colgroup) {
+        const cols = colgroup.querySelectorAll('col');
+        const colspan = parseInt(state.targetCell.getAttribute('colspan') || '1');
+        
+        // If cell has colspan, distribute the width across all spanned columns
+        if (colspan > 1) {
+          const widthPerCol = newWidth / colspan;
+          for (let i = 0; i < colspan && (state.columnIndex + i) < cols.length; i++) {
+            (cols[state.columnIndex + i] as HTMLElement).style.width = `${widthPerCol}px`;
+          }
+        } else {
+          // Single column - just update the one col element
+          if (cols[state.columnIndex]) {
+            (cols[state.columnIndex] as HTMLElement).style.width = `${newWidth}px`;
+          }
+        }
+        
+        // Calculate total width of all columns (already locked at resize start)
+        let totalWidth = 0;
+        cols.forEach((col) => {
+          const colWidth = parseFloat((col as HTMLElement).style.width || '0');
+          totalWidth += colWidth;
+        });
+        
+        // Set table to exact total width to prevent column redistribution
+        table.style.width = `${totalWidth}px`;
+        table.style.minWidth = '100%';
+      }
+    }
 
     this.performanceMark('resize-drag-move-end');
     this.performanceMeasure(
@@ -820,13 +1002,12 @@ export class TableColumnResizer {
     // Clear resize state
     state.isResizing = false;
     state.columnIndex = -1;
+    state.targetCell = null;
 
     // Remove visual feedback
     table.classList.remove('table-resizing');
 
-    // Save updated widths (debounced)
-    const currentWidths = this.getColumnWidths(table);
-    this.saveWidths(tableId, currentWidths);
+    // Widths are updated in-memory only (not persisted)
   }
 
   /**
@@ -874,7 +1055,7 @@ export class TableColumnResizer {
         );
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        this.saveWidths(tableId, this.getColumnWidths(table));
+        // Widths updated in-memory only
         event.preventDefault();
         break;
 
@@ -883,7 +1064,7 @@ export class TableColumnResizer {
         newWidth = column.offsetWidth + STEP;
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        this.saveWidths(tableId, this.getColumnWidths(table));
+        // Widths updated in-memory only
         event.preventDefault();
         break;
 
@@ -892,7 +1073,7 @@ export class TableColumnResizer {
         newWidth = this.MIN_COLUMN_WIDTH;
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        this.saveWidths(tableId, this.getColumnWidths(table));
+        // Widths updated in-memory only
         event.preventDefault();
         break;
 
@@ -901,7 +1082,7 @@ export class TableColumnResizer {
         newWidth = this.getContentWidth(column);
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        this.saveWidths(tableId, this.getColumnWidths(table));
+        // Widths updated in-memory only
         event.preventDefault();
         break;
     }
@@ -1016,11 +1197,25 @@ export class TableColumnResizer {
       // Task Group 6.3: Check for wide tables
       this.checkWideTable(table);
 
-      // Load and apply stored widths if available
-      const storedWidths = this.loadWidths(tableId);
-      if (storedWidths) {
-        this.applyWidths(table, storedWidths);
+      // Apply backend-defined colgroup widths as initial widths
+      // User can resize during session, but changes won't persist across page loads
+      const colgroupWidths = this.getColgroupWidths(table);
+      if (colgroupWidths) {
+        // CRITICAL: With table-layout: fixed, we must update colgroup to enforce minimum widths
+        // Do this BEFORE applyWidths to avoid triggering multiple layouts
+        const colgroup = table.querySelector('colgroup');
+        if (colgroup) {
+          const cols = colgroup.querySelectorAll('col');
+          cols.forEach((col, index) => {
+            if (index < colgroupWidths.length) {
+              (col as HTMLElement).style.width = `${colgroupWidths[index]}px`;
+            }
+          });
+        }
+        
+        this.applyWidths(table, colgroupWidths);
       }
+      // If no colgroup widths, browser uses default table layout
 
       // Create resize handles between columns
       this.createResizeHandles(table);

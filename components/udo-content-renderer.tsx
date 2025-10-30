@@ -229,24 +229,7 @@ export function UDOContentRenderer({
               try {
                 const tableId = TableColumnResizer.generateTableId(table);
                 TableColumnResizer.enhance(table, tableId);
-
-                // Add reset button to toolbar if preferences exist
-                if (TableColumnResizer.hasPreferences(tableId)) {
-                  const resetBtn = document.createElement('button');
-                  resetBtn.className = 'udo-table-action';
-                  resetBtn.innerHTML = '↺';
-                  resetBtn.setAttribute('aria-label', 'Reset column widths');
-                  resetBtn.onclick = () => {
-                    try {
-                      TableColumnResizer.resetWidths(tableId);
-                      location.reload(); // Simple approach: reload to reset
-                    } catch (error) {
-                      console.error('Failed to reset column widths:', error);
-                      // Fail gracefully - table remains functional
-                    }
-                  };
-                  actionsContainer.insertBefore(resetBtn, actionsContainer.firstChild);
-                }
+                // No reset button needed - widths come from backend colgroup
               } catch (enhanceError) {
                 // Task Group 6.6: Log error but don't break table
                 console.error('Failed to enhance table columns:', enhanceError);

@@ -175,7 +175,7 @@
   position: relative;
   overflow: auto;
   padding: 0;
-  max-height: 100%;
+  max-height: 450px;
 }
 
 .udo-table-shell--fullscreen .udo-table-scroll {
@@ -190,6 +190,7 @@
   border-collapse: collapse;
   border-spacing: 0;
   border-top: 1px solid var(--udo-table-cell-border);
+  table-layout: fixed;
 }
 
 .udo-content table th,
@@ -202,7 +203,42 @@
   border-right: 1px solid var(--udo-table-cell-border);
   border-bottom: 1px solid var(--udo-table-cell-border);
   vertical-align: middle !important;
-  font-weight: normal !important;
+}
+
+/* Table header cells should be bold by default */
+.udo-content table th,
+.prose table th,
+.udo-table-scroll table th {
+  font-weight: 700 !important;
+  padding: var(--space-3) var(--space-3);
+  word-break: break-word;
+}
+
+/* Body cells should be normal weight */
+.udo-content table td,
+.prose table td,
+.udo-table-scroll table td {
+  font-weight: 400 !important;
+}
+
+/* Text within table cells should inherit cell weight unless explicitly styled */
+.udo-content table th *:not(strong):not(b),
+.prose table th *:not(strong):not(b),
+.udo-table-scroll table th *:not(strong):not(b),
+.udo-content table td *:not(strong):not(b),
+.prose table td *:not(strong):not(b),
+.udo-table-scroll table td *:not(strong):not(b) {
+  font-weight: inherit;
+}
+
+/* Strong/bold tags should be bold */
+.udo-content table strong,
+.udo-content table b,
+.prose table strong,
+.prose table b,
+.udo-table-scroll table strong,
+.udo-table-scroll table b {
+  font-weight: 700;
 }
 
 /* Remove borders on edges to prevent double borders with container */
@@ -480,12 +516,12 @@ th[style*="color: rgb(0, 0, 0)"] {
   z-index: 10;
   user-select: none;
   opacity: 0;
-  transition: opacity 0.2s ease, background-color 0.15s ease;
+  transition: opacity 0.2s ease, color 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2px;
   color: rgba(0, 0, 0, 0.4);
+  background: transparent;
 }
 
 /* Show handle when hovering over the cell */
@@ -497,15 +533,16 @@ td:hover .table-resize-handle {
 .table-resize-handle:hover,
 .table-resize-handle:focus {
   opacity: 1;
-  background: rgba(37, 99, 235, 0.08);
+  background: transparent;
   outline: none;
   color: rgba(37, 99, 235, 0.8);
 }
 
 .table-resize-handle:focus-visible {
   opacity: 1;
-  background: rgba(37, 99, 235, 0.15);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
+  background: transparent;
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
   color: rgb(37, 99, 235);
 }
 
@@ -534,12 +571,13 @@ td:hover .table-resize-handle {
 
 .dark .table-resize-handle:hover,
 .dark .table-resize-handle:focus {
-  background: rgba(59, 130, 246, 0.12);
+  background: transparent;
   color: rgba(96, 165, 250, 0.9);
 }
 
 .dark .table-resize-handle:focus-visible {
-  background: rgba(59, 130, 246, 0.2);
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+  background: transparent;
+  outline: 2px solid rgba(96, 165, 250, 0.4);
+  outline-offset: 2px;
   color: rgb(96, 165, 250);
 }
