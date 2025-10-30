@@ -3,6 +3,7 @@ import { baseOptions } from '@/app/layout.config';
 import { unifiedSource } from '@/lib/unified-source';
 import { SearchNavigationWrapper } from '@/components/search-navigation-wrapper';
 import { SidebarVisibilityController } from '@/components/sidebar-visibility-controller-simplified';
+import { SiteFooter } from '@/components/site-footer';
 import type { ReactNode } from 'react';
 
 export interface SharedDocsLayoutConfig {
@@ -85,6 +86,7 @@ export async function SharedDocsLayout({ children, config = {} }: SharedDocsLayo
           {children}
         </SidebarVisibilityController>
       </DocsLayout>
+      <SiteFooter />
       <SearchNavigationWrapper />
     </>
   );

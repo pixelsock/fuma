@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { NewsletterSignup } from '@/components/newsletter-signup'
 import { AnimatedKeyResources } from '@/components/animated-key-resources'
 import { AnimatedUpdates } from '@/components/animated-updates'
 import { AnimatedFAQs } from '@/components/animated-faqs'
@@ -189,9 +188,6 @@ export default async function HomePage() {
         homepageId={homepageData.id}
         faqs={homepageData.faqs}
       />
-
-      {/* Newsletter Section */}
-      <NewsletterSignup />
     </div>
   )
 }

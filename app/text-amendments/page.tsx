@@ -154,7 +154,7 @@ export default function TextAmendmentsPage() {
                 <ArrowRight className="ml-2 w-4 h-4" />
               </a>
             </Button>
-            <Button size="lg" variant="outline" className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-white">
+            <Button size="lg" variant="outline">
               <Download className="mr-2 w-4 h-4" />
               View UDO Versions
             </Button>
@@ -248,48 +248,6 @@ export default function TextAmendmentsPage() {
 
       {/* Informational Sessions */}
       <InformationalSessions />
-
-      {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary/80">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center text-white"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Have Questions or Suggestions?</h2>
-            <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-              We're here to help! Contact our team for information about text amendments or submit your suggestions for improving the UDO.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="bg-white text-primary hover:bg-white/90"
-                asChild
-              >
-                <a href="mailto:charlotteUDO@charlottenc.gov">
-                  <Mail className="mr-2 w-4 h-4" />
-                  Email Our Team
-                </a>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-white border-white hover:bg-white hover:text-primary"
-                asChild
-              >
-                <a href="https://publicinput.com/udo-comment-hub" target="_blank" rel="noopener noreferrer">
-                  Submit a Suggestion
-                </a>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
       </DocsBody>
     </DocsPage>
   )

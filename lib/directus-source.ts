@@ -683,16 +683,22 @@ export async function getSiteSetting(key: string): Promise<SiteSetting | null> {
 
 /**
  * Gets the site logo URL from Directus global settings
+ * Revalidates every 60 seconds to ensure logo updates are reflected
  */
 export async function getSiteLogo(): Promise<string | null> {
   try {
     const baseUrl = getDirectusUrl();
     
     // Use the public API since global_settings is publicly accessible
+    // Set cache revalidation to ensure logo updates are reflected
     const response = await fetch(`${baseUrl}/items/global_settings`, {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { 
+        revalidate: 60, // Revalidate every 60 seconds
+        tags: ['global-settings'] // Tag for on-demand revalidation
+      }
     });
     
     if (!response.ok) {

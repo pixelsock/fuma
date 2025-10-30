@@ -8,11 +8,27 @@
  * publicly accessible URLs, not internal Render network addresses.
  */
 
+import { getDeploymentEnvironment } from './env-config';
+
 /**
  * Get public Directus URL for assets
- * ALWAYS returns the public URL, never the internal Render network URL
+ * Returns the appropriate public URL based on deployment environment
  */
 export function getPublicDirectusUrl(): string {
+  const deploymentEnv = getDeploymentEnvironment();
+  
+  // In local development, use local Directus
+  if (deploymentEnv === 'local') {
+    if (process.env.LOCAL_DIRECTUS_URL) {
+      return process.env.LOCAL_DIRECTUS_URL;
+    }
+    // Fall back to NEXT_PUBLIC_ version if LOCAL_ not set
+    if (process.env.NEXT_PUBLIC_DIRECTUS_URL && process.env.NEXT_PUBLIC_DIRECTUS_URL.includes('localhost')) {
+      return process.env.NEXT_PUBLIC_DIRECTUS_URL;
+    }
+  }
+  
+  // In production, use production URL
   // Check for explicit production URL first
   if (process.env.PRODUCTION_DIRECTUS_URL) {
     return process.env.PRODUCTION_DIRECTUS_URL;
