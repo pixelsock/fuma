@@ -16,8 +16,9 @@ interface DefinitionDataContextType {
   definitions: DefinitionCache;
   loading: LoadingState;
   errors: ErrorState;
-  fetchDefinition: (id: string) => void;
+  fetchDefinition: (id: string, forceRefresh?: boolean) => void;
   prefetchDefinitions: (ids: string[]) => void;
+  clearDefinition: (id: string) => void;
 }
 
 const DefinitionDataContext = createContext<DefinitionDataContextType | undefined>(undefined);
@@ -30,11 +31,12 @@ export function useDefinitionData() {
   return context;
 }
 
-async function fetchDefinitionAPI(id: string): Promise<Definition> {
+async function fetchDefinitionAPI(id: string, forceRefresh = false): Promise<Definition> {
   const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || 'https://admin.charlotteudo.org';
-  const response = await fetch(`${directusUrl}/items/definitions/${id}`, {
+  const url = `${directusUrl}/items/definitions/${id}${forceRefresh ? `?t=${Date.now()}` : ''}`;
+  const response = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
-    cache: 'force-cache',
+    cache: 'no-store',
   });
   if (!response.ok) {
     throw new Error(`Failed to fetch definition ${id}`);
@@ -50,9 +52,19 @@ export function DefinitionDataProvider({ children }: { children: ReactNode }) {
   
   const fetchingRef = useRef<Set<string>>(new Set());
 
-  const fetchDefinition = useCallback(async (id: string) => {
-    if (definitions[id] || fetchingRef.current.has(id)) {
+  const fetchDefinition = useCallback(async (id: string, forceRefresh = false) => {
+    // Skip if already fetching (unless forcing refresh)
+    if (!forceRefresh && (definitions[id] || fetchingRef.current.has(id))) {
       return;
+    }
+
+    // If forcing refresh, clear the cached definition first
+    if (forceRefresh && definitions[id]) {
+      setDefinitions(prev => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     }
 
     fetchingRef.current.add(id);
@@ -60,7 +72,7 @@ export function DefinitionDataProvider({ children }: { children: ReactNode }) {
     setErrors(prev => ({ ...prev, [id]: null }));
 
     try {
-      const data = await fetchDefinitionAPI(id);
+      const data = await fetchDefinitionAPI(id, forceRefresh);
       setDefinitions(prev => ({ ...prev, [id]: data }));
     } catch (error) {
       console.error(error);
@@ -71,6 +83,16 @@ export function DefinitionDataProvider({ children }: { children: ReactNode }) {
       fetchingRef.current.delete(id);
     }
   }, [definitions]);
+
+  const clearDefinition = useCallback((id: string) => {
+    setDefinitions(prev => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+    // Refetch immediately after clearing
+    fetchDefinition(id, true);
+  }, [fetchDefinition]);
 
   const prefetchDefinitions = useCallback((ids: string[]) => {
     ids.forEach(id => {
@@ -86,6 +108,7 @@ export function DefinitionDataProvider({ children }: { children: ReactNode }) {
     errors,
     fetchDefinition,
     prefetchDefinitions,
+    clearDefinition,
   };
 
   return (

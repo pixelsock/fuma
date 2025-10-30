@@ -1,0 +1,82 @@
+/* UDO Table Styling */
+.udo-content .table-wrapper {
+	margin: 1.5rem 0;
+	overflow-x: auto;
+	border: 1px solid #d1d5db;
+	border-radius: 0.5rem;
+}
+
+.udo-content table.udo-table {
+	width: 100%;
+	min-width: 100%;
+	border-collapse: collapse;
+	margin: 0;
+}
+
+.udo-content table.udo-table th,
+.udo-content table.udo-table td {
+	padding: 0.5rem 0.75rem;
+	border-right: 1px solid #d1d5db;
+	border-bottom: 1px solid #d1d5db;
+}
+
+.udo-content table.udo-table th:last-child,
+.udo-content table.udo-table td:last-child {
+	border-right: none;
+}
+
+.udo-content table.udo-table tr:last-child td {
+	border-bottom: none;
+}
+
+.udo-content table.udo-table thead tr:last-child th {
+	border-bottom: 1px solid #d1d5db;
+}
+
+.udo-content table.udo-table th {
+	font-weight: 600;
+	text-align: left;
+}
+
+.udo-content table.udo-table .table-title-row {
+	font-weight: 700;
+	text-align: center;
+}
+
+/* Footnote Styling */
+.udo-content .footnote {
+	margin-top: 1rem;
+	padding: 0.75rem 1rem;
+	background-color: #f9fafb;
+	border-left: 3px solid #3b82f6;
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.udo-content .footnote sup {
+	font-weight: 600;
+	color: #3b82f6;
+	margin-right: 0.25rem;
+}
+
+/* Heading Styling */
+.udo-content h2 {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	color: #1e40af;
+}
+
+/* Image Styling */
+.udo-content img {
+	max-width: 100%;
+	height: auto;
+	margin: 1.5rem auto;
+	display: block;
+}
+
+/* List Styling */
+.udo-content p[style*="padding-left"] {
+	margin: 0.5rem 0;
+}

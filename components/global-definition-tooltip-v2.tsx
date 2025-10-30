@@ -38,11 +38,17 @@ export function GlobalDefinitionTooltipV2() {
     const handleShowTooltip = (event: Event) => {
       const customEvent = event as CustomEvent;
       const { definitionId, element } = customEvent.detail;
+      // Cancel any pending hide when showing tooltip
+      cancelHide();
       showTooltip(definitionId, element);
     };
 
     const handleHideTooltip = () => {
       hideTooltip();
+    };
+
+    const handleCancelHide = () => {
+      cancelHide();
     };
 
     const handleToggleTooltip = (event: Event) => {
@@ -51,29 +57,35 @@ export function GlobalDefinitionTooltipV2() {
       if (currentTooltip?.definitionId === definitionId) {
         hideTooltip();
       } else {
+        cancelHide();
         showTooltip(definitionId, element);
       }
     };
 
     document.addEventListener('show-definition-tooltip', handleShowTooltip);
     document.addEventListener('hide-definition-tooltip', handleHideTooltip);
+    document.addEventListener('cancel-hide-definition-tooltip', handleCancelHide);
     document.addEventListener('toggle-definition-tooltip', handleToggleTooltip);
 
     return () => {
       document.removeEventListener('show-definition-tooltip', handleShowTooltip);
       document.removeEventListener('hide-definition-tooltip', handleHideTooltip);
+      document.removeEventListener('cancel-hide-definition-tooltip', handleCancelHide);
       document.removeEventListener('toggle-definition-tooltip', handleToggleTooltip);
     };
-  }, [mounted, showTooltip, hideTooltip, currentTooltip?.definitionId]);
+  }, [mounted, showTooltip, hideTooltip, cancelHide, currentTooltip?.definitionId]);
 
   const updateAnchorPosition = useCallback(() => {
     if (currentTooltip && anchorRef.current) {
       const rect = currentTooltip.triggerElement.getBoundingClientRect();
       anchorRef.current.style.position = 'fixed';
+      // Position anchor at trigger location but don't interfere with pointer events
       anchorRef.current.style.left = `${rect.left + rect.width / 2}px`;
       anchorRef.current.style.top = `${rect.top}px`;
       anchorRef.current.style.width = '0';
       anchorRef.current.style.height = `${rect.height}px`;
+      // Make it non-interactive so it doesn't interfere with trigger element
+      anchorRef.current.style.pointerEvents = 'none';
     }
   }, [currentTooltip]);
 
@@ -120,11 +132,16 @@ export function GlobalDefinitionTooltipV2() {
     <TooltipProvider delayDuration={0}>
       <TooltipPrimitive.Root open={true}>
         <TooltipPrimitive.Trigger asChild>
-          <div ref={anchorRef} aria-hidden="true" />
+          <div 
+            ref={anchorRef} 
+            aria-hidden="true"
+          />
         </TooltipPrimitive.Trigger>
         <TooltipContent 
-          className="max-w-sm border-[var(--color-fd-border)] bg-[var(--color-fd-popover)] text-[var(--color-fd-popover-foreground)] z-[9999]"
+          className="max-w-sm border border-[var(--color-fd-border)] bg-[var(--color-fd-popover)] text-[var(--color-fd-popover-foreground)] z-[9999] shadow-2xl"
+          side="top"
           sideOffset={8}
+          align="center"
           onMouseEnter={cancelHide}
           onMouseLeave={hideTooltip}
           onPointerDownOutside={(e) => {

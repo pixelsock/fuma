@@ -71,10 +71,10 @@ export function TooltipProvider({ children }: TooltipProviderProps) {
   }, [calculatePosition]);
 
   const hideTooltip = useCallback(() => {
-    // Add small delay for hover interactions
+    // Add delay for hover interactions to allow moving from trigger to tooltip
     hideTimeoutRef.current = setTimeout(() => {
       setCurrentTooltip(null);
-    }, 200);
+    }, 150);
   }, []);
 
   const cancelHide = useCallback(() => {

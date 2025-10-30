@@ -751,7 +751,7 @@ export class TableColumnResizer {
       handle.setAttribute('aria-orientation', 'vertical');
       handle.setAttribute('aria-label', `Resize column ${columnIndex + 1}`);
       handle.setAttribute('aria-describedby', 'resize-instructions');
-      handle.tabIndex = 0;
+      handle.tabIndex = -1;
 
       // Add resize icon (diagonal stripes extending to edges)
       handle.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="0" y1="16" x2="16" y2="0"/><line x1="4" y1="16" x2="16" y2="4"/><line x1="8" y1="16" x2="16" y2="8"/><line x1="12" y1="16" x2="16" y2="12"/></svg>';
@@ -985,6 +985,7 @@ export class TableColumnResizer {
 
   /**
    * Handle resize end (pointer up)
+   * Saves the new column widths to localStorage for persistence
    *
    * @param state - Resize state object
    * @param table - The table element
@@ -1007,7 +1008,20 @@ export class TableColumnResizer {
     // Remove visual feedback
     table.classList.remove('table-resizing');
 
-    // Widths are updated in-memory only (not persisted)
+    // Save the new widths to localStorage
+    const colgroup = table.querySelector('colgroup');
+    if (colgroup) {
+      const cols = colgroup.querySelectorAll('col');
+      const widths: number[] = [];
+      cols.forEach((col) => {
+        const width = parseFloat((col as HTMLElement).style.width || '0');
+        widths.push(width);
+      });
+      
+      if (widths.length > 0) {
+        this.saveWidths(tableId, widths);
+      }
+    }
   }
 
   /**
@@ -1045,6 +1059,7 @@ export class TableColumnResizer {
 
     const STEP = 10; // pixels per arrow key press
     let newWidth: number;
+    let shouldSave = false;
 
     switch (event.key) {
       case 'ArrowLeft':
@@ -1055,7 +1070,7 @@ export class TableColumnResizer {
         );
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        // Widths updated in-memory only
+        shouldSave = true;
         event.preventDefault();
         break;
 
@@ -1064,7 +1079,7 @@ export class TableColumnResizer {
         newWidth = column.offsetWidth + STEP;
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        // Widths updated in-memory only
+        shouldSave = true;
         event.preventDefault();
         break;
 
@@ -1073,7 +1088,7 @@ export class TableColumnResizer {
         newWidth = this.MIN_COLUMN_WIDTH;
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        // Widths updated in-memory only
+        shouldSave = true;
         event.preventDefault();
         break;
 
@@ -1082,9 +1097,26 @@ export class TableColumnResizer {
         newWidth = this.getContentWidth(column);
         this.setColumnWidth(table, columnIndex, newWidth);
         this.announceResize(columnIndex, newWidth);
-        // Widths updated in-memory only
+        shouldSave = true;
         event.preventDefault();
         break;
+    }
+
+    // Save widths to localStorage after keyboard resize
+    if (shouldSave) {
+      const colgroup = table.querySelector('colgroup');
+      if (colgroup) {
+        const cols = colgroup.querySelectorAll('col');
+        const widths: number[] = [];
+        cols.forEach((col) => {
+          const width = parseFloat((col as HTMLElement).style.width || '0');
+          widths.push(width);
+        });
+        
+        if (widths.length > 0) {
+          this.saveWidths(tableId, widths);
+        }
+      }
     }
   }
 
@@ -1184,6 +1216,11 @@ export class TableColumnResizer {
    * Task Group 6: Enhanced with edge case handling
    * Task Group 8.1: Enhanced with performance measurements
    *
+   * Priority order for column widths:
+   * 1. User-saved widths from localStorage (if they've resized before)
+   * 2. Backend-defined colgroup widths (from Directus)
+   * 3. Browser default layout
+   *
    * @param table - The table element to enhance
    * @param tableId - Unique table identifier
    */
@@ -1197,25 +1234,41 @@ export class TableColumnResizer {
       // Task Group 6.3: Check for wide tables
       this.checkWideTable(table);
 
-      // Apply backend-defined colgroup widths as initial widths
-      // User can resize during session, but changes won't persist across page loads
+      // Priority 1: Check if user has saved preferences
+      const savedWidths = this.loadWidths(tableId);
+      console.log(`[${tableId}] Saved widths from localStorage:`, savedWidths);
+      
+      // Priority 2: Get backend-defined colgroup widths
       const colgroupWidths = this.getColgroupWidths(table);
-      if (colgroupWidths) {
+      console.log(`[${tableId}] Colgroup widths from backend:`, colgroupWidths);
+      
+      // Determine which widths to use
+      const widthsToApply = savedWidths || colgroupWidths;
+      console.log(`[${tableId}] Widths to apply:`, widthsToApply);
+      
+      if (widthsToApply) {
         // CRITICAL: With table-layout: fixed, we must update colgroup to enforce minimum widths
         // Do this BEFORE applyWidths to avoid triggering multiple layouts
         const colgroup = table.querySelector('colgroup');
         if (colgroup) {
           const cols = colgroup.querySelectorAll('col');
           cols.forEach((col, index) => {
-            if (index < colgroupWidths.length) {
-              (col as HTMLElement).style.width = `${colgroupWidths[index]}px`;
+            if (index < widthsToApply.length) {
+              (col as HTMLElement).style.width = `${widthsToApply[index]}px`;
             }
           });
         }
         
-        this.applyWidths(table, colgroupWidths);
+        this.applyWidths(table, widthsToApply);
+        
+        // Log which widths were applied for debugging
+        if (savedWidths) {
+          console.info(`Applied user-saved widths for table: ${tableId}`);
+        } else {
+          console.info(`Applied backend colgroup widths for table: ${tableId}`);
+        }
       }
-      // If no colgroup widths, browser uses default table layout
+      // If no widths available, browser uses default table layout
 
       // Create resize handles between columns
       this.createResizeHandles(table);

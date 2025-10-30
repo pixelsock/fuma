@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { ProgressiveDefinitionProcessorV2 } from './progressive-definition-processor-v2';
 import { GlobalDefinitionTooltipV2 } from './global-definition-tooltip-v2';
 import { TooltipProvider as DefinitionTooltipProvider } from './definition-tooltip-context';
+import { DefinitionDataProvider } from './definition-data-context';
 import { HighlightedContent } from '@/lib/search-highlight-react';
 
 interface UDOContentRendererProps {
@@ -274,6 +275,47 @@ export function UDOContentRenderer({
             'cursor-help'
           );
 
+          // Remove from keyboard navigation and prevent default link behavior
+          anchor.setAttribute('tabindex', '-1');
+          anchor.setAttribute('role', 'button');
+          anchor.setAttribute('aria-label', `Definition: ${anchor.textContent || 'term'}`);
+          
+          // Prevent href from causing page jump
+          if (anchor.href === '#' || anchor.href.endsWith('#')) {
+            anchor.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }, { capture: true });
+          }
+
+          // Add event listeners for tooltip
+          const handleMouseEnter = (e: MouseEvent) => {
+            // Just show tooltip - don't cancel hide here to avoid loops
+            document.dispatchEvent(new CustomEvent('show-definition-tooltip', {
+              detail: { definitionId, element: anchor }
+            }));
+          };
+
+          const handleMouseLeave = (e: MouseEvent) => {
+            document.dispatchEvent(new CustomEvent('hide-definition-tooltip'));
+          };
+
+          const handleClick = (e: MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // For mobile/touch devices, allow click to toggle
+            if (window.innerWidth < 768 || 'ontouchstart' in window) {
+              document.dispatchEvent(new CustomEvent('toggle-definition-tooltip', {
+                detail: { definitionId, element: anchor }
+              }));
+            }
+          };
+
+          anchor.addEventListener('mouseenter', handleMouseEnter);
+          anchor.addEventListener('mouseleave', handleMouseLeave);
+          anchor.addEventListener('click', handleClick);
+
           // Mark as enhanced
           anchor.setAttribute('data-enhanced', 'true');
         }
@@ -300,13 +342,15 @@ export function UDOContentRenderer({
   // Render HTML directly to keep DOM stable for Fumadocs TOC
   // Features are added via DOM manipulation after render
   return (
-    <DefinitionTooltipProvider>
-      <div
-        ref={contentRef}
-        className={`udo-content prose prose-lg max-w-none mt-0 ${className || ''}`}
-        dangerouslySetInnerHTML={{ __html: rewrittenContent }}
-      />
-      <GlobalDefinitionTooltipV2 />
-    </DefinitionTooltipProvider>
+    <DefinitionDataProvider>
+      <DefinitionTooltipProvider>
+        <div
+          ref={contentRef}
+          className={`udo-content prose prose-lg max-w-none mt-0 ${className || ''}`}
+          dangerouslySetInnerHTML={{ __html: rewrittenContent }}
+        />
+        <GlobalDefinitionTooltipV2 />
+      </DefinitionTooltipProvider>
+    </DefinitionDataProvider>
   );
 }

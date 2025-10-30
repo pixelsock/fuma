@@ -80,6 +80,7 @@ export function ProgressiveDefinitionProcessorV2({ content }: ProgressiveDefinit
       
       const definitionId = link.getAttribute('data-definition-id');
       if (definitionId) {
+        // Just show tooltip - don't cancel hide here to avoid loops
         document.dispatchEvent(new CustomEvent('show-definition-tooltip', {
           detail: { definitionId, element: link }
         }));
